@@ -1,0 +1,76 @@
+{
+    "events": [
+        {
+            "attendees": [
+                {
+                    "id": "abc123",
+                    "name": "Adam Jahr"
+                },
+                {
+                    "id": "def456",
+                    "name": "Gregg Pollack"
+                },
+                {
+                    "id": "ghi789",
+                    "name": "Beth Swanson"
+                },
+                {
+                    "id": "jkl101",
+                    "name": "Mary Gordon"
+                }
+            ],
+            "category": "sustainability",
+            "date": "Aug 28 2018",
+            "description": "Let's clean up this beach.",
+            "id": 1,
+            "location": "Daytona Beach",
+            "organizer": "Adam Jahr",
+            "time": "10:00",
+            "title": "Beach Cleanup"
+        },
+        {
+            "attendees": [
+                {
+                    "id": "ghi789",
+                    "name": "Beth Swanson"
+                },
+                {
+                    "id": "jkl101",
+                    "name": "Mary Gordon"
+                }
+            ],
+            "category": "nature",
+            "date": "Nov 12 2018",
+            "description": "We're going to clean up this park.",
+            "id": 2,
+            "location": "132 N Magnolia Street, Orlando, Florida",
+            "organizer": "Adam Jahr",
+            "time": "12:00",
+            "title": "Park Cleanup"
+        },
+        {
+            "attendees": [
+                {
+                    "id": "abc123",
+                    "name": "Adam Jahr"
+                },
+                {
+                    "id": "ghi789",
+                    "name": "Beth Swanson"
+                },
+                {
+                    "id": "jkl101",
+                    "name": "Mary Gordon"
+                }
+            ],
+            "category": "animal welfare",
+            "date": "Dec 2 2018",
+            "description": "Help animals find new homes.",
+            "id": 3,
+            "location": "132 N Magnolia Street, Orlando, Florida",
+            "organizer": "Gregg Pollack",
+            "time": "12:00",
+            "title": "Pet Adoption Day"
+        }
+    ]
+}
