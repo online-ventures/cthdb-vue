@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import EventList from './views/EventList.vue'
+import ShowList from './views/ShowList.vue'
+import HelloWorld from './views/HelloWorld.vue'
 import EventShow from './views/EventShow.vue'
 import EventCreate from './views/EventCreate.vue'
 import User from './views/User.vue'
@@ -14,8 +15,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'event-list',
-      component: EventList
+      name: 'home',
+      component: HelloWorld
+    },
+    {
+      path: '/shows',
+      name: 'show-list',
+      component: ShowList
     },
     {
       path: '/event/:id',

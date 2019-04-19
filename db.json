@@ -1,4 +1,18 @@
 {
+    "shows": [
+        {
+            "name": "Singing in the Rain",
+            "occurred_at": "2019-03-01"
+        },
+        {
+            "name": "Arsenic and Old Lace",
+            "occurred_at": "2019-02-01"
+        },
+        {
+            "name": "Aladdin",
+            "occurred_at": "2019-01-01"
+        }
+    ],
     "events": [
         {
             "attendees": [

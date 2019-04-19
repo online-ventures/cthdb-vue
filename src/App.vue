@@ -2,29 +2,25 @@
   v-app
     v-toolbar(app)
       v-toolbar-title(class="headline text-uppercase")
-        span Vuetify
-        span(class="font-weight-light") MATERIAL DESIGN
+        span CTH
+        span(class="font-weight-light")  Volunteer Database
       v-spacer
-      v-btn(flat
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank")
-        span(class="mr-2") Latest Release
-
+      v-toolbar-items
+        v-btn(:to="{ path: '/' }" flat) Home
+        v-btn(:to="{ name: 'show-list' }" flat) Shows
+        v-btn(:to="{ name: 'event-create' }" flat) Events
     v-content
-      HelloWorld
+      v-container(align-center)
+        router-view
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
-
 export default {
   name: 'App',
   components: {
-    HelloWorld
   },
   data () {
     return {
-      //
     }
   }
 }
