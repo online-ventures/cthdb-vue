@@ -8,7 +8,6 @@
       v-toolbar-items
         v-btn(:to="{ path: '/' }" flat) Home
         v-btn(:to="{ name: 'show-list' }" flat) Shows
-        v-btn(:to="{ name: 'event-create' }" flat) Events
     v-content
       v-container(align-center)
         router-view

@@ -947,6 +947,25 @@
   resolved "https://registry.yarnpkg.com/@vue/web-component-wrapper/-/web-component-wrapper-1.2.0.tgz#bb0e46f1585a7e289b4ee6067dcc5a6ae62f1dd1"
   integrity sha512-Xn/+vdm9CjuC9p3Ae+lTClNutrVhsXpzxvoTXXtoys6kVRX9FkueSUAqSWAyZntmVLlR4DosBV4pH8y5Z/HbUw==
 
+"@vuex-orm/core@^0.31.6":
+  version "0.31.9"
+  resolved "https://registry.yarnpkg.com/@vuex-orm/core/-/core-0.31.9.tgz#654c7afe58460da8d3f9cac4954c1abb0241faf8"
+  integrity sha512-Ykr8U1HZyUP+RG+ImxxHmhNjt8kJ3/fSKWNDB50WM1bpmhS3hXcpwjTsjOrPdVNzM/qdfMh/0rzXURVDCHcNhA==
+
+"@vuex-orm/core@^0.31.9":
+  version "0.31.10"
+  resolved "https://registry.yarnpkg.com/@vuex-orm/core/-/core-0.31.10.tgz#2f01b15a6feef72c9bf1625563527b74ce39dda9"
+  integrity sha512-hl2R1qVtyzewigGS2xSppOC6Ijl1ygCTM+6LJz+dk+qgrfeaLDetvE2PAy1ro8hDGU1U6DPaItpdWXpmwA/xpg==
+
+"@vuex-orm/plugin-axios@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@vuex-orm/plugin-axios/-/plugin-axios-0.5.0.tgz#8af763b2c8e9ac2f210d6e7d1011d58d5c6b6108"
+  integrity sha512-ifWypr+cCSnQO+RgNBeqfILEoj2eGlLqRxKOPSHnY89r6P+9gL8qhCSlTrt7AFRGSdnoQ6DdAMXum3Th0kUWvw==
+  dependencies:
+    "@vuex-orm/core" "^0.31.6"
+    axios "^0.18.0"
+    lodash "^4.17.11"
+
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.7.11.tgz#b988582cafbb2b095e8b556526f30c90d057cace"
@@ -5477,9 +5496,9 @@ natural-compare@^1.4.0:
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
 needle@^2.2.1:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/needle/-/needle-2.3.0.tgz#ce3fea21197267bacb310705a7bbe24f2a3a3492"
-  integrity sha512-QBZu7aAFR0522EyaXZM0FZ9GLpq6lvQ3uq8gteiDUp7wKdy0lSd2hPlgFwVuW1CBkfEs9PfDQsQzZghLs/psdg==
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/needle/-/needle-2.3.1.tgz#d272f2f4034afb9c4c9ab1379aabc17fc85c9388"
+  integrity sha512-CaLXV3W8Vnbps8ZANqDGz7j4x7Yj1LW4TWF/TQuDfj7Cfx4nAPTvw98qgTevtto1oHDrh3pQkaODbqupXlsWTg==
   dependencies:
     debug "^4.1.0"
     iconv-lite "^0.4.4"
@@ -7161,9 +7180,9 @@ sass-loader@^7.1.0:
     semver "^5.5.0"
 
 sass@^1.16.0:
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.18.0.tgz#f34371c31e268e555c2ac8e43d2b64d194e7d090"
-  integrity sha512-Mc579V+BhH693tqt+lvph+gmRqmC6BjtsEVsjkW1944DEA5a0wPuCi781hL3fY4EDuqZnEVPbu42CZRywwE97g==
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.19.0.tgz#5de82c713d4299fac57384ef5219534a37fe3e6c"
+  integrity sha512-8kzKCgxCzh8/zEn3AuRwzLWVSSFj8omkiGwqdJdeOufjM+I88dXxu9LYJ/Gw4rRTHXesN0r1AixBuqM6yLQUJw==
   dependencies:
     chokidar "^2.0.0"
 
@@ -8391,9 +8410,9 @@ vuetify-loader@^1.0.5:
     loader-utils "^1.1.0"
 
 vuetify@^1.5.5:
-  version "1.5.12"
-  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.5.12.tgz#77d18fc7ea5d6297bac40880df83fc241ba840a2"
-  integrity sha512-NxYNPiqEEgprTzNft0x0oiyOgbclbARgOJMKWRfeu3qx8pE0JG3XMgljVv1Ttq0ErKf1lvNLFRuajDgRdQxR/Q==
+  version "1.5.13"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.5.13.tgz#b2e406ebdc59723c5ecbd2d0595d3d2ae0cac812"
+  integrity sha512-mUOs9znDmMO/A2I117B/ZHyFlwSqkKplhSL8G2EnS+m0rvZv2Uqjo9idOBbdhaJ3A9sJWT6wDUFywEYuuIcu+g==
 
 vuex@^3.0.1:
   version "3.1.0"
