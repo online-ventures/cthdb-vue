@@ -6,7 +6,7 @@ div
 
     v-dialog(v-model="dialog" max-width="550px")
       template(v-slot:activator="{ on }")
-        v-btn(color="primary" dark class="mb-2" v-on="on") New Item
+        v-btn(color="primary" dark class="mb-2" @click="newItem(true)") New Item
 
       v-card
         v-card-title
@@ -24,7 +24,7 @@ div
           v-btn(color="blue darken-1" flat @click="close") Cancel
           v-btn(color="blue darken-1" flat @click="save") Save
 
-  v-data-table(:items="shows" :headers="headers" item-key="id")
+  v-data-table(:items="showData" :headers="headers" item-key="id")
     template(v-slot:items="props")
       tr(@click='editItem(props.item)')
         td {{ props.item.name }}
@@ -32,8 +32,6 @@ div
 </template>
 
 <script>
-import Show from '@/store/models/Show'
-import pick from 'lodash/pick'
 
 export default {
   data () {
@@ -45,20 +43,29 @@ export default {
         { text: 'Happened', value: 'occurred_at' }
       ],
       editedItem: {},
-      newItem: {
-        name: '',
-        occurred_at: ''
+      blankItem: {
+        _jv: { type: 'shows' }
       }
     }
   },
   created () {
-    if (this.shows.length === 0) {
-      Show.$fetch()
+    if (Object.keys(this.shows).length === 0) {
+      this.$store.dispatch('jv/get', 'shows')
     }
+    this.newItem()
   },
 
   computed: {
-    shows () { return Show.all() },
+    showData () {
+      const arr = []
+      for ( let id in this.shows ) {
+        arr.push(this.shows[id])
+      }
+      return arr
+    },
+    shows () {
+      return this.$store.getters['jv/get']('shows')
+    },
     formTitle () {
       return this.actionType === 'new' ? 'New Show' : 'Edit Show'
     }
@@ -71,38 +78,32 @@ export default {
   },
 
   methods: {
+    newItem (open) {
+      this.actionType = 'new'
+      this.editedItem = Object.assign({}, this.blankItem)
+      if (open) {
+        this.dialog = true
+      }
+    },
+
     editItem (item) {
       this.actionType = 'edit'
-      this.editedItem = Object.assign({}, item)
+      this.editedItem = item
       this.dialog = true
     },
 
     close () {
       this.dialog = false
       setTimeout(() => {
-        this.editedItem = Object.assign({}, this.newItem)
-        this.actionType = 'new'
+        this.newItem()
       }, 300)
     },
 
     save () {
-      if (this.actionType === 'new') {
-        this.create()
-      } else {
-        this.update()
-      }
+      const method = this.actionType === 'new' ? 'post' : 'patch'
+      console.log(this.editedItem)
+      this.$store.dispatch('jv/'+method, this.editedItem)
       this.close()
-    },
-
-    create () {
-      const data = pick(this.editedItem, ['name','occurred_at'])
-      Show.$create({ data: data })
-    },
-
-    update () {
-      const edited = this.editedItem
-      const data = pick(edited, ['name','occurred_at'])
-      Show.$update({ params: { id: edited.id }, data: data })
     }
   }
 }
