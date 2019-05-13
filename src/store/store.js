@@ -6,7 +6,7 @@ import { jsonapiModule } from './jsonapi'
 Vue.use(Vuex)
 
 const api = axios.create({
-  baseURL: 'http://localhost:3021/',
+  baseURL: 'https://cth-api.wov.io/',
   headers: {
     'Content-Type': 'application/vnd.api+json'
   }
