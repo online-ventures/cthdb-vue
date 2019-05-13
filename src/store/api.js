@@ -1,6 +1,6 @@
 import JsonApi from 'devour-client'
 
-const url = 'http://localhost:3021'
+const url = 'https://cth-api.wov.io'
 const api = new JsonApi({ apiUrl: url })
 
 // Shows
