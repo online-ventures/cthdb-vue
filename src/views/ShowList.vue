@@ -17,8 +17,8 @@ div
               v-flex(xs12)
                 v-text-field(v-model="editedItem.name" label="Name")
             v-layout
-              v-flex(xs12)
-                v-date-picker(v-model="editedItem.occurred_at" label="Happened" landscape)
+              v-flex(xs12 align-center)
+                v-date-picker(v-model="editedItem.occurred_at" label="Happened")
         v-card-actions
           v-spacer
           v-btn(color="blue darken-1" flat @click="close") Cancel
@@ -28,7 +28,7 @@ div
     template(v-slot:items="props")
       tr(@click='editItem(props.item)')
         td {{ props.item.name }}
-        td {{ props.item.occurred_at }}
+        td {{ props.item.occurred_at | prettyMonth }}
 </template>
 
 <script>
@@ -58,7 +58,7 @@ export default {
   computed: {
     showData () {
       const arr = []
-      for ( let id in this.shows ) {
+      for (let id in this.shows) {
         arr.push(this.shows[id])
       }
       return arr
@@ -68,6 +68,14 @@ export default {
     },
     formTitle () {
       return this.actionType === 'new' ? 'New Show' : 'Edit Show'
+    }
+  },
+
+  filters: {
+    prettyMonth (value) {
+      const date = new Date(value + 'T12:00:00')
+      const options = { year: 'numeric', month: 'long' }
+      return date.toLocaleDateString('en-US', options)
     }
   },
 
@@ -99,10 +107,19 @@ export default {
       }, 300)
     },
 
+    patch (item) {
+      // We need to drop links for now
+      const copy = Object.assign({}, item);
+      ['links', 'meta'].forEach(e => delete copy['_jv'][e])
+      this.$store.dispatch('jv/patch', copy)
+    },
+
     save () {
-      const method = this.actionType === 'new' ? 'post' : 'patch'
-      console.log(this.editedItem)
-      this.$store.dispatch('jv/'+method, this.editedItem)
+      if (this.actionType === 'new') {
+        this.$store.dispatch('jv/post', this.editedItem)
+      } else {
+        this.patch(this.editedItem)
+      }
       this.close()
     }
   }
