@@ -6,7 +6,7 @@ steps:
 - name: 'gcr.io/cloud-builders/git'
   args:
   - clone
-  - git@github.com:online-ventures/$_APP_NAME.git
+  - https://github.com/online-ventures/$_APP_NAME.git
 
 - name: gcr.io/cloud-builders/docker
   args:
