@@ -1,6 +1,6 @@
 # Variables
 substitutions:
-  _APP_NAME: cthdb-api
+  _APP_NAME: cthdb-vue
 
 steps:
 - name: 'gcr.io/cloud-builders/git'
@@ -59,9 +59,8 @@ steps:
     - '/home/1001/kube'
     - 'set'
     - 'image'
-    - 'deploy/$_APP_NAME'
-    - 'rails=gcr.io/$PROJECT_ID/$_APP_NAME:$COMMIT_SHA'
-    - 'sidekiq=gcr.io/$PROJECT_ID/$_APP_NAME:$COMMIT_SHA'
+    - 'deploy/cthvue'
+    - 'vue=gcr.io/$PROJECT_ID/$_APP_NAME:$COMMIT_SHA'
     - '--namespace=default'
   volumes:
   - name: '1001'
