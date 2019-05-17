@@ -3,7 +3,7 @@
     v-toolbar(app)
       v-toolbar-title(class="headline text-uppercase")
         span CTH
-        span(class="font-weight-light")  Volunteer Database
+        span(class="font-weight-light")  Stars
       v-spacer
       v-toolbar-items
         v-btn(:to="{ path: '/' }" flat) Home

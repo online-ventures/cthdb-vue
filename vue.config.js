@@ -1,6 +1,6 @@
 module.exports = {
   pwa: {
-    name: 'CTH Hub',
+    name: 'CTH Stars',
     themeColor: '#A21F4B'
   },
 
