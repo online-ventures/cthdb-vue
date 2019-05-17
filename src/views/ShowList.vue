@@ -26,7 +26,7 @@ div
           v-btn(color="blue darken-1" flat @click="close") Cancel
           v-btn(color="blue darken-1" flat @click="save") Save
 
-  v-data-table(:items="showData" :headers="headers" item-key="id")
+  v-data-table(:items="showData" :headers="headers" item-key="id" :rows-per-page-items="rowsPerPage" :pagination.sync="pagination")
     template(v-slot:items="props")
       tr(@click='editItem(props.item)')
         td {{ props.item.name }}
@@ -44,6 +44,11 @@ export default {
         { text: 'Name', value: 'name' },
         { text: 'Happened', value: 'occurred_at' }
       ],
+      rowsPerPage: [10, 25, 50],
+      pagination: {
+        descending: true,
+        sortBy: 'occurred_at'
+      },
       editedItem: {},
       blankItem: {
         _jv: { type: 'shows' }
