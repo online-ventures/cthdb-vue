@@ -17,8 +17,10 @@ div
               v-flex(xs12)
                 v-text-field(v-model="editedItem.name" label="Name")
             v-layout
-              v-flex(xs12 align-center)
-                v-date-picker(v-model="editedItem.occurred_at" label="Happened")
+              v-flex(xs12 md6 align-center)
+                v-select(:items="months" v-model="editedItem.month" label="Month")
+              v-flex(xs12 md6 align-center)
+                v-select(:items="years" v-model="editedItem.year" label="Year")
         v-card-actions
           v-spacer
           v-btn(color="blue darken-1" flat @click="close") Cancel
@@ -45,7 +47,21 @@ export default {
       editedItem: {},
       blankItem: {
         _jv: { type: 'shows' }
-      }
+      },
+      months: [
+        { text: 'January', value: '01' },
+        { text: 'February', value: '02' },
+        { text: 'March', value: '03' },
+        { text: 'April', value: '04' },
+        { text: 'May', value: '05' },
+        { text: 'June', value: '06' },
+        { text: 'July', value: '07' },
+        { text: 'August', value: '08' },
+        { text: 'September', value: '09' },
+        { text: 'October', value: '10' },
+        { text: 'November', value: '11' },
+        { text: 'December', value: '12' }
+      ]
     }
   },
   created () {
@@ -68,6 +84,13 @@ export default {
     },
     formTitle () {
       return this.actionType === 'new' ? 'New Show' : 'Edit Show'
+    },
+    years () {
+      const yrs = []
+      for (let year = new Date().getFullYear() + 1; year >= 2000; year--) {
+        yrs.push({ text: year.toString(), value: year.toString() })
+      }
+      return yrs
     }
   },
 
@@ -97,6 +120,9 @@ export default {
     editItem (item) {
       this.actionType = 'edit'
       this.editedItem = item
+      const date = this.editedItem.occurred_at.split('-')
+      this.editedItem.year = date[0]
+      this.editedItem.month = date[1]
       this.dialog = true
     },
 
@@ -107,19 +133,15 @@ export default {
       }, 300)
     },
 
-    patch (item) {
-      // We need to drop links for now
-      const copy = Object.assign({}, item);
-      ['links', 'meta'].forEach(e => delete copy['_jv'][e])
-      this.$store.dispatch('jv/patch', copy)
+    prepareItem () {
+      const { year, month } = this.editedItem
+      this.editedItem.occurred_at = year + '-' + month + '-01'
+      return this.editedItem
     },
 
     save () {
-      if (this.actionType === 'new') {
-        this.$store.dispatch('jv/post', this.editedItem)
-      } else {
-        this.patch(this.editedItem)
-      }
+      const method = this.actionType === 'new' ? 'post' : 'patch'
+      this.$store.dispatch('jv/' + method, this.prepareItem())
       this.close()
     }
   }
