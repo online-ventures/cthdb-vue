@@ -10,7 +10,8 @@
         v-btn(:to="{ name: 'show-list' }" flat) Shows
     v-content
       v-container(align-center)
-        router-view
+        transition(:name="viewTransition" mode="out-in")
+          router-view
 </template>
 
 <script>
@@ -20,7 +21,36 @@ export default {
   },
   data () {
     return {
+      viewTransition: ''
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      const paths = ['/', '/shows']
+      const fromIndex = paths.findIndex(path => path === from.path)
+      const toIndex = paths.findIndex(path => path === to.path)
+      const direction = fromIndex < toIndex ? 'right' : 'left'
+      this.viewTransition = 'slide-' + direction
+      console.log(this.viewTransition)
     }
   }
 }
 </script>
+
+<style>
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all .3s ease;
+}
+.slide-left-enter, .slide-left-leave-to, .slide-right-enter, .slide-right-leave-to {
+  opacity: 0;
+}
+.slide-right-enter, .slide-left-leave-to {
+  transform: translateX(60px);
+}
+.slide-left-enter, .slide-right-leave-to {
+  transform: translateX(-60px);
+}
+</style>
