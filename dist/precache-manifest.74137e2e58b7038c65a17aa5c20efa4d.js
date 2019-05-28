@@ -12,16 +12,20 @@ self.__precacheManifest = [
     "url": "/favicon-60.png"
   },
   {
-    "revision": "579597b9eb48c46e5ca6",
-    "url": "/assets/css/chunk-vendors.7bb75da2.css"
+    "revision": "80313b9f0c312313eae4",
+    "url": "/assets/css/chunk-vendors.681e0c47.css"
   },
   {
-    "revision": "655278331ff9553c4ee248a66d0a2684",
+    "revision": "a4db408044e58468b924bd6a9e795d52",
     "url": "/index.html"
   },
   {
     "revision": "8221dfb6a367ec8cb84eb9aabe421ba6",
     "url": "/browserconfig.xml"
+  },
+  {
+    "revision": "d987956a3e30d23025c7844abc9bcf5c",
+    "url": "/favicon-144.png"
   },
   {
     "revision": "c299fcfcff1720c8a914b75646144f50",
@@ -30,10 +34,6 @@ self.__precacheManifest = [
   {
     "revision": "7f03f28b342912faf296ec09d6592709",
     "url": "/favicon-120.png"
-  },
-  {
-    "revision": "d987956a3e30d23025c7844abc9bcf5c",
-    "url": "/favicon-144.png"
   },
   {
     "revision": "f3e6441a25cd62c49e82452bde7d5509",
@@ -52,10 +52,6 @@ self.__precacheManifest = [
     "url": "/favicon-160.png"
   },
   {
-    "revision": "9d56e451fd1c1a30746029a233869b48",
-    "url": "/favicon-192.png"
-  },
-  {
     "revision": "12cd62cdca7377e47ab37da76ef1caa7",
     "url": "/favicon-180.png"
   },
@@ -64,16 +60,20 @@ self.__precacheManifest = [
     "url": "/favicon-310.png"
   },
   {
+    "revision": "9d56e451fd1c1a30746029a233869b48",
+    "url": "/favicon-192.png"
+  },
+  {
     "revision": "e68a34e0c037a6ce055e488e55ba2862",
     "url": "/favicon-32.png"
   },
   {
-    "revision": "e2dc2eb762b4b2fb2998",
-    "url": "/assets/js/app.d6b808f4.js"
+    "revision": "51741b536f14bbcc845e",
+    "url": "/assets/js/app.92f0f98e.js"
   },
   {
-    "revision": "579597b9eb48c46e5ca6",
-    "url": "/assets/js/chunk-vendors.5c60b19c.js"
+    "revision": "80313b9f0c312313eae4",
+    "url": "/assets/js/chunk-vendors.0edce7e5.js"
   },
   {
     "revision": "ce40ea260532b9e849669b3d57093d0b",
@@ -104,12 +104,12 @@ self.__precacheManifest = [
     "url": "/images/icons/icon-128x128.png"
   },
   {
-    "revision": "215e0161486c1f04acab54d3746aae49",
-    "url": "/images/icons/icon-144x144.png"
-  },
-  {
     "revision": "92e938d9cb850c0c7f6cee940266ab6c",
     "url": "/feather-sprite.svg"
+  },
+  {
+    "revision": "215e0161486c1f04acab54d3746aae49",
+    "url": "/images/icons/icon-144x144.png"
   },
   {
     "revision": "83b6170c2cb78c2b1d729d30f55e0907",
@@ -124,6 +124,10 @@ self.__precacheManifest = [
     "url": "/images/icons/icon-384x384.png"
   },
   {
+    "revision": "005ba6938b06bc1738a4ccbf2488c0a9",
+    "url": "/images/icons/icon-512x512.png"
+  },
+  {
     "revision": "efe33c7bb4e59db14ab95b9fc0d41cfe",
     "url": "/images/icons/icon-72x72.png"
   },
@@ -132,11 +136,7 @@ self.__precacheManifest = [
     "url": "/images/icons/icon-96x96.png"
   },
   {
-    "revision": "005ba6938b06bc1738a4ccbf2488c0a9",
-    "url": "/images/icons/icon-512x512.png"
-  },
-  {
-    "revision": "e2dc2eb762b4b2fb2998",
+    "revision": "51741b536f14bbcc845e",
     "url": "/assets/css/app.fe8a4a43.css"
   }
 ];
