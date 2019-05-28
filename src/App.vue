@@ -31,7 +31,6 @@ export default {
       const toIndex = paths.findIndex(path => path === to.path)
       const direction = fromIndex < toIndex ? 'right' : 'left'
       this.viewTransition = 'slide-' + direction
-      console.log(this.viewTransition)
     }
   }
 }
