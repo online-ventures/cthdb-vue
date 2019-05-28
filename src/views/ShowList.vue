@@ -34,8 +34,11 @@ div
 </template>
 
 <script>
+import dataMixin from '../mixins/dataMixin'
 
 export default {
+  mixins: [dataMixin],
+
   data () {
     return {
       dialog: false,
@@ -69,12 +72,6 @@ export default {
       ]
     }
   },
-  created () {
-    if (Object.keys(this.shows).length === 0) {
-      this.$store.dispatch('jv/get', 'shows')
-    }
-    this.newItem()
-  },
 
   computed: {
     showData () {
@@ -83,9 +80,6 @@ export default {
         arr.push(this.shows[id])
       }
       return arr
-    },
-    shows () {
-      return this.$store.getters['jv/get']('shows')
     },
     formTitle () {
       return this.actionType === 'new' ? 'New Show' : 'Edit Show'
