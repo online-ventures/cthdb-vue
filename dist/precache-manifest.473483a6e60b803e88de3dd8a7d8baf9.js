@@ -12,15 +12,11 @@ self.__precacheManifest = [
     "url": "/favicon-60.png"
   },
   {
-    "revision": "91b48b6613f8f8d7767e",
-    "url": "/assets/css/chunk-vendors.246c014b.css"
+    "revision": "579597b9eb48c46e5ca6",
+    "url": "/assets/css/chunk-vendors.7bb75da2.css"
   },
   {
-    "revision": "63a7d78d42c33b94fc7b957524795cac",
-    "url": "/assets/img/logo.63a7d78d.svg"
-  },
-  {
-    "revision": "5af0b4d2f10839fab75d737fc44e15a9",
+    "revision": "655278331ff9553c4ee248a66d0a2684",
     "url": "/index.html"
   },
   {
@@ -56,12 +52,12 @@ self.__precacheManifest = [
     "url": "/favicon-160.png"
   },
   {
-    "revision": "12cd62cdca7377e47ab37da76ef1caa7",
-    "url": "/favicon-180.png"
-  },
-  {
     "revision": "9d56e451fd1c1a30746029a233869b48",
     "url": "/favicon-192.png"
+  },
+  {
+    "revision": "12cd62cdca7377e47ab37da76ef1caa7",
+    "url": "/favicon-180.png"
   },
   {
     "revision": "7dcff3770ef4389c37c38ae2516606bc",
@@ -72,12 +68,12 @@ self.__precacheManifest = [
     "url": "/favicon-32.png"
   },
   {
-    "revision": "c5ebe855a7c391ede0a6",
-    "url": "/assets/js/app.cfe61153.js"
+    "revision": "e2dc2eb762b4b2fb2998",
+    "url": "/assets/js/app.d6b808f4.js"
   },
   {
-    "revision": "91b48b6613f8f8d7767e",
-    "url": "/assets/js/chunk-vendors.fbf9975f.js"
+    "revision": "579597b9eb48c46e5ca6",
+    "url": "/assets/js/chunk-vendors.5c60b19c.js"
   },
   {
     "revision": "ce40ea260532b9e849669b3d57093d0b",
@@ -108,16 +104,16 @@ self.__precacheManifest = [
     "url": "/images/icons/icon-128x128.png"
   },
   {
+    "revision": "215e0161486c1f04acab54d3746aae49",
+    "url": "/images/icons/icon-144x144.png"
+  },
+  {
     "revision": "92e938d9cb850c0c7f6cee940266ab6c",
     "url": "/feather-sprite.svg"
   },
   {
     "revision": "83b6170c2cb78c2b1d729d30f55e0907",
     "url": "/images/icons/icon-152x152.png"
-  },
-  {
-    "revision": "215e0161486c1f04acab54d3746aae49",
-    "url": "/images/icons/icon-144x144.png"
   },
   {
     "revision": "8aee9164a41b526d310421566fdd14b8",
@@ -128,10 +124,6 @@ self.__precacheManifest = [
     "url": "/images/icons/icon-384x384.png"
   },
   {
-    "revision": "005ba6938b06bc1738a4ccbf2488c0a9",
-    "url": "/images/icons/icon-512x512.png"
-  },
-  {
     "revision": "efe33c7bb4e59db14ab95b9fc0d41cfe",
     "url": "/images/icons/icon-72x72.png"
   },
@@ -140,7 +132,11 @@ self.__precacheManifest = [
     "url": "/images/icons/icon-96x96.png"
   },
   {
-    "revision": "c5ebe855a7c391ede0a6",
-    "url": "/assets/css/app.a24d5f85.css"
+    "revision": "005ba6938b06bc1738a4ccbf2488c0a9",
+    "url": "/images/icons/icon-512x512.png"
+  },
+  {
+    "revision": "e2dc2eb762b4b2fb2998",
+    "url": "/assets/css/app.fe8a4a43.css"
   }
 ];
