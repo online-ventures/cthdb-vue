@@ -8,6 +8,7 @@
       v-toolbar-items
         v-btn(:to="{ path: '/' }" flat) Home
         v-btn(:to="{ name: 'show-list' }" flat) Shows
+        v-btn(:to="{ name: 'job-list' }" flat) Jobs
     v-content
       v-container(align-center)
         transition(:name="viewTransition" mode="out-in")
@@ -26,7 +27,7 @@ export default {
   },
   watch: {
     '$route' (to, from) {
-      const paths = ['/', '/shows']
+      const paths = ['/', '/shows', '/jobs']
       const fromIndex = paths.findIndex(path => path === from.path)
       const toIndex = paths.findIndex(path => path === to.path)
       const direction = fromIndex < toIndex ? 'right' : 'left'

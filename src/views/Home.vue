@@ -1,7 +1,7 @@
 <template lang="pug">
   v-layout
     v-flex(xs12 sm6 offset-sm3)
-      v-container(fluid)
+      v-container(fluid grid-list-md)
         v-layout(row wrap)
           v-flex(xs12 md6 xl4 v-for="stat in stats" :key="stat.name")
             v-card(tile)
@@ -25,6 +25,11 @@ export default {
           id: 'show-count',
           subtitle: 'Total shows',
           value: Object.keys(this.shows).length
+        },
+        {
+          id: 'job-count',
+          subtitle: 'Total jobs',
+          value: Object.keys(this.jobs).length
         }
       ]
     }
