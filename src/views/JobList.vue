@@ -1,130 +1,159 @@
 <template lang="pug">
 div
-  v-toolbar(flat color="white")
-    v-toolbar-title Job Listings
-    v-spacer
-
-    v-dialog(v-model="dialog" max-width="550px")
-      template(v-slot:activator="{ on }")
-        v-btn(color="primary" dark class="mb-2" @click="newItem(true)") New Job
-
-      v-card
-        v-card-title
-          span(class="headline") {{ formTitle }}
-        v-card-text
-          v-container(grid-list-md)
-            v-layout
-              v-flex(xs12)
-                v-text-field(v-model="editedItem.name" label="Name")
-            v-layout
-              v-flex(xs12)
-                v-select(:items="points" v-model="editedItem.points" label="Points")
-        v-card-actions
-          v-spacer
-          v-btn(color="blue darken-1" flat @click="close") Cancel
-          v-btn(color="blue darken-1" flat @click="save") Save
-
-  v-data-table(:items="jobData" :headers="headers" item-key="id" :rows-per-page-items="rowsPerPage" :pagination.sync="pagination")
-    template(v-slot:items="props")
-      tr(@click='editItem(props.item)')
-        td {{ props.item.name }}
-        td {{ props.item.points | prettyPoints }}
+  section(class="hero is-primary")
+    div(class="hero-body")
+      div(class="container")
+        p(class="title") Jobs
+        p(class="subtitle") View and manage jobs
+  section
+    div(class="content")
+      div(class="container")
+        list-row(v-for="job in allJobs"
+          :key="job.id"
+          :title="job.name"
+          :subtitle="job.points | prettyPoints"
+          icon="coins"
+          iconType="is-warning"
+          :item="job"
+          :onClick="editModal")
+        div(class="buttons")
+          b-button(@click="moreJobs" v-if="displayMore") See more
+          b-button(type="is-primary" @click="newModal" icon-left="plus") Add job
 </template>
 
 <script>
-import dataMixin from '../mixins/dataMixin'
+import gql from 'graphql-tag'
+import ListRow from '@/components/ListRow'
+import EditJobModal from '@/components/modal/EditJobModal'
 
 export default {
-  mixins: [dataMixin],
+  components: {
+    ListRow,
+    EditJobModal
+  },
 
   data () {
     return {
-      dialog: false,
-      actionType: 'new',
-      headers: [
-        { text: 'Name', value: 'name' },
-        { text: 'Points', value: 'points' }
-      ],
-      rowsPerPage: [10, 25, 50],
-      pagination: {
-        descending: false,
-        sortBy: 'name'
-      },
-      editedItem: {},
-      blankItem: {
-        _jv: { type: 'jobs' }
-      },
-      points: [
-        { text: 'None', value: '0' },
-        { text: '0.5', value: '1' },
-        { text: '1', value: '2' },
-        { text: '2', value: '4' },
-        { text: '3', value: '6' }
-      ]
+      jobs: [],
+      jobCount: 0,
+      allJobs: [],
+      ignoreJobs: [],
+      page: 1,
+      rowsPerPage: 5
     }
   },
 
   computed: {
-    jobData () {
-      const arr = []
-      for (let id in this.jobs) {
-        arr.push(this.jobs[id])
-      }
-      return arr
+    offset () {
+      return (this.page - 1) * this.rowsPerPage
     },
-    formTitle () {
-      return this.actionType === 'new' ? 'New Job' : 'Edit Job'
+    displayMore () {
+      return this.allJobs.length < this.jobCount
+    }
+  },
+
+  apollo: {
+    jobs: {
+      query: gql`query currentJobs($offset: Int!, $limit: Int!, $ignore: [Int!]) {
+        jobs(where: {id: {_nin: $ignore}},
+          order_by: {name: asc, points: asc},
+          limit: $limit,
+          offset: $offset) {
+          id
+          name
+          points
+        }
+      }`,
+      variables () {
+        return {
+          ignore: this.ignoreJobs,
+          offset: this.offset,
+          limit: this.rowsPerPage
+        }
+      }
+    },
+    jobCount: {
+      query: gql`query jobCount {
+        jobs_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }`,
+      update (data) {
+        return data.jobs_aggregate.aggregate.count
+      }
     }
   },
 
   filters: {
     prettyPoints (value) {
-      if (value === 0) {
-        return '0'
-      }
-      const num = parseInt(value)
-      const half = num / 2
-      return half.toFixed(1)
+      const plural = value > 2 ? 's' : ''
+      return (value * 0.5).toFixed(1) + ' point' + plural
     }
   },
 
   watch: {
-    dialog (val) {
-      val || this.close()
+    jobs (jobs) {
+      jobs.forEach(job => {
+        if (this.allJobs.every((existing) => job.id !== existing.id)) {
+          this.allJobs.push(Object.assign({}, job))
+        }
+      })
     }
   },
 
   methods: {
-    newItem (open) {
-      this.actionType = 'new'
-      this.editedItem = Object.assign({}, this.blankItem)
-      if (open) {
-        this.dialog = true
-      }
+    moreJobs () {
+      this.page++
     },
 
-    editItem (item) {
-      this.actionType = 'edit'
-      this.editedItem = item
-      this.dialog = true
+    addJob (added) {
+      this.ignoreJobs.push(added.id)
+      this.allJobs.push(added)
+      this.jobCount++
     },
 
-    close () {
-      this.dialog = false
-      setTimeout(() => {
-        this.newItem()
-      }, 300)
+    updateJob (updated) {
+      const job = this.allJobs.find(job => job.id === updated.id)
+      Object.assign(job, updated)
     },
 
-    prepareItem () {
-      return this.editedItem
+    openModal (props) {
+      this.$modal.open({
+        parent: this,
+        component: EditJobModal,
+        hasModalCard: true,
+        props: props
+      })
     },
 
-    save () {
-      const method = this.actionType === 'new' ? 'post' : 'patch'
-      this.$store.dispatch('jv/' + method, this.prepareItem())
-      this.close()
+    newModal () {
+      this.openModal({
+        title: 'New Job',
+        item: {
+          name: '',
+          points: 0
+        }
+      })
+    },
+
+    editModal (item) {
+      this.openModal({
+        title: 'Edit Job',
+        item: item
+      })
     }
   }
 }
 </script>
+
+<style scoped>
+.row:hover {
+  background: hsl(0, 0%, 96%);
+  cursor: pointer;
+}
+.content {
+  margin-top: 1em;
+}
+</style>

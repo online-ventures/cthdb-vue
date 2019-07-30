@@ -1,38 +1,55 @@
 <template lang="pug">
-  v-layout
-    v-flex(xs12 sm6 offset-sm3)
-      v-container(fluid grid-list-md)
-        v-layout(row wrap)
-          v-flex(xs12 md6 xl4 v-for="stat in stats" :key="stat.name")
-            v-card(tile)
-              v-card-text(class="text-xs-center")
-                h2(class="display-3") {{ stat.value }}
-                p(class="subheading") {{ stat.subtitle }}
+div
+  div(class="columns" v-for="row in stats")
+    div(class="column is-one-half-desktop" v-for="stat in row" :key="stat.id")
+      div(class="box")
+        p(class="title is-2 has-text-centered") {{ stat.value }}
+        p(class="subtitle is-4 has-text-centered") {{ stat.subtitle }}
 </template>
 
 <script>
-import dataMixin from '../mixins/dataMixin'
+import gql from 'graphql-tag'
 
 export default {
-  mixins: [dataMixin],
   data () {
-    return {}
+    return {
+      jobs_aggregate: { aggregate: { count: '-' } },
+      shows_aggregate: { aggregate: { count: '-' } }
+    }
   },
   computed: {
     stats () {
       return [
-        {
-          id: 'show-count',
-          subtitle: 'Total shows',
-          value: Object.keys(this.shows).length
-        },
-        {
-          id: 'job-count',
-          subtitle: 'Total jobs',
-          value: Object.keys(this.jobs).length
-        }
+        [
+          {
+            id: 'show-count',
+            subtitle: 'Total shows',
+            value: this.shows_aggregate.aggregate.count
+          },
+          {
+            id: 'job-count',
+            subtitle: 'Total jobs',
+            value: this.jobs_aggregate.aggregate.count
+          }
+        ]
       ]
     }
+  },
+  apollo: {
+    jobs_aggregate: gql`query jobCount {
+      jobs_aggregate {
+        aggregate {
+          count
+        }
+      }
+    }`,
+    shows_aggregate: gql`query showCount {
+      shows_aggregate {
+        aggregate {
+          count
+        }
+      }
+    }`
   }
 }
 </script>

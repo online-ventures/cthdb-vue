@@ -1,88 +1,52 @@
 <template lang="pug">
 div
-  v-toolbar(flat color="white")
-    v-toolbar-title Show Listings
-    v-spacer
-
-    v-dialog(v-model="dialog" max-width="550px")
-      template(v-slot:activator="{ on }")
-        v-btn(color="primary" dark class="mb-2" @click="newItem(true)") New Item
-
-      v-card
-        v-card-title
-          span(class="headline") {{ formTitle }}
-        v-card-text
-          v-container(grid-list-md)
-            v-layout
-              v-flex(xs12)
-                v-text-field(v-model="editedItem.name" label="Name")
-            v-layout
-              v-flex(xs12 md6 align-center)
-                v-select(:items="months" v-model="editedItem.month" label="Month")
-              v-flex(xs12 md6 align-center)
-                v-select(:items="years" v-model="editedItem.year" label="Year")
-        v-card-actions
-          v-spacer
-          v-btn(color="blue darken-1" flat @click="close") Cancel
-          v-btn(color="blue darken-1" flat @click="save") Save
-
-  v-data-table(:items="showData" :headers="headers" item-key="id" :rows-per-page-items="rowsPerPage" :pagination.sync="pagination")
-    template(v-slot:items="props")
-      tr(@click='editItem(props.item)')
-        td {{ props.item.name }}
-        td {{ props.item.occurred_at | prettyMonth }}
+  section(class="hero is-primary")
+    div(class="hero-body")
+      div(class="container")
+        p(class="title") Show Listings
+        p(class="subtitle") View and manage shows
+  section(class="content")
+    div(class="container")
+      list-row(v-for="show in allShows"
+        :key="show.id"
+        :title="show.name"
+        :subtitle="show.occurred_at | prettyMonth"
+        icon="calendar-week"
+        :item="show"
+        :onClick="editModal")
+      div(class="buttons")
+        b-button(@click="moreShows" v-if="displayMore") See more
+        b-button(type="is-primary" @click="newModal" icon-left="plus") Add show
 </template>
 
 <script>
-import dataMixin from '../mixins/dataMixin'
+import gql from 'graphql-tag'
+import ListRow from '@/components/ListRow'
+import EditShowModal from '@/components/modal/EditShowModal'
 
 export default {
-  mixins: [dataMixin],
+  components: {
+    ListRow,
+    EditShowModal
+  },
 
   data () {
     return {
-      dialog: false,
-      actionType: 'new',
-      headers: [
-        { text: 'Name', value: 'name' },
-        { text: 'Happened', value: 'occurred_at' }
-      ],
-      rowsPerPage: [10, 25, 50],
-      pagination: {
-        descending: true,
-        sortBy: 'occurred_at'
-      },
-      editedItem: {},
-      blankItem: {
-        _jv: { type: 'shows' }
-      },
-      months: [
-        { text: 'January', value: '01' },
-        { text: 'February', value: '02' },
-        { text: 'March', value: '03' },
-        { text: 'April', value: '04' },
-        { text: 'May', value: '05' },
-        { text: 'June', value: '06' },
-        { text: 'July', value: '07' },
-        { text: 'August', value: '08' },
-        { text: 'September', value: '09' },
-        { text: 'October', value: '10' },
-        { text: 'November', value: '11' },
-        { text: 'December', value: '12' }
-      ]
+      shows: [],
+      showCount: 0,
+      allShows: [],
+      ignoreShows: [],
+      page: 1,
+      rowsPerPage: 5
     }
   },
 
   computed: {
-    showData () {
-      const arr = []
-      for (let id in this.shows) {
-        arr.push(this.shows[id])
-      }
-      return arr
-    },
-    formTitle () {
-      return this.actionType === 'new' ? 'New Show' : 'Edit Show'
+    today () {
+      const now = new Date()
+      const month = now.getMonth() + 1
+      const mm = (month > 9 ? '' : '0') + month
+      return [now.getFullYear(), mm, '01'].join('-')
     },
     years () {
       const yrs = []
@@ -90,6 +54,46 @@ export default {
         yrs.push({ text: year.toString(), value: year.toString() })
       }
       return yrs
+    },
+    offset () {
+      return (this.page - 1) * this.rowsPerPage
+    },
+    displayMore () {
+      return this.allShows.length < this.showCount
+    }
+  },
+
+  apollo: {
+    shows: {
+      query: gql`query currentShows($offset: Int!, $limit: Int!, $ignore: [Int!]) {
+        shows(where: {id: {_nin: $ignore}},
+          order_by: {occurred_at: desc, name: asc},
+          limit: $limit,
+          offset: $offset) {
+          id
+          name
+          occurred_at
+        }
+      }`,
+      variables () {
+        return {
+          ignore: this.ignoreShows,
+          offset: this.offset,
+          limit: this.rowsPerPage
+        }
+      }
+    },
+    showCount: {
+      query: gql`query showCount {
+        shows_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }`,
+      update (data) {
+        return data.shows_aggregate.aggregate.count
+      }
     }
   },
 
@@ -102,47 +106,66 @@ export default {
   },
 
   watch: {
-    dialog (val) {
-      val || this.close()
+    shows (shows) {
+      shows.forEach(show => {
+        if (this.allShows.every((existing) => show.id !== existing.id)) {
+          this.allShows.push(Object.assign({}, show))
+        }
+      })
     }
   },
 
   methods: {
-    newItem (open) {
-      this.actionType = 'new'
-      this.editedItem = Object.assign({}, this.blankItem)
-      if (open) {
-        this.dialog = true
-      }
+    moreShows () {
+      this.page++
     },
 
-    editItem (item) {
-      this.actionType = 'edit'
-      this.editedItem = item
-      const date = this.editedItem.occurred_at.split('-')
-      this.editedItem.year = date[0]
-      this.editedItem.month = date[1]
-      this.dialog = true
+    addShow (added) {
+      this.ignoreShows.push(added.id)
+      this.allShows.push(added)
+      this.showCount++
     },
 
-    close () {
-      this.dialog = false
-      setTimeout(() => {
-        this.newItem()
-      }, 300)
+    updateShow (updated) {
+      const show = this.allShows.find(show => show.id === updated.id)
+      Object.assign(show, updated)
     },
 
-    prepareItem () {
-      const { year, month } = this.editedItem
-      this.editedItem.occurred_at = year + '-' + month + '-01'
-      return this.editedItem
+    openModal (props) {
+      this.$modal.open({
+        parent: this,
+        component: EditShowModal,
+        hasModalCard: true,
+        props: props
+      })
     },
 
-    save () {
-      const method = this.actionType === 'new' ? 'post' : 'patch'
-      this.$store.dispatch('jv/' + method, this.prepareItem())
-      this.close()
+    newModal () {
+      this.openModal({
+        title: 'New Show',
+        item: {
+          name: '',
+          occurred_at: this.today
+        }
+      })
+    },
+
+    editModal (item) {
+      this.openModal({
+        title: 'Edit Show',
+        item: item
+      })
     }
   }
 }
 </script>
+
+<style scoped>
+.row:hover {
+  background: hsl(0, 0%, 96%);
+  cursor: pointer;
+}
+.content {
+  margin-top: 1em;
+}
+</style>

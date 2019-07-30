@@ -1,19 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
-import { jsonapiModule } from 'jsonapi-vuex'
+import Auth from './modules/auth'
 
 Vue.use(Vuex)
 
-const api = axios.create({
-  baseURL: process.env.VUE_APP_API_URL,
-  headers: {
-    'Content-Type': 'application/vnd.api+json'
-  }
-})
-
-export default () => new Vuex.Store({
+export default new Vuex.Store({
   modules: {
-    jv: jsonapiModule(api)
+    auth: Auth
+  },
+  state: {
+  },
+  mutations: {
+  },
+  actions: {
+
   }
 })

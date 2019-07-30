@@ -1,35 +1,37 @@
 <template lang="pug">
-  v-app
-    v-toolbar(app)
-      v-toolbar-title(class="headline text-uppercase")
-        span CTH
-        span(class="font-weight-light")  Stars
-      v-spacer
-      v-toolbar-items
-        v-btn(:to="{ path: '/' }" flat) Home
-        v-btn(:to="{ name: 'show-list' }" flat) Shows
-        v-btn(:to="{ name: 'job-list' }" flat) Jobs
-    v-content
-      v-container(align-center)
-        transition(:name="viewTransition" mode="out-in")
-          router-view
+div
+  nav-bar(:links='topNavLinks')
+  div(class="view-container")
+    transition(:name='viewTransition')
+      router-view
 </template>
 
 <script>
+import NavBar from './components/NavBar'
+
 export default {
   name: 'App',
   components: {
+    NavBar
   },
   data () {
     return {
-      viewTransition: ''
+      viewTransition: '',
+      topNavLinks: [
+        { text: 'Home', path: '/' },
+        { text: 'Shows', path: '/shows' },
+        { text: 'Jobs', path: '/jobs' },
+        { text: 'Volunteers', path: '/volunteers' },
+        { text: 'Profile', path: '/profile' }
+      ]
     }
+  },
+  methods: {
   },
   watch: {
     '$route' (to, from) {
-      const paths = ['/', '/shows', '/jobs']
-      const fromIndex = paths.findIndex(path => path === from.path)
-      const toIndex = paths.findIndex(path => path === to.path)
+      const fromIndex = this.topNavLinks.findIndex(link => link.path === from.path)
+      const toIndex = this.topNavLinks.findIndex(link => link.path === to.path)
       const direction = fromIndex < toIndex ? 'right' : 'left'
       this.viewTransition = 'slide-' + direction
     }
@@ -38,19 +40,26 @@ export default {
 </script>
 
 <style>
+.view-container {
+  position: relative;
+}
 .slide-left-enter-active,
 .slide-left-leave-active,
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition: all .3s ease;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 .slide-left-enter, .slide-left-leave-to, .slide-right-enter, .slide-right-leave-to {
   opacity: 0;
 }
 .slide-right-enter, .slide-left-leave-to {
-  transform: translateX(60px);
+  transform: translateX(100%);
 }
 .slide-left-enter, .slide-right-leave-to {
-  transform: translateX(-60px);
+  transform: translateX(-100%);
 }
 </style>

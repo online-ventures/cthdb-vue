@@ -1,11 +1,22 @@
+// Core
 import Vue from 'vue'
-import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store/store'
 import './registerServiceWorker'
+
+// Helpers
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
+
+// Apollo
+import apolloProvider from '@/apollo'
+
+// Visuals
+import Buefy from 'buefy'
+import 'buefy/dist/buefy.css'
+import FontAwesomeIcon from '@/icons'
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 const requireComponent = require.context(
   // The relative path of the components folder
@@ -43,8 +54,11 @@ requireComponent.keys().forEach(fileName => {
 
 Vue.config.productionTip = false
 
+Vue.use(Buefy, { defaultIconPack: 'fas', defaultIconComponent: FontAwesomeIcon })
+
 new Vue({
   router,
   store,
+  apolloProvider,
   render: h => h(App)
 }).$mount('#app')
