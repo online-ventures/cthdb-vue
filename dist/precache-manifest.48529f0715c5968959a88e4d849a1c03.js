@@ -1,7 +1,7 @@
 self.__precacheManifest = [
   {
-    "revision": "e9bb1d8ddc7cdc0ef633a4826c7ca0bb",
-    "url": "/favicon-57.png"
+    "revision": "7dcff3770ef4389c37c38ae2516606bc",
+    "url": "/favicon-310.png"
   },
   {
     "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
@@ -16,12 +16,16 @@ self.__precacheManifest = [
     "url": "/assets/css/chunk-vendors.f6f60332.css"
   },
   {
-    "revision": "1a26212c3b43b644b143ba05980a1f9d",
+    "revision": "1b910109b6d0d125be072aa187ccc9df",
     "url": "/index.html"
   },
   {
     "revision": "8221dfb6a367ec8cb84eb9aabe421ba6",
     "url": "/browserconfig.xml"
+  },
+  {
+    "revision": "7f03f28b342912faf296ec09d6592709",
+    "url": "/favicon-120.png"
   },
   {
     "revision": "c299fcfcff1720c8a914b75646144f50",
@@ -30,10 +34,6 @@ self.__precacheManifest = [
   {
     "revision": "d987956a3e30d23025c7844abc9bcf5c",
     "url": "/favicon-144.png"
-  },
-  {
-    "revision": "7f03f28b342912faf296ec09d6592709",
-    "url": "/favicon-120.png"
   },
   {
     "revision": "f3e6441a25cd62c49e82452bde7d5509",
@@ -60,16 +60,16 @@ self.__precacheManifest = [
     "url": "/favicon-192.png"
   },
   {
-    "revision": "7dcff3770ef4389c37c38ae2516606bc",
-    "url": "/favicon-310.png"
-  },
-  {
     "revision": "e68a34e0c037a6ce055e488e55ba2862",
     "url": "/favicon-32.png"
   },
   {
-    "revision": "262dce0e6f5ed7fff644",
-    "url": "/assets/js/app.43cfe154.js"
+    "revision": "e9bb1d8ddc7cdc0ef633a4826c7ca0bb",
+    "url": "/favicon-57.png"
+  },
+  {
+    "revision": "c0119da90b2d69aec0fd",
+    "url": "/assets/js/app.be86dbce.js"
   },
   {
     "revision": "49caec845ffaa91c1165",
@@ -116,12 +116,12 @@ self.__precacheManifest = [
     "url": "/images/icons/icon-152x152.png"
   },
   {
-    "revision": "8aee9164a41b526d310421566fdd14b8",
-    "url": "/images/icons/icon-192x192.png"
-  },
-  {
     "revision": "aa9f042312db8c8bdfdd7c2b4b458fab",
     "url": "/images/icons/icon-384x384.png"
+  },
+  {
+    "revision": "8aee9164a41b526d310421566fdd14b8",
+    "url": "/images/icons/icon-192x192.png"
   },
   {
     "revision": "005ba6938b06bc1738a4ccbf2488c0a9",
@@ -136,7 +136,7 @@ self.__precacheManifest = [
     "url": "/images/icons/icon-96x96.png"
   },
   {
-    "revision": "262dce0e6f5ed7fff644",
+    "revision": "c0119da90b2d69aec0fd",
     "url": "/assets/css/app.7b6c08b7.css"
   }
 ];
