@@ -1,0 +1,114 @@
+- args:
+    allowlist: []
+    functions: []
+    query_collections: []
+    query_templates: []
+    remote_schemas: []
+    tables:
+    - array_relationships: []
+      delete_permissions: []
+      event_triggers: []
+      insert_permissions:
+      - comment: null
+        permission:
+          check: {}
+          columns:
+          - id
+          - first_name
+          - last_name
+          - email
+          - phone
+          - street
+          - city
+          set: {}
+        role: user
+      object_relationships: []
+      select_permissions:
+      - comment: null
+        permission:
+          allow_aggregations: true
+          columns:
+          - city
+          - email
+          - first_name
+          - id
+          - last_name
+          - phone
+          - street
+          filter: {}
+        role: user
+      table: volunteers
+      update_permissions:
+      - comment: null
+        permission:
+          columns:
+          - id
+          - first_name
+          - last_name
+          - email
+          - phone
+          - street
+          - city
+          filter: {}
+          set: {}
+        role: user
+    - array_relationships: []
+      delete_permissions: []
+      event_triggers: []
+      insert_permissions: []
+      object_relationships: []
+      select_permissions:
+      - comment: null
+        permission:
+          allow_aggregations: true
+          columns:
+          - id
+          - name
+          - points
+          - created_at
+          filter: {}
+        role: user
+      table: jobs
+      update_permissions: []
+    - array_relationships: []
+      delete_permissions: []
+      event_triggers: []
+      insert_permissions:
+      - comment: null
+        permission:
+          check: {}
+          columns:
+          - id
+          - name
+          - occurred_at
+          - created_at
+          - updated_at
+          set: {}
+        role: user
+      object_relationships: []
+      select_permissions:
+      - comment: null
+        permission:
+          allow_aggregations: true
+          columns:
+          - id
+          - name
+          - occurred_at
+          - created_at
+          - updated_at
+          filter: {}
+        role: user
+      table: shows
+      update_permissions:
+      - comment: null
+        permission:
+          columns:
+          - id
+          - updated_at
+          - name
+          - occurred_at
+          - created_at
+          filter: {}
+          set: {}
+        role: user
+  type: replace_metadata
