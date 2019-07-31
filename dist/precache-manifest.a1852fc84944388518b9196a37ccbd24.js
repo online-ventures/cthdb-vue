@@ -28,12 +28,12 @@ self.__precacheManifest = [
     "url": "/favicon-114.png"
   },
   {
-    "revision": "7f03f28b342912faf296ec09d6592709",
-    "url": "/favicon-120.png"
-  },
-  {
     "revision": "d987956a3e30d23025c7844abc9bcf5c",
     "url": "/favicon-144.png"
+  },
+  {
+    "revision": "7f03f28b342912faf296ec09d6592709",
+    "url": "/favicon-120.png"
   },
   {
     "revision": "f3e6441a25cd62c49e82452bde7d5509",
@@ -100,12 +100,12 @@ self.__precacheManifest = [
     "url": "/faviconit-instructions.txt"
   },
   {
-    "revision": "92e938d9cb850c0c7f6cee940266ab6c",
-    "url": "/feather-sprite.svg"
-  },
-  {
     "revision": "9915fd87ad2f2ce7d0a49ac2d0bc65c1",
     "url": "/images/icons/icon-128x128.png"
+  },
+  {
+    "revision": "92e938d9cb850c0c7f6cee940266ab6c",
+    "url": "/feather-sprite.svg"
   },
   {
     "revision": "215e0161486c1f04acab54d3746aae49",
