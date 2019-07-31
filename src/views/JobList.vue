@@ -32,6 +32,12 @@ export default {
     EditJobModal
   },
 
+  created () {
+    // Refetch on creation to invalidate a potentially outdated cache
+    this.$apollo.queries.jobs.refetch()
+    this.$apollo.queries.jobCount.refetch()
+  },
+
   data () {
     return {
       jobs: [],

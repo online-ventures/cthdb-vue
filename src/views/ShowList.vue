@@ -30,6 +30,12 @@ export default {
     EditShowModal
   },
 
+  created () {
+    // Refetch on creation to invalidate a potentially outdated cache
+    this.$apollo.queries.shows.refetch()
+    this.$apollo.queries.showCount.refetch()
+  },
+
   data () {
     return {
       shows: [],
