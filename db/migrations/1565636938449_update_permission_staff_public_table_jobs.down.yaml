@@ -1,0 +1,6 @@
+- args:
+    role: staff
+    table:
+      name: jobs
+      schema: public
+  type: drop_update_permission

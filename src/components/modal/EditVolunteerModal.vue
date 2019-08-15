@@ -29,9 +29,10 @@ form(ref="volunteerForm" @submit.prevent="saveRecord()")
           b-field(label="City")
             b-input(v-model="record.city")
     footer(class="modal-card-foot")
-      button(class="button" type="button" @click.prevent="$parent.close()") Close
-      button(:class="{ 'is-loading': isSaving }"
-        class="button is-primary"
+      b-button(@click.prevent="$parent.close()") Cancel
+      b-button(:class="{ 'is-loading': isSaving }"
+        type="is-primary"
+        icon-left="save"
         @click.prevent="saveRecord()") Save
 </template>
 
@@ -140,8 +141,8 @@ export default {
         variables: this.record,
         loadingKey: 'savingCounter'
       }).then((result) => {
-        const newRecord = result.data.insert_volunteers.returning[0]
-        this.$parent.$parent.addRecord(newRecord)
+        const volunteer = result.data.insert_volunteers.returning[0]
+        this.$parent.$parent.onVolunteerCreated(volunteer)
       })
       this.$parent.close()
     },
@@ -171,7 +172,7 @@ export default {
         variables: this.record,
         loadingKey: 'savingCounter'
       })
-      this.$parent.$parent.updateRecord(this.record)
+      this.$parent.$parent.onVolunteerUpdated(this.record)
       this.$parent.close()
     }
   }

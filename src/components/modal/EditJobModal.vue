@@ -1,11 +1,11 @@
 <template lang="pug">
-form
+form(ref="jobForm")
   div(class="modal-card")
     header(class="modal-card-head")
       p(class="modal-card-title") {{ title }}
     section(class="modal-card-body")
       b-field(label="Name")
-        b-input(v-model="job.name")
+        b-input(v-model="job.name" required)
       b-field(label="Points")
       b-field
         b-radio-button(v-for="option in pointOptions"
@@ -14,8 +14,11 @@ form
           :key="option.value")
             span {{ option.text }}
     footer(class="modal-card-foot")
-      button(class="button" type="button" @click.prevent="$parent.close()") Close
-      button(:class="{ 'is-loading': isSaving }" class="button is-primary" @click.prevent="saveJob()") Save
+      b-button(@click.prevent="$parent.close()") Cancel
+      b-button(:class="{ 'is-loading': isSaving }"
+        type="is-primary"
+        icon-left="save"
+        @click.prevent="saveRecord()") Save
 </template>
 
 <script>
@@ -68,13 +71,24 @@ export default {
   },
 
   methods: {
-    async saveJob () {
-      if (this.job.id) {
+    async saveRecord () {
+      if (!this.validateRecord()) {
+        return
+      } else if (this.job.id) {
         await this.updateJob()
       } else {
         await this.createJob()
       }
       this.$parent.close()
+    },
+
+    validateRecord () {
+      if (this.$refs.jobForm.checkValidity()) {
+        return true
+      } else {
+        this.$refs.jobForm.reportValidity()
+        return false
+      }
     },
 
     async createJob () {

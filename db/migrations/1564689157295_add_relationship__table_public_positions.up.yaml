@@ -1,0 +1,8 @@
+- args:
+    name: job
+    table:
+      name: positions
+      schema: public
+    using:
+      foreign_key_constraint_on: job_id
+  type: create_object_relationship

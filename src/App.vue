@@ -18,7 +18,6 @@ export default {
     return {
       viewTransition: '',
       topNavLinks: [
-        { text: 'Home', path: '/' },
         { text: 'Shows', path: '/shows' },
         { text: 'Jobs', path: '/jobs' },
         { text: 'Volunteers', path: '/volunteers' },
@@ -39,7 +38,12 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import "src/scss/_variables";
+@import "src/scss/layout";
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
+
 .view-container {
   position: relative;
 }

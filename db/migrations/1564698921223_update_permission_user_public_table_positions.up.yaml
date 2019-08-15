@@ -1,0 +1,16 @@
+- args:
+    permission:
+      allow_aggregations: true
+      columns:
+      - id
+      - show_id
+      - volunteer_id
+      - job_id
+      - hours
+      filter: {}
+      limit: null
+    role: user
+    table:
+      name: positions
+      schema: public
+  type: create_select_permission

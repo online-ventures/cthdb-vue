@@ -1,0 +1,10 @@
+@include until($desktop) {
+  .content {
+    padding: $block-spacing;
+  }
+}
+@include desktop {
+  .content {
+    padding-top: $block-spacing;
+  }
+}

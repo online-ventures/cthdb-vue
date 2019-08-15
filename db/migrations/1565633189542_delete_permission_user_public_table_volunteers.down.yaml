@@ -1,0 +1,20 @@
+- args:
+    permission:
+      check: {}
+      columns:
+      - id
+      - first_name
+      - last_name
+      - email
+      - phone
+      - street
+      - city
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: volunteers
+      schema: public
+  type: create_insert_permission

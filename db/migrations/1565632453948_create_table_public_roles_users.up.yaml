@@ -1,0 +1,11 @@
+- args:
+    sql: CREATE TABLE "public"."roles_users"("role_id" integer NOT NULL, "user_id"
+      integer NOT NULL, PRIMARY KEY ("role_id","user_id") , FOREIGN KEY ("user_id")
+      REFERENCES "public"."users"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN
+      KEY ("role_id") REFERENCES "public"."roles"("id") ON UPDATE restrict ON DELETE
+      restrict);
+  type: run_sql
+- args:
+    name: roles_users
+    schema: public
+  type: add_existing_table_or_view

@@ -14,7 +14,6 @@ import apolloProvider from '@/apollo'
 
 // Visuals
 import Buefy from 'buefy'
-import 'buefy/dist/buefy.css'
 import FontAwesomeIcon from '@/icons'
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
@@ -54,7 +53,11 @@ requireComponent.keys().forEach(fileName => {
 
 Vue.config.productionTip = false
 
-Vue.use(Buefy, { defaultIconPack: 'fas', defaultIconComponent: FontAwesomeIcon })
+Vue.use(Buefy, {
+  defaultIconPack: 'fas',
+  defaultIconComponent: FontAwesomeIcon,
+  defaultToastDuration: 4000
+})
 
 new Vue({
   router,

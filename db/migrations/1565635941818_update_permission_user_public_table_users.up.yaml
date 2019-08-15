@@ -1,0 +1,23 @@
+- args:
+    permission:
+      allow_upsert: true
+      check: {}
+      columns:
+      - id
+      - auth_id
+      - email
+      - name
+      - nickname
+      - picture
+      - last_login_at
+      - created_at
+      - updated_at
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: users
+      schema: public
+  type: create_insert_permission

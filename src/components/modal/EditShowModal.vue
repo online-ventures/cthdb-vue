@@ -1,23 +1,27 @@
 <template lang="pug">
-form
+form(ref="showForm")
   div(class="modal-card")
     header(class="modal-card-head")
       p(class="modal-card-title") {{ title }}
     section(class="modal-card-body")
       b-field(label="Name")
-        b-input(v-model="show.name")
+        b-input(v-model="show.name" required)
       b-field(label="Month")
         div(class="buttons")
           b-radio-button(v-for="monthOption in months"
             v-model="month"
             :native-value="monthOption.value"
-            :key="monthOption.value")
+            :key="monthOption.value"
+            required)
               span {{ monthOption.text }}
       b-field(label="Year")
-        b-input(type="number" v-model="year")
+        b-input(type="number" v-model="year" required)
     footer(class="modal-card-foot")
-      button(class="button" type="button" @click.prevent="$parent.close()") Close
-      button(v-bind:class="{ 'is-loading': isSaving }" class="button is-primary" @click.prevent="saveShow()") Save
+      b-button(@click.prevent="$parent.close()") Cancel
+      b-button(:class="{ 'is-loading': isSaving }"
+        type="is-primary"
+        icon-left="save"
+        @click.prevent="saveShow()") Save
 </template>
 
 <script>
@@ -83,26 +87,24 @@ export default {
   },
 
   methods: {
-    close () {
-      this.dialog = false
-      setTimeout(() => {
-        this.newItem()
-      }, 300)
-    },
-
-    prepareItem () {
-      const { year, month } = this.show
-      this.editedItem.occurred_at = year + '-' + month + '-01'
-      return this.editedItem
-    },
-
     async saveShow () {
-      if (this.show.id) {
+      if (!this.validateRecord()) {
+        return
+      } else if (this.show.id) {
         await this.updateShow()
       } else {
         await this.createShow()
       }
       this.$parent.close()
+    },
+
+    validateRecord () {
+      if (this.$refs.showForm.checkValidity()) {
+        return true
+      } else {
+        this.$refs.showForm.reportValidity()
+        return false
+      }
     },
 
     async createShow () {
@@ -129,20 +131,22 @@ export default {
     },
 
     async updateShow () {
+      const show = {
+        id: this.show.id,
+        name: this.show.name,
+        occurred_at: this.newOccurredAt
+      }
       await this.$apollo.mutate({
         mutation: gql`mutation updateShow($id:Int!, $name:String!, $occurred_at:date!) {
           update_shows(where: {id: {_eq: $id}}, _set: {name: $name, occurred_at: $occurred_at}) {
             affected_rows
           }
         }`,
-        variables: {
-          id: this.show.id,
-          name: this.show.name,
-          occurred_at: this.newOccurredAt
-        },
+        variables: show,
         loadingKey: 'savingCounter'
+      }).then((result) => {
+        this.$parent.$parent.onShowUpdated(show)
       })
-      this.$parent.$parent.updateShow(this.newShow)
       this.$parent.close()
     }
   }

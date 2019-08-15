@@ -1,0 +1,18 @@
+- args:
+    permission:
+      check: {}
+      columns:
+      - hours
+      - id
+      - job_id
+      - show_id
+      - volunteer_id
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: positions
+      schema: public
+  type: create_insert_permission

@@ -1,0 +1,19 @@
+- args:
+    permission:
+      allow_upsert: true
+      check: {}
+      columns:
+      - id
+      - show_id
+      - volunteer_id
+      - job_id
+      - hours
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: staff
+    table:
+      name: positions
+      schema: public
+  type: create_insert_permission

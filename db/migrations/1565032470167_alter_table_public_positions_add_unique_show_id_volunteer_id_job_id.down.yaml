@@ -1,0 +1,7 @@
+- args:
+    sql: alter table "public"."positions" drop constraint "positions_show_id_volunteer_id_job_id_key";
+  type: run_sql
+- args:
+    sql: alter table "public"."positions" add constraint "positions_show_id_volunteer_id_job_id_key"
+      unique ("show_id", "volunteer_id", "job_id");
+  type: run_sql

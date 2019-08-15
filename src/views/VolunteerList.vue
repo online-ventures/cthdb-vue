@@ -10,16 +10,16 @@ div
       div(class="container")
         form(class="search-form" @submit.prevent)
           b-field
-            b-input(icon="search" placeholder="search" type="search" v-model="search" @keyup.enter.native="performSearch")
+            b-input(icon="search" placeholder="search" type="search" v-model="search")
         list-row(v-for="volunteer in volunteerList"
           :key="volunteer.id"
           :title="volunteer | name"
-          subtitle=""
-          icon=""
+          :subtitle="volunteer | showCount"
+          icon="ticket-alt"
           :item="volunteer"
-          :onClick="editModal")
+          v-on:action="editModal")
         div(class="buttons")
-          b-button(@click="moreVolunteers" v-if="displayMore") See more
+          b-button(@click="moreVolunteers" v-if="displayMore") See more ({{ remainingCount }})
           b-button(type="is-primary" @click="newModal" icon-left="plus") Add volunteer
 </template>
 
@@ -44,6 +44,7 @@ export default {
     return {
       volunteers: [],
       volunteerCount: 0,
+      createdVolunteers: 0,
       allVolunteers: [],
       ignoreVolunteers: [],
       search: '',
@@ -64,7 +65,8 @@ export default {
       return this.search !== ''
     },
     displayMore () {
-      return !this.searching && this.allVolunteers.length < this.volunteerCount
+      return !this.searching &&
+        this.allVolunteers.length < (this.volunteerCount + this.createdVolunteers)
     },
     names () {
       return this.search.split(/\s+/)
@@ -77,6 +79,9 @@ export default {
     },
     volunteerList () {
       return this.searching ? this.volunteers : this.allVolunteers
+    },
+    remainingCount () {
+      return this.volunteerCount + this.createdVolunteers - this.allVolunteers.length
     }
   },
 
@@ -106,6 +111,11 @@ export default {
               phone
               street
               city
+              positions_aggregate(distinct_on: show_id) {
+                aggregate {
+                  count
+                }
+              }
             }
       }`,
       variables () {
@@ -135,12 +145,16 @@ export default {
   filters: {
     name (person) {
       return person.first_name + ' ' + person.last_name
+    },
+    showCount (person) {
+      const positions = person.positions_aggregate
+      const count = (positions && positions.aggregate.count) || 0
+      return count + ' show' + (count === 1 ? '' : 's')
     }
   },
 
   watch: {
     volunteers (volunteers) {
-      console.log(volunteers)
       if (!this.searching) {
         volunteers.forEach(person => {
           if (this.allVolunteers.every((existing) => person.id !== existing.id)) {
@@ -156,19 +170,19 @@ export default {
       this.page++
     },
 
-    addRecord (added) {
+    onVolunteerCreated (added) {
       this.ignoreVolunteers.push(added.id)
       this.allVolunteers.push(added)
-      this.volunteerCount++
+      this.createdVolunteers++
     },
 
-    updateRecord (updated) {
+    onVolunteerUpdated (updated) {
       const volunteer = this.allVolunteers.find(volunteer => volunteer.id === updated.id)
       Object.assign(volunteer, updated)
     },
 
     openModal (props) {
-      this.$modal.open({
+      this.$buefy.modal.open({
         parent: this,
         component: EditVolunteerModal,
         hasModalCard: true,
@@ -179,10 +193,7 @@ export default {
     newModal () {
       this.openModal({
         title: 'New Volunteer',
-        item: {
-          name: '',
-          points: 0
-        }
+        item: {}
       })
     },
 
@@ -191,24 +202,13 @@ export default {
         title: 'Edit Volunteer',
         item: item
       })
-    },
-
-    performSearch () {
     }
   }
 }
 </script>
 
-<style scoped>
-.row:hover {
-  background: hsl(0, 0%, 96%);
-  cursor: pointer;
-}
-.content {
-  margin-top: 2em;
-}
+<style scoped lang="scss">
 .search-form {
-  margin-top: 2em;
-  margin-bottom: 1em;
+  margin-bottom: 1.5rem;
 }
 </style>

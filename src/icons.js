@@ -7,6 +7,14 @@ import {
   faCaretDown,
   faCoins,
   faExclamationCircle,
+  faUserCheck,
+  faTicketAlt,
+  faUsers,
+  faHammer,
+  faCheckCircle,
+  faClock,
+  faTrash,
+  faSave,
   faSearch
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -19,6 +27,14 @@ library.add(
   faCaretDown,
   faCoins,
   faExclamationCircle,
+  faUserCheck,
+  faTicketAlt,
+  faUsers,
+  faHammer,
+  faCheckCircle,
+  faClock,
+  faTrash,
+  faSave,
   faSearch
 )
 

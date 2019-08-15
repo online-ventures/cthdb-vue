@@ -1,0 +1,18 @@
+- args:
+    permission:
+      columns:
+      - hours
+      - id
+      - job_id
+      - show_id
+      - volunteer_id
+      filter: {}
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: positions
+      schema: public
+  type: create_update_permission

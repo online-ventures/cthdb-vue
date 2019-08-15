@@ -1,0 +1,14 @@
+- args:
+    sql: CREATE TABLE "public"."positions"("id" serial NOT NULL, "show_id" integer
+      NOT NULL, "volunteer_id" integer NOT NULL, "job_id" integer NOT NULL, "hours"
+      integer NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("show_id") REFERENCES "public"."shows"("id")
+      ON UPDATE restrict ON DELETE restrict, FOREIGN KEY ("volunteer_id") REFERENCES
+      "public"."volunteers"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN KEY
+      ("job_id") REFERENCES "public"."jobs"("id") ON UPDATE restrict ON DELETE restrict,
+      UNIQUE ("show_id", "volunteer_id", "job_id")); COMMENT ON TABLE "public"."positions"
+      IS 'Associates a volunteer performing a given job with a particular show';
+  type: run_sql
+- args:
+    name: positions
+    schema: public
+  type: add_existing_table_or_view

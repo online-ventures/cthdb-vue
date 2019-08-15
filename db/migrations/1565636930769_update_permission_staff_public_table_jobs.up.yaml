@@ -1,0 +1,15 @@
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - id
+      - points
+      - name
+      - created_at
+      filter: {}
+      limit: null
+    role: staff
+    table:
+      name: jobs
+      schema: public
+  type: create_select_permission

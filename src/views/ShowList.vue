@@ -13,7 +13,7 @@ div
         :subtitle="show.occurred_at | prettyMonth"
         icon="calendar-week"
         :item="show"
-        :onClick="editModal")
+        v-on:action="manageShow")
       div(class="buttons")
         b-button(@click="moreShows" v-if="displayMore") See more
         b-button(type="is-primary" @click="newModal" icon-left="plus") Add show
@@ -66,6 +66,9 @@ export default {
     },
     displayMore () {
       return this.allShows.length < this.showCount
+    },
+    remainingCount () {
+      return this.showCount - this.allShows.length
     }
   },
 
@@ -138,7 +141,7 @@ export default {
     },
 
     openModal (props) {
-      this.$modal.open({
+      this.$buefy.modal.open({
         parent: this,
         component: EditShowModal,
         hasModalCard: true,
@@ -161,17 +164,14 @@ export default {
         title: 'Edit Show',
         item: item
       })
+    },
+
+    manageShow (item) {
+      this.$router.push({ name: 'show-manage', params: { id: item.id } })
     }
   }
 }
 </script>
 
 <style scoped>
-.row:hover {
-  background: hsl(0, 0%, 96%);
-  cursor: pointer;
-}
-.content {
-  margin-top: 1em;
-}
 </style>

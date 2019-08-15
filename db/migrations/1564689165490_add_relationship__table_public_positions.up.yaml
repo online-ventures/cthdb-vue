@@ -1,0 +1,8 @@
+- args:
+    name: show
+    table:
+      name: positions
+      schema: public
+    using:
+      foreign_key_constraint_on: show_id
+  type: create_object_relationship

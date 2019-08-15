@@ -1,0 +1,18 @@
+- args:
+    permission:
+      columns:
+      - id
+      - updated_at
+      - name
+      - occurred_at
+      - created_at
+      filter: {}
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: shows
+      schema: public
+  type: create_update_permission

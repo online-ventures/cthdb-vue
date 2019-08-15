@@ -1,0 +1,4 @@
+- args:
+    sql: COMMENT ON TABLE "public"."users" IS E'Users created from login profile information
+      from Auth0'
+  type: run_sql

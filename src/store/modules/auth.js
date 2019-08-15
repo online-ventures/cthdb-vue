@@ -63,6 +63,9 @@ const mutations = {
   },
   SET_RENEWING (state, renewing) {
     state.renewing = renewing
+  },
+  SET_USER (state, user) {
+    state.user = user
   }
 }
 
@@ -108,6 +111,10 @@ const actions = {
 
     console.log(auth)
     dispatch('scheduleRenewal')
+  },
+
+  cacheUser ({ commit }, user) {
+    commit('SET_USER', user)
   },
 
   renewTokens ({ state, getters, commit, dispatch }, required = false) {

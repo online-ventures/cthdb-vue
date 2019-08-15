@@ -1,0 +1,6 @@
+- args:
+    role: staff
+    table:
+      name: roles_users
+      schema: public
+  type: drop_select_permission

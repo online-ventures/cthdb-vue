@@ -1,0 +1,6 @@
+- args:
+    relationship: positions
+    table:
+      name: jobs
+      schema: public
+  type: drop_relationship

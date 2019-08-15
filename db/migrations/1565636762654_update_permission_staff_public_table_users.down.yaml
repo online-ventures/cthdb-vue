@@ -1,0 +1,28 @@
+- args:
+    role: staff
+    table:
+      name: users
+      schema: public
+  type: drop_update_permission
+- args:
+    permission:
+      columns:
+      - id
+      - auth_id
+      - email
+      - name
+      - nickname
+      - picture
+      - last_login_at
+      - created_at
+      - updated_at
+      filter: {}
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: staff
+    table:
+      name: users
+      schema: public
+  type: create_update_permission

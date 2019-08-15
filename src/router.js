@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import ShowList from './views/ShowList.vue'
+import ShowManage from './views/ShowManage.vue'
 import JobList from './views/JobList.vue'
 import VolunteerList from './views/VolunteerList.vue'
 import Home from './views/Home.vue'
@@ -23,6 +24,11 @@ export default new Router({
       path: '/shows',
       name: 'show-list',
       component: ShowList
+    },
+    {
+      path: '/shows/:id',
+      name: 'show-manage',
+      component: ShowManage
     },
     {
       path: '/jobs',

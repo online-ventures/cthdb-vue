@@ -1,0 +1,18 @@
+- args:
+    permission:
+      allow_upsert: true
+      check: {}
+      columns:
+      - id
+      - name
+      - points
+      - created_at
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: jobs
+      schema: public
+  type: create_insert_permission

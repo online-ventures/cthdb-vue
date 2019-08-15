@@ -1,0 +1,17 @@
+- args:
+    permission:
+      columns:
+      - id
+      - points
+      - name
+      - created_at
+      filter: {}
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: jobs
+      schema: public
+  type: create_update_permission

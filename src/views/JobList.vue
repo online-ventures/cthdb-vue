@@ -13,11 +13,11 @@ div
           :title="job.name"
           :subtitle="job.points | prettyPoints"
           icon="coins"
-          iconType="is-warning"
+          icon-type="is-warning"
           :item="job"
-          :onClick="editModal")
+          v-on:action="editModal")
         div(class="buttons")
-          b-button(@click="moreJobs" v-if="displayMore") See more
+          b-button(@click="moreJobs" v-if="displayMore") See more ({{ remainingCount }})
           b-button(type="is-primary" @click="newModal" icon-left="plus") Add job
 </template>
 
@@ -55,6 +55,9 @@ export default {
     },
     displayMore () {
       return this.allJobs.length < this.jobCount
+    },
+    remainingCount () {
+      return this.jobCount - this.allJobs.length
     }
   },
 
@@ -126,7 +129,7 @@ export default {
     },
 
     openModal (props) {
-      this.$modal.open({
+      this.$buefy.modal.open({
         parent: this,
         component: EditJobModal,
         hasModalCard: true,
@@ -155,11 +158,4 @@ export default {
 </script>
 
 <style scoped>
-.row:hover {
-  background: hsl(0, 0%, 96%);
-  cursor: pointer;
-}
-.content {
-  margin-top: 1em;
-}
 </style>
