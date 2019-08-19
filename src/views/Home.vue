@@ -1,10 +1,16 @@
 <template lang="pug">
 div
-  div(class="columns" v-for="row in stats")
-    div(class="column is-one-half-desktop" v-for="stat in row" :key="stat.id")
-      div(class="box")
-        p(class="title is-2 has-text-centered") {{ stat.value }}
-        p(class="subtitle is-4 has-text-centered") {{ stat.subtitle }}
+  section(class="hero is-primary")
+    div(class="hero-body")
+      div(class="container")
+        p(class="title") Welcome!
+        p(class="subtitle") Here are some interesting statistics on our numbers to-date
+  section(class="content")
+    nav(class="level is-mobile" v-for="row in stats")
+      div(class="level-item has-text-centered" v-for="stat in row" :key="stat.id")
+        div
+          p(class="heading") {{ stat.subtitle }}
+          p(class="title") {{ stat.value }}
 </template>
 
 <script>
@@ -13,8 +19,10 @@ import gql from 'graphql-tag'
 export default {
   data () {
     return {
-      jobs_aggregate: { aggregate: { count: '-' } },
-      shows_aggregate: { aggregate: { count: '-' } }
+      jobs: null,
+      shows: null,
+      volunteers: null,
+      positions: null
     }
   },
   computed: {
@@ -24,32 +32,76 @@ export default {
           {
             id: 'show-count',
             subtitle: 'Total shows',
-            value: this.shows_aggregate.aggregate.count
+            value: this.shows
           },
           {
             id: 'job-count',
             subtitle: 'Total jobs',
-            value: this.jobs_aggregate.aggregate.count
+            value: this.jobs
+          },
+          {
+            id: 'volunteer-count',
+            subtitle: 'Total volunteers',
+            value: this.volunteers
+          },
+          {
+            id: 'positions-count',
+            subtitle: 'Total positions',
+            value: this.positions
           }
         ]
       ]
     }
   },
   apollo: {
-    jobs_aggregate: gql`query jobCount {
-      jobs_aggregate {
-        aggregate {
-          count
+    jobs: {
+      query: gql`query jobCount {
+        jobs_aggregate {
+          aggregate {
+            count
+          }
         }
+      }`,
+      update (data) {
+        return data.jobs_aggregate.aggregate.count
       }
-    }`,
-    shows_aggregate: gql`query showCount {
-      shows_aggregate {
-        aggregate {
-          count
+    },
+    shows: {
+      query: gql`query showCount {
+        shows_aggregate {
+          aggregate {
+            count
+          }
         }
+      }`,
+      update (data) {
+        return data.shows_aggregate.aggregate.count
       }
-    }`
+    },
+    volunteers: {
+      query: gql`query volunteerCount {
+        volunteers_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }`,
+      update (data) {
+        return data.volunteers_aggregate.aggregate.count
+      }
+    },
+    positions: {
+      query: gql`query positionsCount {
+        positions_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }`,
+      update (data) {
+        return data.positions_aggregate.aggregate.count
+      }
+    }
   }
 }
 </script>
