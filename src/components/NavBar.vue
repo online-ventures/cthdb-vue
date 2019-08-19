@@ -11,9 +11,13 @@ b-navbar
       | {{ link.text }}
   template(slot="end")
     b-navbar-item(tag="div")
-      div(class="buttons")
-        a(class="button is-primary" v-if="!isAuthenticated" @click="login") Login
-        a(class="button" v-if="isAuthenticated" @click="logout") Logout
+      b-dropdown(v-if="isAuthenticated" position="is-bottom-left" class="is-borderless")
+        button(class="button" type="" slot="trigger" class="is-borderless")
+          figure(class="image is-24x24")
+            img(class="is-rounded" :src="user.picture")
+          b-icon(icon="caret-down" size="is-small")
+        b-dropdown-item(custom) {{ user.name }}
+        b-dropdown-item(v-if="isAuthenticated" @click="logout") Logout
 </template>
 
 <script>

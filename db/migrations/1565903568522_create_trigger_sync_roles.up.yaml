@@ -1,0 +1,15 @@
+- args:
+    enable_manual: false
+    headers: []
+    insert:
+      columns: '*'
+    name: sync_roles
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    table:
+      name: roles_users
+      schema: public
+    webhook: http://gateway.openfaas.svc.cluster.local/function/cth-roles
+  type: create_event_trigger

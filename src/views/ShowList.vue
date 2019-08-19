@@ -16,7 +16,7 @@ div
         v-on:action="manageShow")
       div(class="buttons")
         b-button(@click="moreShows" v-if="displayMore") See more
-        b-button(type="is-primary" @click="newModal" icon-left="plus") Add show
+        b-button(type="is-primary" @click="newModal" icon-left="plus" v-if="canEdit") Add show
 </template>
 
 <script>
@@ -48,6 +48,9 @@ export default {
   },
 
   computed: {
+    canEdit () {
+      return this.$store.getters.can('edit-shows')
+    },
     today () {
       const now = new Date()
       const month = now.getMonth() + 1
@@ -167,6 +170,9 @@ export default {
     },
 
     manageShow (item) {
+      if (!this.canEdit) {
+        return
+      }
       this.$router.push({ name: 'show-manage', params: { id: item.id } })
     }
   }

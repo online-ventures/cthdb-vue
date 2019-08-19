@@ -20,7 +20,7 @@ div
           v-on:action="editModal")
         div(class="buttons")
           b-button(@click="moreVolunteers" v-if="displayMore") See more ({{ remainingCount }})
-          b-button(type="is-primary" @click="newModal" icon-left="plus") Add volunteer
+          b-button(type="is-primary" @click="newModal" icon-left="plus" v-if="canEdit") Add volunteer
 </template>
 
 <script>
@@ -54,6 +54,9 @@ export default {
   },
 
   computed: {
+    canEdit () {
+      return this.$store.getters.can('edit-volunteers')
+    },
     offset () {
       if (this.searching) {
         return 0
@@ -198,6 +201,9 @@ export default {
     },
 
     editModal (item) {
+      if (!this.canEdit) {
+        return
+      }
       this.openModal({
         title: 'Edit Volunteer',
         item: item

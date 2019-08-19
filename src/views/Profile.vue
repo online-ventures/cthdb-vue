@@ -1,29 +1,15 @@
-<template>
-  <div class="container">
-    <div class="row align-items-center profile-header">
-      <div class="col-md-2">
-        <img :src="profile.picture" alt="User's profile picture" class="rounded-circle img-fluid profile-picture">
-      </div>
-      <div class="col-md">
-        <h2>{{ profile.name }}</h2>
-        <p class="lead text-muted">{{ profile.email }}</p>
-      </div>
-    </div>
-
-    <div class="row">
-      <pre v-highlightjs class="rounded"><code class="json">{{ JSON.stringify(profile, null, 2) }}</code></pre>
-    </div>
-  </div>
+<template lang="pug">
+form(@submit.prevent="saveRecord()")
+  h1(class="title") Your profile
+  b-field(label="Name")
+    b-input(v-model="record.name" required)
+  b-button(:class="{ 'is-loading': isSaving }"
+    type="is-primary"
+    icon-left="save"
+    @click.prevent="saveRecord()") Save
 </template>
 
 <script>
-import authMixin from '../mixins/authMixin'
-
 export default {
-  mixins: [authMixin],
-  data () {
-    return {}
-  },
-  methods: {}
 }
 </script>

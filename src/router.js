@@ -7,11 +7,12 @@ import VolunteerList from './views/VolunteerList.vue'
 import Home from './views/Home.vue'
 import Profile from './views/Profile.vue'
 import Callback from './views/Callback.vue'
+import Login from './views/Login.vue'
 import NotFound from './views/NotFound.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -51,8 +52,15 @@ export default new Router({
       component: Callback
     },
     {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
+    {
       path: '*',
       component: NotFound
     }
   ]
 })
+
+export default router

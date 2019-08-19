@@ -18,7 +18,7 @@ div
           v-on:action="editModal")
         div(class="buttons")
           b-button(@click="moreJobs" v-if="displayMore") See more ({{ remainingCount }})
-          b-button(type="is-primary" @click="newModal" icon-left="plus") Add job
+          b-button(type="is-primary" @click="newModal" icon-left="plus" v-if="canEdit") Add job
 </template>
 
 <script>
@@ -50,6 +50,9 @@ export default {
   },
 
   computed: {
+    canEdit () {
+      return this.$store.getters.can('edit-jobs')
+    },
     offset () {
       return (this.page - 1) * this.rowsPerPage
     },
@@ -148,6 +151,9 @@ export default {
     },
 
     editModal (item) {
+      if (!this.canEdit) {
+        return
+      }
       this.openModal({
         title: 'Edit Job',
         item: item

@@ -1,9 +1,10 @@
 <template lang="pug">
 div
+  b-loading(:active="displayLoader")
   nav-bar(:links='topNavLinks')
   div(class="view-container")
     transition(:name='viewTransition')
-      router-view
+      router-view(:class="{ 'is-invisible': displayLoader }")
 </template>
 
 <script>
@@ -14,15 +15,21 @@ export default {
   components: {
     NavBar
   },
+  created () {
+  },
   data () {
     return {
       viewTransition: '',
       topNavLinks: [
         { text: 'Shows', path: '/shows' },
         { text: 'Jobs', path: '/jobs' },
-        { text: 'Volunteers', path: '/volunteers' },
-        { text: 'Profile', path: '/profile' }
+        { text: 'Volunteers', path: '/volunteers' }
       ]
+    }
+  },
+  computed: {
+    displayLoader () {
+      return this.$store.state.auth.status !== 'authenticated'
     }
   },
   methods: {

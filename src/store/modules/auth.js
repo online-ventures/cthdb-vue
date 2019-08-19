@@ -1,5 +1,7 @@
 import auth0 from 'auth0-js'
 
+const localStorage = window.localStorage
+
 const webAuth = new auth0.WebAuth({
   domain: process.env.VUE_APP_AUTH0_DOMAIN,
   redirectUri: `${window.location.origin}/callback`,
@@ -18,7 +20,7 @@ const state = () => {
     profile: {},
     accessToken: null,
     status: '',
-    renewing: false
+    user: {}
   }
 }
 
@@ -32,6 +34,26 @@ const getters = {
 
   isIdTokenValid: state => {
     return state.idToken && state.expiry && Date.now() < state.expiry
+  },
+
+  roles: state => {
+    if (!state.user.roles_users) {
+      return []
+    }
+    return state.user.roles_users.map((ru) => ru.role.name)
+  },
+
+  can: (state, getters) => permission => {
+    if (getters.roles.includes('admin')) {
+      return true
+    } else if (permission === 'edit-shows') {
+      return getters.roles.includes('staff')
+    } else if (permission === 'edit-jobs') {
+      return getters.roles.includes('staff')
+    } else if (permission === 'edit-volunteers') {
+      return getters.roles.includes('staff')
+    }
+    return false
   }
 }
 
@@ -61,16 +83,16 @@ const mutations = {
   SET_TOKEN_RENEWAL (state, renewal) {
     state.tokenRenewal = renewal
   },
-  SET_RENEWING (state, renewing) {
-    state.renewing = renewing
-  },
   SET_USER (state, user) {
     state.user = user
   }
 }
 
 const actions = {
-  login ({ commit }, customState) {
+  login ({ state, commit }, customState) {
+    if (state.status === 'authorizing') {
+      return
+    }
     commit('SET_AUTH_STATUS', 'authorizing')
     webAuth.authorize({
       appState: customState
@@ -82,7 +104,7 @@ const actions = {
     commit('CLEAR_AUTH')
     commit('SET_AUTH_STATUS', 'logout')
     webAuth.logout({
-      returnTo: `${window.location.origin}`
+      returnTo: process.env.VUE_APP_BASE_URL + '/login'
     })
   },
 
@@ -97,6 +119,8 @@ const actions = {
   },
 
   localLogin ({ commit, dispatch }, authResult) {
+    localStorage.setItem(localStorageKey, 'true')
+
     const auth = {
       idToken: authResult.idToken,
       accessToken: authResult.accessToken,
@@ -107,9 +131,7 @@ const actions = {
     commit('SET_AUTH', auth)
     commit('SET_AUTH_STATUS', 'authenticated')
 
-    localStorage.setItem(localStorageKey, 'true')
-
-    console.log(auth)
+    // console.log(auth)
     dispatch('scheduleRenewal')
   },
 
@@ -117,26 +139,23 @@ const actions = {
     commit('SET_USER', user)
   },
 
-  renewTokens ({ state, getters, commit, dispatch }, required = false) {
+  renewTokens ({ state, getters, commit, dispatch }) {
     return new Promise((resolve, reject) => {
+      // console.log('renewToken!')
+
       if (getters.isIdTokenValid) {
         resolve(state.accessToken)
-        return
       }
 
       if (localStorage.getItem(localStorageKey) !== 'true') {
-        commit('SET_AUTH_ERROR', 'Not logged in')
-        reject(new Error('not logged in'))
-        return
+        dispatch('login')
       }
 
+      commit('SET_AUTH_STATUS', 'checking')
       webAuth.checkSession({}, (err, authResult) => {
         if (err) {
-          commit('SET_AUTH_ERROR', err)
-          if (required) {
-            dispatch('login')
-          }
-          reject(err)
+          console.log('need to login')
+          dispatch('login')
         } else {
           dispatch('localLogin', authResult)
           resolve(state.accessToken)

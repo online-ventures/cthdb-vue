@@ -13,19 +13,28 @@ const httpLink = new HttpLink({
   uri: process.env.VUE_APP_GRAPHQL_URL
 })
 
-const middlewareLink = setContext(request =>
-  new Promise((resolve, reject) => {
-    store.dispatch('renewTokens').then((token) => {
-      resolve({
-        headers: {
-          authorization: `Bearer ${token}`
+const getAccessToken = () => {
+  // console.log('getting the access token...')
+  return new Promise((resolve, reject) => {
+    if (store.state.auth.accessToken) {
+      resolve(store.state.auth.accessToken)
+    } else {
+      const unwatch = store.watch(
+        (state) => state.auth.accessToken,
+        (newValue, oldValue) => {
+          unwatch()
+          resolve(newValue)
         }
-      })
-    }, (error) => {
-      reject(error)
-      console.log(error)
-    })
-  }))
+      )
+    }
+  })
+}
+
+const middlewareLink = setContext(async request => {
+  const token = await getAccessToken()
+  // console.log('got the token')
+  return { headers: { authorization: `Bearer ${token}` } }
+})
 
 const httpAuthLink = middlewareLink.concat(httpLink)
 
@@ -35,7 +44,7 @@ const wsLink = new WebSocketLink({
     reconnect: true,
     timeout: 30000,
     connectionParams: async () => {
-      const token = await store.dispatch('renewTokens')
+      const token = await getAccessToken()
       return { headers: { authorization: `Bearer ${token}` } }
     }
   }
