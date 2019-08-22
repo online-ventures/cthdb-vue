@@ -1,0 +1,21 @@
+- args:
+    role: staff
+    table:
+      name: shows
+      schema: public
+  type: drop_select_permission
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - occurred_at
+      - id
+      - name
+      - created_at
+      - updated_at
+      filter: {}
+    role: staff
+    table:
+      name: shows
+      schema: public
+  type: create_select_permission

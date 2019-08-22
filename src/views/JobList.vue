@@ -34,6 +34,7 @@ export default {
 
   created () {
     // Refetch on creation to invalidate a potentially outdated cache
+    console.log('created job list component!')
     this.$apollo.queries.jobs.refetch()
     this.$apollo.queries.jobCount.refetch()
   },
@@ -67,7 +68,7 @@ export default {
   apollo: {
     jobs: {
       query: gql`query currentJobs($offset: Int!, $limit: Int!, $ignore: [Int!]) {
-        jobs(where: {id: {_nin: $ignore}},
+        jobs(where: {id: {_nin: $ignore}, deleted_at: {_is_null: true}},
           order_by: {name: asc, points: asc},
           limit: $limit,
           offset: $offset) {
@@ -86,7 +87,7 @@ export default {
     },
     jobCount: {
       query: gql`query jobCount {
-        jobs_aggregate {
+        jobs_aggregate(where: {deleted_at: {_is_null: true}}) {
           aggregate {
             count
           }
@@ -107,11 +108,19 @@ export default {
 
   watch: {
     jobs (jobs) {
+      console.log(jobs[0])
       jobs.forEach(job => {
         if (this.allJobs.every((existing) => job.id !== existing.id)) {
           this.allJobs.push(Object.assign({}, job))
+        } else {
+          console.log('updating job!')
+          console.log(job)
+          const i = this.allJobs.findIndex((existing) => job.id === existing.id)
+          console.log('index found: ' + i)
+          this.allJobs[i] = Object.assign({}, job)
         }
       })
+      console.log(this.allJobs[0])
     }
   },
 
@@ -158,6 +167,10 @@ export default {
         title: 'Edit Job',
         item: item
       })
+    },
+
+    onJobRemoved (item) {
+      this.allJobs = this.allJobs.filter((existing) => existing.id !== item.id)
     }
   }
 }

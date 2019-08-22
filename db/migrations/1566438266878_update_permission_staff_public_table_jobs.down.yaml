@@ -1,0 +1,23 @@
+- args:
+    role: staff
+    table:
+      name: jobs
+      schema: public
+  type: drop_insert_permission
+- args:
+    permission:
+      check: {}
+      columns:
+      - id
+      - name
+      - points
+      - created_at
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: staff
+    table:
+      name: jobs
+      schema: public
+  type: create_insert_permission

@@ -19,6 +19,10 @@ form(ref="jobForm")
         type="is-primary"
         icon-left="save"
         @click.prevent="saveRecord()") Save
+      b-button(type="is-danger"
+        v-if="job.id"
+        icon-left="trash"
+        @click.prevent="confirmDeleteJob()") Delete
 </template>
 
 <script>
@@ -129,6 +133,38 @@ export default {
         loadingKey: 'savingCounter'
       })
       this.$parent.$parent.updateJob(this.newJob)
+      this.$parent.close()
+    },
+
+    confirmDeleteJob () {
+      this.$buefy.dialog.confirm({
+        title: 'Remove Job',
+        message: 'Are you sure you want to <b>remove</b> this job? ' +
+          'Removing it here will not affect volunteers that have performed it in the past.',
+        confirmText: 'Remove job',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: this.deleteJob
+      })
+    },
+
+    async deleteJob () {
+      await this.$apollo.mutate({
+        mutation: gql`mutation updateJob($id:Int!) {
+          update_jobs(where: {id: {_eq: $id}}, _set: {deleted_at: "now()"}) {
+            affected_rows
+          }
+        }`,
+        variables: {
+          id: this.job.id
+        },
+        loadingKey: 'savingCounter'
+      })
+      this.$parent.$parent.onJobRemoved(this.job)
+      this.$buefy.toast.open({
+        message: 'Job removed',
+        type: 'is-success'
+      })
       this.$parent.close()
     }
   }
