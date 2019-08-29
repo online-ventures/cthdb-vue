@@ -29,7 +29,8 @@ export default {
   },
   computed: {
     displayLoader () {
-      return this.$store.state.auth.status !== 'authenticated'
+      const auth = this.$store.state.auth
+      return auth && auth.status !== 'authenticated'
     }
   },
   methods: {
