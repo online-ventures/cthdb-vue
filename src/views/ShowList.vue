@@ -48,7 +48,7 @@ export default {
       ignoreShows: [],
       createdShows: 0,
       page: 1,
-      rowsPerPage: 10
+      rowsPerPage: 20
     }
   },
 

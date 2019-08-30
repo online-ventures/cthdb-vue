@@ -1,18 +1,18 @@
 self.__precacheManifest = [
   {
-    "revision": "f12e7ff1ee1ea1beff5f",
-    "url": "/assets/css/app.db9c565a.css"
+    "revision": "19231a3030aca90c2671",
+    "url": "/assets/css/app.8d19b09d.css"
   },
   {
-    "revision": "f12e7ff1ee1ea1beff5f",
-    "url": "/assets/js/app.4a0feb03.js"
+    "revision": "19231a3030aca90c2671",
+    "url": "/assets/js/app.b7e03ccb.js"
   },
   {
     "revision": "0fd3402c5575ec2fcb73",
     "url": "/assets/js/chunk-vendors.59d7fa05.js"
   },
   {
-    "revision": "7f2454623d2b7e8667a65a05a2125dad",
+    "revision": "33da0b61b5c5082013e0c849f2d32179",
     "url": "/index.html"
   },
   {
@@ -24,20 +24,16 @@ self.__precacheManifest = [
     "url": "/favicon-114.png"
   },
   {
-    "revision": "7f03f28b342912faf296ec09d6592709",
-    "url": "/favicon-120.png"
-  },
-  {
     "revision": "d987956a3e30d23025c7844abc9bcf5c",
     "url": "/favicon-144.png"
   },
   {
-    "revision": "f3e6441a25cd62c49e82452bde7d5509",
-    "url": "/favicon-150.png"
+    "revision": "7f03f28b342912faf296ec09d6592709",
+    "url": "/favicon-120.png"
   },
   {
-    "revision": "450aca0c83fdccfd12e96a86b1f44610",
-    "url": "/favicon-152.png"
+    "revision": "f3e6441a25cd62c49e82452bde7d5509",
+    "url": "/favicon-150.png"
   },
   {
     "revision": "73be8597afae99e370efa50e10ea50df",
@@ -46,6 +42,10 @@ self.__precacheManifest = [
   {
     "revision": "175fdff97321f7989d82042bfdebd3f0",
     "url": "/favicon-160.png"
+  },
+  {
+    "revision": "450aca0c83fdccfd12e96a86b1f44610",
+    "url": "/favicon-152.png"
   },
   {
     "revision": "12cd62cdca7377e47ab37da76ef1caa7",
@@ -96,12 +96,12 @@ self.__precacheManifest = [
     "url": "/faviconit-instructions.txt"
   },
   {
-    "revision": "9915fd87ad2f2ce7d0a49ac2d0bc65c1",
-    "url": "/images/icons/icon-128x128.png"
-  },
-  {
     "revision": "92e938d9cb850c0c7f6cee940266ab6c",
     "url": "/feather-sprite.svg"
+  },
+  {
+    "revision": "9915fd87ad2f2ce7d0a49ac2d0bc65c1",
+    "url": "/images/icons/icon-128x128.png"
   },
   {
     "revision": "215e0161486c1f04acab54d3746aae49",
