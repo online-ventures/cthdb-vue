@@ -9,7 +9,7 @@ div
     div(class="container")
       form(class="search-form" @submit.prevent)
         b-field
-          b-input(icon="search" placeholder="search" type="search" v-model="search")
+          b-input(icon="search" autofocus placeholder="search" type="search" v-model="search")
       list-row(v-for="show in showList"
         :key="show.id"
         :title="show.name"

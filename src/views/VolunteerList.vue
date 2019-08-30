@@ -10,7 +10,7 @@ div
       div(class="container")
         form(class="search-form" @submit.prevent)
           b-field
-            b-input(icon="search" placeholder="search" type="search" v-model="search")
+            b-input(icon="search" autofocus placeholder="search" type="search" v-model="search")
         list-row(v-for="volunteer in volunteerList"
           :key="volunteer.id"
           :title="volunteer | name"
