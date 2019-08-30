@@ -90,7 +90,7 @@ export default {
       return this.showCount - this.allShows.length
     },
     jobName () {
-      return this.search + '%'
+      return '%' + this.search + '%'
     }
   },
 
