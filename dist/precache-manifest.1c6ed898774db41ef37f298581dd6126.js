@@ -1,18 +1,18 @@
 self.__precacheManifest = [
   {
-    "revision": "19231a3030aca90c2671",
-    "url": "/assets/css/app.8d19b09d.css"
+    "revision": "016857630819b0669d7c",
+    "url": "/assets/css/app.53406bb0.css"
   },
   {
-    "revision": "19231a3030aca90c2671",
-    "url": "/assets/js/app.b7e03ccb.js"
+    "revision": "016857630819b0669d7c",
+    "url": "/assets/js/app.625862d8.js"
   },
   {
     "revision": "0fd3402c5575ec2fcb73",
     "url": "/assets/js/chunk-vendors.59d7fa05.js"
   },
   {
-    "revision": "33da0b61b5c5082013e0c849f2d32179",
+    "revision": "22ca3d89917f945f30cd9f289d8fdc4a",
     "url": "/index.html"
   },
   {
@@ -36,10 +36,6 @@ self.__precacheManifest = [
     "url": "/favicon-150.png"
   },
   {
-    "revision": "73be8597afae99e370efa50e10ea50df",
-    "url": "/favicon-16.png"
-  },
-  {
     "revision": "175fdff97321f7989d82042bfdebd3f0",
     "url": "/favicon-160.png"
   },
@@ -48,12 +44,16 @@ self.__precacheManifest = [
     "url": "/favicon-152.png"
   },
   {
-    "revision": "12cd62cdca7377e47ab37da76ef1caa7",
-    "url": "/favicon-180.png"
+    "revision": "73be8597afae99e370efa50e10ea50df",
+    "url": "/favicon-16.png"
   },
   {
     "revision": "9d56e451fd1c1a30746029a233869b48",
     "url": "/favicon-192.png"
+  },
+  {
+    "revision": "12cd62cdca7377e47ab37da76ef1caa7",
+    "url": "/favicon-180.png"
   },
   {
     "revision": "7dcff3770ef4389c37c38ae2516606bc",
@@ -84,24 +84,24 @@ self.__precacheManifest = [
     "url": "/favicon-72.png"
   },
   {
-    "revision": "b96df18fd4d0f2fd0dd79ef06d40f54f",
-    "url": "/favicon-76.png"
-  },
-  {
     "revision": "f7b32fe11efc18171e28360290868654",
     "url": "/favicon-96.png"
+  },
+  {
+    "revision": "b96df18fd4d0f2fd0dd79ef06d40f54f",
+    "url": "/favicon-76.png"
   },
   {
     "revision": "1c4a2b42e0c9424538819dcf5a364142",
     "url": "/faviconit-instructions.txt"
   },
   {
-    "revision": "92e938d9cb850c0c7f6cee940266ab6c",
-    "url": "/feather-sprite.svg"
-  },
-  {
     "revision": "9915fd87ad2f2ce7d0a49ac2d0bc65c1",
     "url": "/images/icons/icon-128x128.png"
+  },
+  {
+    "revision": "92e938d9cb850c0c7f6cee940266ab6c",
+    "url": "/feather-sprite.svg"
   },
   {
     "revision": "215e0161486c1f04acab54d3746aae49",

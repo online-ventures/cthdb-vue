@@ -138,7 +138,7 @@ export default {
           jobs(where:
             {name: {_ilike: $name}},
             order_by: {name: asc},
-            limit: 100) {
+            limit: 500) {
               id
               name
             }
