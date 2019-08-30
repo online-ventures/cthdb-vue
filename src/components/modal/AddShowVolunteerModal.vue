@@ -14,6 +14,7 @@ form(ref="volunteerForm" @submit.prevent="saveRecords()")
       form(class="search-form" @submit.prevent)
         b-field
           b-input(icon="search"
+            autofocus
             placeholder="search"
             type="search"
             v-model="search")

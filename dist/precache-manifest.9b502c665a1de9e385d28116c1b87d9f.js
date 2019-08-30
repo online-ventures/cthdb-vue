@@ -1,18 +1,18 @@
 self.__precacheManifest = [
   {
-    "revision": "a5f7d5e6bdf78c92f8ba",
-    "url": "/assets/css/app.7c44a2ed.css"
+    "revision": "3c324bdbe5276d6b39c2",
+    "url": "/assets/css/app.141825e2.css"
   },
   {
-    "revision": "a5f7d5e6bdf78c92f8ba",
-    "url": "/assets/js/app.458c084f.js"
+    "revision": "3c324bdbe5276d6b39c2",
+    "url": "/assets/js/app.e40315c9.js"
   },
   {
     "revision": "083853ec91b7da988745",
     "url": "/assets/js/chunk-vendors.eb217edb.js"
   },
   {
-    "revision": "7e106687f81fc3681d08cf7a285b1579",
+    "revision": "f00c2c9ff443a923000196d350f7cd62",
     "url": "/index.html"
   },
   {
@@ -44,16 +44,16 @@ self.__precacheManifest = [
     "url": "/favicon-16.png"
   },
   {
-    "revision": "175fdff97321f7989d82042bfdebd3f0",
-    "url": "/favicon-160.png"
-  },
-  {
     "revision": "12cd62cdca7377e47ab37da76ef1caa7",
     "url": "/favicon-180.png"
   },
   {
     "revision": "9d56e451fd1c1a30746029a233869b48",
     "url": "/favicon-192.png"
+  },
+  {
+    "revision": "175fdff97321f7989d82042bfdebd3f0",
+    "url": "/favicon-160.png"
   },
   {
     "revision": "7dcff3770ef4389c37c38ae2516606bc",
@@ -68,6 +68,10 @@ self.__precacheManifest = [
     "url": "/favicon-57.png"
   },
   {
+    "revision": "ce40ea260532b9e849669b3d57093d0b",
+    "url": "/favicon-64.png"
+  },
+  {
     "revision": "3fcdac7ef5b033469c567e59a4bb82de",
     "url": "/favicon-60.png"
   },
@@ -76,16 +80,12 @@ self.__precacheManifest = [
     "url": "/favicon-70.png"
   },
   {
-    "revision": "ce40ea260532b9e849669b3d57093d0b",
-    "url": "/favicon-64.png"
+    "revision": "bb84b4ecc5e33c99ce2c69bd43fd3a0d",
+    "url": "/favicon-72.png"
   },
   {
     "revision": "b96df18fd4d0f2fd0dd79ef06d40f54f",
     "url": "/favicon-76.png"
-  },
-  {
-    "revision": "bb84b4ecc5e33c99ce2c69bd43fd3a0d",
-    "url": "/favicon-72.png"
   },
   {
     "revision": "f7b32fe11efc18171e28360290868654",
@@ -120,12 +120,12 @@ self.__precacheManifest = [
     "url": "/images/icons/icon-384x384.png"
   },
   {
-    "revision": "efe33c7bb4e59db14ab95b9fc0d41cfe",
-    "url": "/images/icons/icon-72x72.png"
-  },
-  {
     "revision": "005ba6938b06bc1738a4ccbf2488c0a9",
     "url": "/images/icons/icon-512x512.png"
+  },
+  {
+    "revision": "efe33c7bb4e59db14ab95b9fc0d41cfe",
+    "url": "/images/icons/icon-72x72.png"
   },
   {
     "revision": "a58246bd64bbf6064a45253b7a17b1cb",
