@@ -7,7 +7,10 @@ div
         p(class="subtitle") View and manage shows
   section(class="content")
     div(class="container")
-      list-row(v-for="show in allShows"
+      form(class="search-form" @submit.prevent)
+        b-field
+          b-input(icon="search" placeholder="search" type="search" v-model="search")
+      list-row(v-for="show in showList"
         :key="show.id"
         :title="show.name"
         :subtitle="show.occurred_at | prettyMonth"
@@ -38,10 +41,12 @@ export default {
 
   data () {
     return {
+      search: '',
       shows: [],
       showCount: 0,
       allShows: [],
       ignoreShows: [],
+      createdShows: 0,
       page: 1,
       rowsPerPage: 5
     }
@@ -64,21 +69,35 @@ export default {
       }
       return yrs
     },
+    searching () {
+      return this.search !== ''
+    },
+    showList () {
+      return this.searching ? this.shows : this.allShows
+    },
     offset () {
-      return (this.page - 1) * this.rowsPerPage
+      if (this.searching) {
+        return 0
+      } else {
+        return (this.page - 1) * this.rowsPerPage
+      }
     },
     displayMore () {
-      return this.allShows.length < this.showCount
+      return !this.searching &&
+        this.allShows.length < (this.showCount + this.createdShows)
     },
     remainingCount () {
       return this.showCount - this.allShows.length
+    },
+    jobName () {
+      return this.search + '%'
     }
   },
 
   apollo: {
     shows: {
-      query: gql`query currentShows($offset: Int!, $limit: Int!, $ignore: [Int!]) {
-        shows(where: {id: {_nin: $ignore}},
+      query: gql`query currentShows($name: String, $offset: Int!, $limit: Int!, $ignore: [Int!]) {
+        shows(where: {_and: [{id: {_nin: $ignore}}, {name: {_ilike: $name}}]},
           order_by: {occurred_at: desc, name: asc},
           limit: $limit,
           offset: $offset) {
@@ -91,6 +110,7 @@ export default {
         return {
           ignore: this.ignoreShows,
           offset: this.offset,
+          name: this.jobName,
           limit: this.rowsPerPage
         }
       }
@@ -119,11 +139,13 @@ export default {
 
   watch: {
     shows (shows) {
-      shows.forEach(show => {
-        if (this.allShows.every((existing) => show.id !== existing.id)) {
-          this.allShows.push(Object.assign({}, show))
-        }
-      })
+      if (!this.searching) {
+        shows.forEach(show => {
+          if (this.allShows.every((existing) => show.id !== existing.id)) {
+            this.allShows.push(Object.assign({}, show))
+          }
+        })
+      }
     }
   },
 
@@ -136,6 +158,7 @@ export default {
       this.ignoreShows.push(added.id)
       this.allShows.push(added)
       this.showCount++
+      this.createdShows++
     },
 
     updateShow (updated) {
@@ -180,4 +203,7 @@ export default {
 </script>
 
 <style scoped>
+.search-form {
+  margin-bottom: 1.5rem;
+}
 </style>
