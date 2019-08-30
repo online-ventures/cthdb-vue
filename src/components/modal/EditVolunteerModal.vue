@@ -143,8 +143,18 @@ export default {
       }).then((result) => {
         const volunteer = result.data.insert_volunteers.returning[0]
         this.$parent.$parent.onVolunteerCreated(volunteer)
+      }).catch((error) => {
+        this.handleApolloError(error)
       })
       this.$parent.close()
+    },
+
+    handleApolloError (error) {
+      console.log(error)
+      this.$buefy.toast.open({
+        message: 'There was an error creating this volunteer. Do they already exist?',
+        type: 'is-danger'
+      })
     },
 
     async updateRecord () {

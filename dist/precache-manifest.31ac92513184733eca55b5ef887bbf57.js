@@ -1,18 +1,18 @@
 self.__precacheManifest = [
   {
-    "revision": "a85e7565c6a2476e832c",
+    "revision": "5d6f924b743d35b682e2",
     "url": "/assets/css/app.043ae762.css"
   },
   {
-    "revision": "a85e7565c6a2476e832c",
-    "url": "/assets/js/app.b5fa135f.js"
+    "revision": "5d6f924b743d35b682e2",
+    "url": "/assets/js/app.afcf6acf.js"
   },
   {
     "revision": "083853ec91b7da988745",
     "url": "/assets/js/chunk-vendors.eb217edb.js"
   },
   {
-    "revision": "0df8b1782118df81ee554fcf8321af05",
+    "revision": "0bb75f3313429baae8bac2f14f301efa",
     "url": "/index.html"
   },
   {
@@ -36,12 +36,12 @@ self.__precacheManifest = [
     "url": "/favicon-150.png"
   },
   {
-    "revision": "73be8597afae99e370efa50e10ea50df",
-    "url": "/favicon-16.png"
-  },
-  {
     "revision": "450aca0c83fdccfd12e96a86b1f44610",
     "url": "/favicon-152.png"
+  },
+  {
+    "revision": "73be8597afae99e370efa50e10ea50df",
+    "url": "/favicon-16.png"
   },
   {
     "revision": "175fdff97321f7989d82042bfdebd3f0",
@@ -100,16 +100,16 @@ self.__precacheManifest = [
     "url": "/images/icons/icon-128x128.png"
   },
   {
-    "revision": "215e0161486c1f04acab54d3746aae49",
-    "url": "/images/icons/icon-144x144.png"
-  },
-  {
     "revision": "92e938d9cb850c0c7f6cee940266ab6c",
     "url": "/feather-sprite.svg"
   },
   {
     "revision": "83b6170c2cb78c2b1d729d30f55e0907",
     "url": "/images/icons/icon-152x152.png"
+  },
+  {
+    "revision": "215e0161486c1f04acab54d3746aae49",
+    "url": "/images/icons/icon-144x144.png"
   },
   {
     "revision": "8aee9164a41b526d310421566fdd14b8",
