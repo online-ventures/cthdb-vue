@@ -56,7 +56,7 @@ export default {
   apollo: {
     jobs: {
       query: gql`query jobCount {
-        jobs_aggregate {
+        jobs_aggregate(where: {deleted_at: {_is_null: true}}) {
           aggregate {
             count
           }
