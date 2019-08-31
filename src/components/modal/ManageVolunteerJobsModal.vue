@@ -135,8 +135,10 @@ export default {
   apollo: {
     allJobs: {
       query: gql`query jobs($name: String, $job_ids: [Int!]) {
-          jobs(where:
-            {name: {_ilike: $name}},
+          jobs(
+            where: {_and: [
+              {name: {_ilike: $name}},
+              {deleted_at: {_is_null: true}}]}
             order_by: {name: asc},
             limit: 500) {
               id

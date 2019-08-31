@@ -176,7 +176,7 @@ export default {
     },
     allJobs: {
       query: gql`query jobs {
-        jobs(order_by: {name: asc}) {
+        jobs(where: {deleted_at: {_is_null: true}}, order_by: {name: asc}) {
           id
           name
         }
