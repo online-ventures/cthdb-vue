@@ -26,8 +26,13 @@ form(ref="showForm")
 
 <script>
 import gql from 'graphql-tag'
+import apolloMixin from '@/mixins/apolloMixin'
 
 export default {
+  mixins: {
+    apolloMixin
+  },
+
   props: {
     title: {
       type: String,
@@ -126,6 +131,9 @@ export default {
       }).then((result) => {
         const newShow = result.data.insert_shows.returning[0]
         this.$parent.$parent.addShow(newShow)
+      }).catch((error) => {
+        const message = 'There was an error creating this show.'
+        this.handleApolloError(error, message)
       })
       this.$parent.close()
     },
@@ -146,6 +154,9 @@ export default {
         loadingKey: 'savingCounter'
       }).then((result) => {
         this.$parent.$parent.onShowUpdated(show)
+      }).catch((error) => {
+        const message = 'There was an error updating this show.'
+        this.handleApolloError(error, message)
       })
       this.$parent.close()
     }

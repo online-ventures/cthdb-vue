@@ -89,7 +89,7 @@ export default {
     remainingCount () {
       return this.showCount - this.allShows.length
     },
-    jobName () {
+    showName () {
       return '%' + this.search + '%'
     }
   },
@@ -110,7 +110,7 @@ export default {
         return {
           ignore: this.ignoreShows,
           offset: this.offset,
-          name: this.jobName,
+          name: this.showName,
           limit: this.rowsPerPage
         }
       }

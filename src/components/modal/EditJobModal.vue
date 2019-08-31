@@ -27,8 +27,13 @@ form(ref="jobForm")
 
 <script>
 import gql from 'graphql-tag'
+import apolloMixin from '@/mixins/apolloMixin'
 
 export default {
+  mixins: {
+    apolloMixin
+  },
+
   props: {
     title: {
       type: String,
@@ -114,6 +119,9 @@ export default {
       }).then((result) => {
         const newJob = result.data.insert_jobs.returning[0]
         this.$parent.$parent.addJob(newJob)
+      }).catch((error) => {
+        const message = 'There was an error creating this job.'
+        this.handleApolloError(error, message)
       })
       this.$parent.close()
     },
@@ -131,6 +139,9 @@ export default {
           points: this.job.points
         },
         loadingKey: 'savingCounter'
+      }).catch((error) => {
+        const message = 'There was an error updating this job.'
+        this.handleApolloError(error, message)
       })
       this.$parent.$parent.updateJob(this.newJob)
       this.$parent.close()
@@ -159,12 +170,17 @@ export default {
           id: this.job.id
         },
         loadingKey: 'savingCounter'
+      }).catch((error) => {
+        const message = 'There was an error deleting this job.'
+        this.handleApolloError(error, message)
       })
-      this.$parent.$parent.onJobRemoved(this.job)
-      this.$buefy.toast.open({
-        message: 'Job removed',
-        type: 'is-success'
-      })
+      if (!this.apolloError) {
+        this.$parent.$parent.onJobRemoved(this.job)
+        this.$buefy.toast.open({
+          message: 'Job removed',
+          type: 'is-success'
+        })
+      }
       this.$parent.close()
     }
   }

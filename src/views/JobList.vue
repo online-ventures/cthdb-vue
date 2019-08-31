@@ -8,7 +8,10 @@ div
   section
     div(class="content")
       div(class="container")
-        list-row(v-for="job in allJobs"
+        form(class="search-form" @submit.prevent)
+          b-field
+            b-input(icon="search" autofocus placeholder="search" type="search" v-model="search")
+        list-row(v-for="job in jobList"
           :key="job.id"
           :title="job.name"
           :subtitle="job.points | prettyPoints"
@@ -34,7 +37,6 @@ export default {
 
   created () {
     // Refetch on creation to invalidate a potentially outdated cache
-    console.log('created job list component!')
     this.$apollo.queries.jobs.refetch()
     this.$apollo.queries.jobCount.refetch()
   },
@@ -43,8 +45,10 @@ export default {
     return {
       jobs: [],
       jobCount: 0,
+      createdJobs: 0,
       allJobs: [],
       ignoreJobs: [],
+      search: '',
       page: 1,
       rowsPerPage: 5
     }
@@ -55,20 +59,37 @@ export default {
       return this.$store.getters.can('edit-jobs')
     },
     offset () {
-      return (this.page - 1) * this.rowsPerPage
+      if (this.searching) {
+        return 0
+      } else {
+        return (this.page - 1) * this.rowsPerPage
+      }
+    },
+    searching () {
+      return this.search !== ''
     },
     displayMore () {
-      return this.allJobs.length < this.jobCount
+      return !this.searching &&
+        this.allJobs.length < (this.jobCount + this.createdJobs)
+    },
+    jobList () {
+      return this.searching ? this.jobs : this.allJobs
     },
     remainingCount () {
       return this.jobCount - this.allJobs.length
+    },
+    jobName () {
+      return '%' + this.search + '%'
     }
   },
 
   apollo: {
     jobs: {
-      query: gql`query currentJobs($offset: Int!, $limit: Int!, $ignore: [Int!]) {
-        jobs(where: {id: {_nin: $ignore}, deleted_at: {_is_null: true}},
+      query: gql`query currentJobs($name: String, $offset: Int!, $limit: Int!, $ignore: [Int!]) {
+        jobs(where: {_and: [
+            {id: {_nin: $ignore}},
+            {deleted_at: {_is_null: true}},
+            {name: {_ilike: $name}}]},
           order_by: {name: asc, points: asc},
           limit: $limit,
           offset: $offset) {
@@ -81,7 +102,8 @@ export default {
         return {
           ignore: this.ignoreJobs,
           offset: this.offset,
-          limit: this.rowsPerPage
+          limit: this.rowsPerPage,
+          name: this.jobName
         }
       }
     },
@@ -108,19 +130,16 @@ export default {
 
   watch: {
     jobs (jobs) {
-      console.log(jobs[0])
-      jobs.forEach(job => {
-        if (this.allJobs.every((existing) => job.id !== existing.id)) {
-          this.allJobs.push(Object.assign({}, job))
-        } else {
-          console.log('updating job!')
-          console.log(job)
-          const i = this.allJobs.findIndex((existing) => job.id === existing.id)
-          console.log('index found: ' + i)
-          this.allJobs[i] = Object.assign({}, job)
-        }
-      })
-      console.log(this.allJobs[0])
+      if (!this.searching) {
+        jobs.forEach(job => {
+          if (this.allJobs.every((existing) => job.id !== existing.id)) {
+            this.allJobs.push(Object.assign({}, job))
+          } else {
+            const i = this.allJobs.findIndex((existing) => job.id === existing.id)
+            this.allJobs[i] = Object.assign({}, job)
+          }
+        })
+      }
     }
   },
 
@@ -177,4 +196,7 @@ export default {
 </script>
 
 <style scoped>
+.search-form {
+  margin-bottom: 1.5rem;
+}
 </style>

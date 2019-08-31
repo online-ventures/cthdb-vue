@@ -1,18 +1,18 @@
 self.__precacheManifest = [
   {
-    "revision": "5d6f924b743d35b682e2",
-    "url": "/assets/css/app.043ae762.css"
+    "revision": "0ca682aa1b709f2133a3",
+    "url": "/assets/css/app.766b3150.css"
   },
   {
-    "revision": "5d6f924b743d35b682e2",
-    "url": "/assets/js/app.afcf6acf.js"
+    "revision": "0ca682aa1b709f2133a3",
+    "url": "/assets/js/app.baabe22c.js"
   },
   {
     "revision": "083853ec91b7da988745",
     "url": "/assets/js/chunk-vendors.eb217edb.js"
   },
   {
-    "revision": "0bb75f3313429baae8bac2f14f301efa",
+    "revision": "f993693e0e6ce018076e8e43ed3be828",
     "url": "/index.html"
   },
   {
@@ -28,12 +28,12 @@ self.__precacheManifest = [
     "url": "/favicon-120.png"
   },
   {
-    "revision": "d987956a3e30d23025c7844abc9bcf5c",
-    "url": "/favicon-144.png"
-  },
-  {
     "revision": "f3e6441a25cd62c49e82452bde7d5509",
     "url": "/favicon-150.png"
+  },
+  {
+    "revision": "d987956a3e30d23025c7844abc9bcf5c",
+    "url": "/favicon-144.png"
   },
   {
     "revision": "450aca0c83fdccfd12e96a86b1f44610",
@@ -104,12 +104,12 @@ self.__precacheManifest = [
     "url": "/feather-sprite.svg"
   },
   {
-    "revision": "83b6170c2cb78c2b1d729d30f55e0907",
-    "url": "/images/icons/icon-152x152.png"
-  },
-  {
     "revision": "215e0161486c1f04acab54d3746aae49",
     "url": "/images/icons/icon-144x144.png"
+  },
+  {
+    "revision": "83b6170c2cb78c2b1d729d30f55e0907",
+    "url": "/images/icons/icon-152x152.png"
   },
   {
     "revision": "8aee9164a41b526d310421566fdd14b8",
