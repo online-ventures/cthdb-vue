@@ -55,7 +55,8 @@ export default {
   background-color: $white-ter !important;
 }
 .mobile-navbar {
-  position: absolute;
+  position: fixed;
+  z-index: 100;
   left: 0;
   bottom: 0;
   width: 100%;
