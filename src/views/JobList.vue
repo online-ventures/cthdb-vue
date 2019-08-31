@@ -41,6 +41,10 @@ export default {
     this.$apollo.queries.jobCount.refetch()
   },
 
+  mounted () {
+    window.scrollTo(0, 0)
+  },
+
   data () {
     return {
       jobs: [],

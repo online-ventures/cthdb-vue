@@ -39,6 +39,10 @@ export default {
     this.$apollo.queries.showCount.refetch()
   },
 
+  mounted () {
+    window.scrollTo(0, 0)
+  },
+
   data () {
     return {
       search: '',

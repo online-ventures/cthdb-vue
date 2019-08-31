@@ -40,6 +40,10 @@ export default {
     this.$apollo.queries.volunteerCount.refetch()
   },
 
+  mounted () {
+    window.scrollTo(0, 0)
+  },
+
   data () {
     return {
       volunteers: [],
