@@ -40,6 +40,7 @@ import ListRow from '@/components/ListRow'
 import EditShowModal from '@/components/modal/EditShowModal'
 import AddShowVolunteerModal from '@/components/modal/AddShowVolunteerModal'
 import ManageVolunteerJobsModal from '@/components/modal/ManageVolunteerJobsModal'
+import clone from 'lodash/clone'
 
 export default {
   components: {
@@ -74,8 +75,8 @@ export default {
     },
     volunteers () {
       return this.uniqueVolunteerIds
-        .map((id) => {
-          return Object.assign({}, this.positions.find((p) => p.volunteer.id === id).volunteer)
+        .map(id => {
+          return Object.assign({}, this.positions.find(p => p.volunteer.id === id).volunteer)
         })
         .map((v) => { v.jobs = this.volunteerJobs(v); return v })
     },
@@ -152,6 +153,7 @@ export default {
           name
           occurred_at
           positions(order_by: { volunteer: { last_name: asc, first_name: asc }}) {
+            id
             volunteer {
               id
               first_name
@@ -194,7 +196,7 @@ export default {
         name: show.name,
         occurred_at: show.occurred_at
       }
-      this.positions = show.positions.slice(0)
+      this.positions = clone(show.positions)
     }
   },
 
@@ -241,7 +243,13 @@ export default {
       await this.$apollo.mutate({
         mutation: gql`mutation addJobs($objects:[positions_insert_input!]!) {
           insert_positions(objects: $objects) {
-            affected_rows
+            returning {
+              id
+              show_id
+              volunteer_id
+              job_id
+              hours
+            }
           }
         }`,
         variables: {
@@ -260,7 +268,9 @@ export default {
             volunteer_id: {_in: $volunteer_ids},
             job_id: {_is_null: true}}
           ) {
-            affected_rows
+            returning {
+              id
+            }
           }
         }`,
         variables: {
@@ -371,10 +381,20 @@ export default {
       })
     },
 
-    onPositionsChanged (positions) {
-      const volunteer = positions[0].volunteer
-      this.positions = this.positions.filter((p) => p.volunteer.id !== volunteer.id)
-      positions.forEach((p) => this.positions.push(p))
+    onPositionsChanged (volunteer, positions) {
+      this.positions = this.positions.filter(p => p.volunteer.id !== volunteer.id)
+      positions.forEach(position => {
+        this.positions.push({
+          id: position.id,
+          volunteer: {
+            id: volunteer.id,
+            first_name: volunteer.first_name,
+            last_name: volunteer.last_name
+          },
+          job: position.job,
+          hours: position.hours
+        })
+      })
       this.resortPositions()
     },
 
