@@ -1,0 +1,13 @@
+- args:
+    name: volunteer
+    table:
+      name: volunteer_shows
+      schema: public
+    using:
+      manual_configuration:
+        column_mapping:
+          volunteer_id: id
+        remote_table:
+          name: volunteers
+          schema: public
+  type: create_object_relationship

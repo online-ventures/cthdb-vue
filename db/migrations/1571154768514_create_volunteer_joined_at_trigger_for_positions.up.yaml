@@ -1,0 +1,26 @@
+- args:
+    cascade: false
+    sql: |-
+      CREATE OR REPLACE FUNCTION update_volunteers_joined_at()
+        RETURNS trigger AS '
+          DECLARE
+            joined_at date;
+            showed_at date;
+          BEGIN
+            SELECT volunteers.joined_at INTO joined_at from volunteers where id = NEW.volunteer_id;
+            SELECT shows.occurred_at INTO showed_at from shows where id = NEW.show_id;
+            IF showed_at < joined_at THEN
+              update volunteers set joined_at = showed_at where id = NEW.volunteer_id;
+            END IF;
+          RETURN NEW;
+        END'
+      LANGUAGE 'plpgsql';
+
+      DROP TRIGGER IF EXISTS update_joined_at ON positions;
+
+      CREATE TRIGGER update_joined_at
+      AFTER INSERT OR UPDATE
+      ON positions
+      FOR EACH ROW
+      EXECUTE PROCEDURE update_volunteers_joined_at();
+  type: run_sql

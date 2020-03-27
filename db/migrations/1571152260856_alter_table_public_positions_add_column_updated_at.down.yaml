@@ -1,0 +1,5 @@
+- args:
+    sql: |-
+      DROP TRIGGER IF EXISTS "set_public_positions_updated_at" ON "public"."positions";
+      ALTER TABLE "public"."positions" DROP COLUMN "updated_at";
+  type: run_sql

@@ -1,0 +1,21 @@
+- args:
+    cascade: false
+    sql: |-
+      CREATE OR REPLACE FUNCTION update_position_points()
+        RETURNS trigger AS '
+          BEGIN
+            IF NEW.points IS NULL THEN
+              NEW.points := (SELECT points FROM jobs WHERE id = NEW.job_id);
+            END IF;
+          RETURN NEW;
+        END'
+      LANGUAGE 'plpgsql';
+
+      DROP TRIGGER IF EXISTS update_points ON positions;
+
+      CREATE TRIGGER update_points
+      BEFORE INSERT
+      ON positions
+      FOR EACH ROW
+      EXECUTE PROCEDURE update_position_points();
+  type: run_sql

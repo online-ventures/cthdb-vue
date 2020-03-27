@@ -1,0 +1,15 @@
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - show_id
+      - volunteer_id
+      - points
+      computed_fields: []
+      filter: {}
+      limit: null
+    role: user
+    table:
+      name: volunteer_shows
+      schema: public
+  type: create_select_permission

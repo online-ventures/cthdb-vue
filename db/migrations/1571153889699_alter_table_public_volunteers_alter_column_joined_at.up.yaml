@@ -1,0 +1,10 @@
+- args:
+    sql: ALTER TABLE "public"."volunteers" ALTER COLUMN "joined_at" TYPE date;
+  type: run_sql
+- args:
+    sql: ALTER TABLE ONLY "public"."volunteers" ALTER COLUMN "joined_at" SET DEFAULT
+      now()::date;
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."volunteers"."joined_at" IS E''
+  type: run_sql

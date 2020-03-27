@@ -1,0 +1,6 @@
+- args:
+    cascade: false
+    sql: |-
+      UPDATE positions SET points = jobs.points FROM jobs WHERE positions.job_id = jobs.id AND positions.points is null;
+      UPDATE positions set points = 0 where points is null;
+  type: run_sql

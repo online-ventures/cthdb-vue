@@ -1,0 +1,20 @@
+- args:
+    role: staff
+    table:
+      name: volunteer_shows
+      schema: public
+  type: drop_select_permission
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - volunteer_id
+      - show_id
+      - points
+      computed_fields: []
+      filter: {}
+    role: staff
+    table:
+      name: volunteer_shows
+      schema: public
+  type: create_select_permission

@@ -1,0 +1,6 @@
+- args:
+    relationship: volunteer
+    table:
+      name: volunteer_shows
+      schema: public
+  type: drop_relationship

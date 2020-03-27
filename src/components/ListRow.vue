@@ -62,6 +62,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    points: {
+      type: Number,
+      required: false,
+      default: null
     }
   },
   computed: {

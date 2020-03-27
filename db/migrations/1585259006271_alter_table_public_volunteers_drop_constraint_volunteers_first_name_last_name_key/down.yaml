@@ -1,0 +1,6 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: alter table "public"."volunteers" add constraint "volunteers_first_name_last_name_key"
+      unique ("first_name", "last_name");
+  type: run_sql

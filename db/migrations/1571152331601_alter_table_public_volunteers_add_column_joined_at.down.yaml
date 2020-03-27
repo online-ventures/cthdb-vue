@@ -1,0 +1,3 @@
+- args:
+    sql: ALTER TABLE "public"."volunteers" DROP COLUMN "joined_at";
+  type: run_sql

@@ -1,0 +1,5 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: create index volunteers_last_then_first_name on volunteers (last_name, first_name);
+  type: run_sql
