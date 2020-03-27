@@ -21,3 +21,6 @@ yarn-error.log*
 
 # Config files
 config/kubernetes
+
+# Backups
+*.sql
