@@ -1,5 +1,5 @@
 <template lang="pug">
-form(ref="volunteerForm" @submit.prevent="saveRecords()")
+form(ref="volunteerForm" @submit.prevent="saveRecords")
   div(class="modal-card")
     header(class="modal-card-head")
       p(class="modal-card-title") {{ volunteer | name }}'s Jobs
@@ -9,12 +9,12 @@ form(ref="volunteerForm" @submit.prevent="saveRecords()")
 
         b-tab-item(label="Existing jobs" icon="hammer")
           div(class="list-outer")
-            div(v-for="job in currentJobs" class="columns row")
+            div(v-for="position in currentPositions" class="columns row")
               div(class="column")
-                p(class="title is-4") {{ job.name }}
+                p(class="title is-4") {{ position.job.name }}
               div(class="column")
                 b-tooltip(label="Number of hours performing this job")
-                  b-input(v-model="job.hours" placeholder="hours" type="number" icon="clock")
+                  b-input(v-model="position.hours" placeholder="hours" type="number" icon="clock")
 
         b-tab-item(label="Add / Remove" icon="plus")
           div(class="list-outer")
@@ -32,22 +32,24 @@ form(ref="volunteerForm" @submit.prevent="saveRecords()")
         div(class="level")
           div(class="level-left")
             div(class="level-item")
-              b-button(@click.prevent="$parent.close()") Cancel
+              b-button(@click.prevent="$parent.close") Cancel
             div(class="level-item")
               b-button(:class="{ 'is-loading': isSaving }"
                 type="is-primary"
                 icon-left="save"
-                @click.prevent="saveRecords()") Save
+                @click.prevent="saveRecords") Save
           div(class="level-right")
             div(class="level-item")
               b-button(type="is-danger"
                 icon-left="trash"
-                @click.prevent="confirmDeleteVolunteer()") Delete
+                @click.prevent="confirmDeleteVolunteer") Delete
 </template>
 
 <script>
 import gql from 'graphql-tag'
+import { VOLUNTEER_POSITIONS, cache } from '@/graphql/queries'
 import ListRow from '@/components/ListRow'
+import differenceBy from 'lodash/differenceBy'
 
 export default {
   components: {
@@ -68,18 +70,11 @@ export default {
   data () {
     return {
       search: '',
-      currentJobs: [],
+      existingPositions: [],
+      currentPositions: null,
       allJobs: [],
       savingCounter: 0,
       selectedTab: 0
-    }
-  },
-
-  created () {
-    // Create a copy of the existin jobs so we can make edits freely in this modal
-    this.existingJobs.forEach((job) => this.currentJobs.push(Object.assign({}, job)))
-    if (!this.existingJobs.length) {
-      this.selectedTab = 1
     }
   },
 
@@ -93,36 +88,22 @@ export default {
     searchTerm () {
       return this.search + '%'
     },
-    currentJobIds () {
-      return this.currentJobs.map((j) => j.id)
-    },
-    existingJobs () {
-      return this.volunteer.jobs.filter(Boolean)
-    },
-    existingJobIds () {
-      return this.existingJobs.map((j) => j.id)
-    },
-    newPositions () {
-      if (this.currentJobs.length) {
-        return this.currentJobs.map((job) => this.buildPosition(job))
-      } else {
-        return [this.buildPosition(null)]
-      }
-    },
-    insertPositions () {
-      return this.currentJobs
-        .filter((job) => !this.existingJobIds.includes(job.id))
-        .map((job) => {
+    updatedPositions () {
+      return this.currentPositions
+        .map(position => {
           return {
             show_id: this.show_id,
             volunteer_id: this.volunteer.id,
-            job_id: job.id,
-            hours: null
+            job_id: position.job.id,
+            hours: position.hours
           }
         })
     },
-    deleteJobs () {
-      return this.existingJobIds.filter((id) => !this.currentJobIds.includes(id))
+    droppedPositions () {
+      return differenceBy(
+        this.existingPositions,
+        this.currentPositions,
+        position => position.job.id)
     }
   },
 
@@ -133,14 +114,31 @@ export default {
   },
 
   apollo: {
+    existingPositions: {
+      query: VOLUNTEER_POSITIONS,
+      variables () {
+        return {
+          volunteer_id: this.volunteer.id,
+          show_id: this.show_id
+        }
+      },
+      update (data) {
+        const existing = data.positions
+        if (this.currentPositions == null) {
+          this.currentPositions = []
+          existing.forEach(p => this.currentPositions.push(Object.assign({}, p)))
+        }
+        if (!existing.length) this.selectedTab = 1
+        return existing
+      }
+    },
     allJobs: {
       query: gql`query jobs($name: String, $job_ids: [Int!]) {
           jobs(
             where: {_and: [
               {name: {_ilike: $name}},
               {deleted_at: {_is_null: true}}]}
-            order_by: {name: asc},
-            limit: 500) {
+            order_by: {name: asc}) {
               id
               name
             }
@@ -159,58 +157,77 @@ export default {
 
   methods: {
     isSelected (job) {
-      return this.currentJobIds.includes(job.id)
-    },
-
-    buildPosition (job) {
-      const hours = job ? job.hours : null
-      return {
-        show_id: this.show_id,
-        volunteer: {
-          id: this.volunteer.id,
-          first_name: this.volunteer.first_name,
-          last_name: this.volunteer.last_name
-        },
-        job: job,
-        hours: hours
-      }
+      if (!this.currentPositions) return false
+      return this.currentPositions.some(position => position.job.id === job.id)
     },
 
     onCheck (job) {
-      if (this.currentJobIds.includes(job.id)) {
-        this.currentJobs = this.currentJobs.filter((j) => j.id !== job.id)
+      if (this.currentPositions.some(position => position.job.id === job.id)) {
+        this.currentPositions = this.currentPositions.filter(p => p.job.id !== job.id)
       } else {
-        const newJob = { id: job.id, name: job.name, hours: null }
-        this.currentJobs.push(newJob)
+        const newPosition = { job: job, hours: null }
+        this.currentPositions.push(newPosition)
+        this.resortPositions()
       }
     },
 
+    resortPositions () {
+      this.currentPositions.sort((a, b) => a.job.name.localeCompare(b.job.name))
+    },
+
     async saveRecords () {
-      await this.insertRows()
+      await this.updatePositions()
       await this.deleteRows()
       await this.insertOrDeleteVolunteer()
-      this.$parent.$parent.onPositionsChanged(this.newPositions)
+      this.$parent.$parent.onPositionsChanged(this.volunteer, this.currentPositions)
       this.$parent.close()
     },
 
-    async insertRows () {
+    async updatePositions () {
       await this.$apollo.mutate({
         mutation: gql`mutation addRecords($objects:[positions_insert_input!]!) {
-          insert_positions(objects: $objects) {
-            affected_rows
+          insert_positions(
+            objects: $objects,
+            on_conflict: {
+              constraint: positions_show_id_volunteer_id_job_id_key,
+              update_columns: [hours]
+          }) {
+            returning {
+              id
+              show {
+                id
+                name
+                occurred_at
+              }
+              volunteer {
+                id
+                first_name
+                last_name
+              }
+              job {
+                id
+                name
+              }
+              points
+              hours
+            }
           }
         }`,
         variables: {
-          objects: this.insertPositions
+          objects: this.updatedPositions
+        },
+        update (store, result) {
+          cache.onAddPosition(store, result)
         },
         loadingKey: 'savingCounter'
       })
     },
 
     async deleteRows () {
-      if (!this.deleteJobs.length) {
+      if (!this.droppedPositions.length) {
         return
       }
+      const jobIds = this.droppedPositions.map(position => position.job.id)
       await this.$apollo.mutate({
         mutation: gql`mutation deleteRecords(
           $show_id:Int!,
@@ -222,22 +239,29 @@ export default {
             volunteer_id: {_eq: $volunteer_id},
             job_id: {_in: $job_ids}}
           ) {
-            affected_rows
+            returning {
+              id
+              volunteer_id
+              show_id
+            }
           }
         }`,
         variables: {
           show_id: this.show_id,
           volunteer_id: this.volunteer.id,
-          job_ids: this.deleteJobs
+          job_ids: jobIds
         },
-        loadingKey: 'savingCounter'
+        loadingKey: 'savingCounter',
+        update (store, result) {
+          cache.onDeletePosition(store, result)
+        }
       })
     },
 
     async insertOrDeleteVolunteer () {
-      if (this.currentJobs.length && !this.existingJobs.length) {
+      if (this.currentPositions.length && !this.existingPositions.length) {
         this.deleteEmptyJob()
-      } else if (!this.currentJobs.length && this.existingJobs.length) {
+      } else if (!this.currentPositions.length && this.existingPositions.length) {
         this.insertEmptyJob()
       }
     },
@@ -253,7 +277,9 @@ export default {
             volunteer_id: {_eq: $volunteer_id},
             job_id: {_is_null: true}}
           ) {
-            affected_rows
+            returning {
+              id
+            }
           }
         }`,
         variables: {
@@ -268,7 +294,13 @@ export default {
       await this.$apollo.mutate({
         mutation: gql`mutation addRecords($objects:[positions_insert_input!]!) {
           insert_positions(objects: $objects) {
-            affected_rows
+            returning {
+              id
+              show_id
+              volunteer_id
+              job_id
+              hours
+            }
           }
         }`,
         variables: {
@@ -303,7 +335,9 @@ export default {
             show_id: {_eq: $show_id},
             volunteer_id: {_eq: $volunteer_id}}
           ) {
-            affected_rows
+            returning {
+              id
+            }
           }
         }`,
         variables: {
@@ -312,7 +346,7 @@ export default {
         },
         loadingKey: 'savingCounter'
       })
-      this.$parent.$parent.onVolunteerRemoved(this.volunteer)
+      this.$parent.$parent.onVolunteerRemoved(this.volunteer, this.show_id)
       this.$buefy.toast.open({
         message: 'Volunteer removed',
         type: 'is-success'

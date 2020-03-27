@@ -179,7 +179,15 @@ export default {
             street: $street,
             city: $city
           }) {
-            affected_rows
+            returning {
+              id
+              first_name
+              last_name
+              email
+              phone
+              street
+              city
+            }
           }
         }`,
         variables: this.record,

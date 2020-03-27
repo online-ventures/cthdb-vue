@@ -196,7 +196,13 @@ export default {
       await this.$apollo.mutate({
         mutation: gql`mutation addRecords($objects:[positions_insert_input!]!) {
           insert_positions(objects: $objects) {
-            affected_rows
+            returning {
+              id
+              show_id
+              volunteer_id
+              job_id
+              hours
+            }
           }
         }`,
         variables: {

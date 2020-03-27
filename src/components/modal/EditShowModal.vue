@@ -147,7 +147,11 @@ export default {
       await this.$apollo.mutate({
         mutation: gql`mutation updateShow($id:Int!, $name:String!, $occurred_at:date!) {
           update_shows(where: {id: {_eq: $id}}, _set: {name: $name, occurred_at: $occurred_at}) {
-            affected_rows
+            returning {
+              id
+              name
+              occurred_at
+            }
           }
         }`,
         variables: show,

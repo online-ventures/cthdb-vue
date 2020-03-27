@@ -130,7 +130,11 @@ export default {
       await this.$apollo.mutate({
         mutation: gql`mutation updateJob($id:Int!, $name:String!, $points:Int!) {
           update_jobs(where: {id: {_eq: $id}}, _set: {name: $name, points: $points}) {
-            affected_rows
+            returning {
+              id
+              name
+              points
+            }
           }
         }`,
         variables: {
@@ -163,7 +167,11 @@ export default {
       await this.$apollo.mutate({
         mutation: gql`mutation updateJob($id:Int!) {
           update_jobs(where: {id: {_eq: $id}}, _set: {deleted_at: "now()"}) {
-            affected_rows
+            returning {
+              id
+              name
+              points
+            }
           }
         }`,
         variables: {
