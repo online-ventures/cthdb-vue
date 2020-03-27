@@ -39,8 +39,13 @@ export default {
     '$route' (to, from) {
       const fromIndex = this.topNavLinks.findIndex(link => link.path === from.path)
       const toIndex = this.topNavLinks.findIndex(link => link.path === to.path)
-      const direction = fromIndex < toIndex ? 'right' : 'left'
-      this.viewTransition = 'slide-' + direction
+      if (fromIndex === -1 || toIndex === -1) {
+        const direction = to.path.length > from.path.length ? 'right' : 'left'
+        this.viewTransition = 'slide-' + direction
+      } else {
+        const direction = fromIndex < toIndex ? 'right' : 'left'
+        this.viewTransition = 'slide-' + direction
+      }
     }
   }
 }
