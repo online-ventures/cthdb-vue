@@ -148,7 +148,15 @@ export default {
               auth_id:$auth_id,
               last_login_at:$last_login
           }) {
-            affected_rows
+            returning {
+              id
+              nickname
+              name
+              email
+              picture
+              auth_id
+              last_login_at
+            }
           }
         }`,
         variables: this.userData,
