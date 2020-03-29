@@ -21,7 +21,7 @@ div
           :subtitle="volunteer | showCount"
           icon="ticket-alt"
           :item="volunteer"
-          v-on:action="manageVolunteer")
+          v-on:action="showVolunteer")
         infinite-loading(@infinite="infiniteHandler")
 </template>
 
@@ -152,8 +152,8 @@ export default {
       this.$router.push({ name: 'new-volunteer' })
     },
 
-    manageVolunteer (item) {
-      this.$router.push({ name: 'edit-volunteer', params: { id: item.id } })
+    showVolunteer (item) {
+      this.$router.push({ name: 'volunteer', params: { id: item.id } })
     }
   }
 }

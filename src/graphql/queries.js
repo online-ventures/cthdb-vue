@@ -99,6 +99,21 @@ query volunteer($id: Int!) {
     phone
     street
     city
+    volunteer_shows {
+      points
+      show {
+        id
+        name
+        occurred_at
+        positions (where: {volunteer_id: {_eq: $id}}) {
+          job {
+            id
+            name
+            points
+          }
+        }
+      }
+    }
   }
 }`
 

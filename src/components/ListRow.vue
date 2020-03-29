@@ -1,16 +1,18 @@
 <template lang="pug">
 div(:class="rowClasses" @click="performClick")
-  div(class="column is-1 has-text-centered" v-if="checkable")
-    font-awesome-icon(icon="check-circle" size="2x"
-      :class="iconClass")
-  div(class="column")
-    p(class="title is-4") {{ title }}
-    div(class="subtitle is-6 level is-mobile")
-      div(class="level-left")
-        div(class="level-item" v-if="icon")
+  .column.is-1.has-text-centered(v-if="checkable")
+    font-awesome-icon(icon="check-circle" size="2x" :class="iconClass")
+  .column
+    p.title.is-4 {{ title }}
+    .subtitle.is-6.level.is-mobile
+      .level-left
+        .level-item(v-if="icon")
           b-icon(:icon="icon" size="is-small" :type="iconTypeOrDefault")
-        div(class="level-item")
+        .level-item
           span {{ subtitle }}
+  .column.is-2-tablet.is-one-quarter-mobile.has-text-centered(v-if="points")
+    b-icon(icon="coins" size="is-medium" type="is-warning")
+    span.is-size-3.has-text-weight-medium  {{ points | points }}
 </template>
 
 <script>
@@ -84,6 +86,11 @@ export default {
       } else {
         return 'has-text-grey-light'
       }
+    }
+  },
+  filters: {
+    points(value) {
+      return value * 0.5
     }
   },
   methods: {

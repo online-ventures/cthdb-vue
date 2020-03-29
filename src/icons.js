@@ -15,7 +15,8 @@ import {
   faClock,
   faTrash,
   faSave,
-  faSearch
+  faSearch,
+  faStar
 } from '@fortawesome/free-solid-svg-icons'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -35,7 +36,8 @@ library.add(
   faClock,
   faTrash,
   faSave,
-  faSearch
+  faSearch,
+  faStar
 )
 
 export default FontAwesomeIcon

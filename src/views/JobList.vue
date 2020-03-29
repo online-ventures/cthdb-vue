@@ -1,14 +1,14 @@
 <template lang="pug">
 div
-  section(class="hero is-primary")
-    div(class="hero-body")
-      div(class="container")
-        p(class="title") Jobs
-        p(class="subtitle") View and manage jobs
+  section.hero.is-primary
+    .hero-body
+      .container
+        p.title Jobs
+        p.subtitle View and manage jobs
   section
-    div(class="content")
-      div(class="container")
-        form(class="search-form" @submit.prevent)
+    .content
+      .container
+        form.search-form(@submit.prevent)
           b-field
             b-input(icon="search" autofocus placeholder="search" type="search" v-model="search")
         list-row(v-for="job in jobList"
@@ -19,7 +19,7 @@ div
           icon-type="is-warning"
           :item="job"
           v-on:action="editModal")
-        div(class="buttons")
+        .buttons
           b-button(@click="moreJobs" v-if="displayMore") See more ({{ remainingCount }})
           b-button(type="is-primary" @click="newModal" icon-left="plus" v-if="canEdit") Add job
 </template>

@@ -35,7 +35,7 @@ div
               b-input(v-model="record.city" v-on:keyup.enter.native="save")
 
         .buttons
-          b-button(@click.prevent="backToList") Cancel
+          b-button(@click.prevent="backToShow") Cancel
           b-button(:class="{ 'is-loading': saving }"
             type="is-primary"
             icon-left="save"
@@ -107,11 +107,11 @@ export default {
   },
 
   methods: {
-    backToList () {
-      this.$router.push({ name: 'volunteers' })
+    backToShow () {
+      this.$router.push({ name: 'edit-volunteer', params: { id: this.volunteer.id } })
     },
     onSaveComplete () {
-      this.backToList()
+      this.backToShow()
     }
   }
 }
