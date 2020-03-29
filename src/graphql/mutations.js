@@ -7,7 +7,9 @@ mutation insertVolunteer (
   $email: String,
   $phone: String,
   $street: String,
-  $city: String
+  $city: String,
+  $notes: String,
+  $all_star: Boolean
 ) {
   insert_volunteers(
     objects: {
@@ -16,7 +18,9 @@ mutation insertVolunteer (
       email: $email,
       phone: $phone,
       street: $street,
-      city: $city
+      city: $city,
+      notes: $notes,
+      all_star: $all_star
     },
   ) {
     returning {
@@ -33,7 +37,9 @@ mutation updateVolunteer (
   $email: String,
   $phone: String,
   $street: String,
-  $city: String
+  $city: String,
+  $notes: String,
+  $all_star: Boolean
 ) {
   update_volunteers(
     where: {id: {_eq: $id}},
@@ -43,7 +49,9 @@ mutation updateVolunteer (
       email: $email,
       phone: $phone,
       street: $street,
-      city: $city
+      city: $city,
+      notes: $notes,
+      all_star: $all_star
     },
   ) {
     returning {

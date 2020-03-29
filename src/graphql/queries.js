@@ -13,6 +13,8 @@ query volunteer ($id: Int!) {
     phone
     street
     city
+    all_star
+    notes
   }
 }`
 

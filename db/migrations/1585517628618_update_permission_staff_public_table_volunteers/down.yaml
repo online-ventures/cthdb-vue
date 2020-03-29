@@ -1,0 +1,26 @@
+- args:
+    role: staff
+    table:
+      name: volunteers
+      schema: public
+  type: drop_update_permission
+- args:
+    permission:
+      columns:
+      - id
+      - city
+      - email
+      - first_name
+      - last_name
+      - phone
+      - street
+      filter: {}
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: staff
+    table:
+      name: volunteers
+      schema: public
+  type: create_update_permission

@@ -34,6 +34,16 @@ div
             b-field(label="City")
               b-input(v-model="record.city" v-on:keyup.enter.native="save")
 
+        .columns
+          .column
+            b-field(label="Notes")
+              b-input(v-model="record.notes" v-on:keyup.enter.native="save")
+          .column
+            b-field(label="all_star")
+              b-select(expanded v-model="record.all_star")
+                option(:value="false" :key="0") Not awarded
+                option(:value="true" :key="1") Awarded
+
         .buttons
           b-button(@click.prevent="cancel") Cancel
           b-button(:class="{ 'is-loading': saving }"
@@ -67,7 +77,9 @@ export default {
         'email',
         'phone',
         'street',
-        'city'
+        'city',
+        'notes',
+        'all_star'
       ]
     }
   },
