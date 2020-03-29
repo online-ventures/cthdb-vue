@@ -89,7 +89,7 @@ export default {
     }
   },
   filters: {
-    points(value) {
+    points (value) {
       return value * 0.5
     }
   },

@@ -35,7 +35,7 @@ div
               b-input(v-model="record.city" v-on:keyup.enter.native="save")
 
         .buttons
-          b-button(@click.prevent="backToShow") Cancel
+          b-button(@click.prevent="cancel") Cancel
           b-button(:class="{ 'is-loading': saving }"
             type="is-primary"
             icon-left="save"
@@ -101,17 +101,29 @@ export default {
         }
       },
       update (data) {
-        this.loadRecord(data.volunteers_by_pk)
+        return this.loadRecord(data.volunteers_by_pk)
       }
     }
   },
 
   methods: {
-    backToShow () {
-      this.$router.push({ name: 'edit-volunteer', params: { id: this.volunteer.id } })
+    backToShow (id) {
+      this.$router.push({ name: 'volunteer', params: { id: id } })
     },
-    onSaveComplete () {
-      this.backToShow()
+    cancel () {
+      if (this.newRecord) {
+        this.$router.push({ name: 'volunteers' })
+      } else {
+        this.backToShow(this.volunteer.id)
+      }
+    },
+    onSaveComplete (data) {
+      if (this.newRecord) {
+        const id = data.insert_volunteers.returning[0].id
+        this.backToShow(id)
+      } else {
+        this.backToShow(this.volunteer.id)
+      }
     }
   }
 }

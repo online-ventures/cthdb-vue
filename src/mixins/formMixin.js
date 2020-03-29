@@ -4,7 +4,8 @@ export default {
       record: {},
       attributes: [],
       savingCounter: 0,
-      apolloError: null
+      apolloError: null,
+      mutationResult: null
     }
   },
 
@@ -40,7 +41,7 @@ export default {
       } else {
         await this.update()
       }
-      this.onSaveComplete()
+      this.onSaveComplete(this.mutationResult)
     },
 
     validate () {
@@ -57,6 +58,8 @@ export default {
         mutation: this.formMutation,
         variables: this.recordData,
         loadingKey: 'savingCounter'
+      }).then(result => {
+        this.mutationResult = result.data
       })
     },
 
