@@ -1,18 +1,18 @@
 self.__precacheManifest = [
   {
-    "revision": "01c76c87aeb8702ae33f",
-    "url": "/assets/css/app.b7da84d0.css"
+    "revision": "e031b4ee7e8aabd5b686",
+    "url": "/assets/css/app.462c6452.css"
   },
   {
-    "revision": "01c76c87aeb8702ae33f",
-    "url": "/assets/js/app.37d06c12.js"
+    "revision": "e031b4ee7e8aabd5b686",
+    "url": "/assets/js/app.3b580ac6.js"
   },
   {
-    "revision": "d9cf34879b362de0d2da",
-    "url": "/assets/js/chunk-vendors.5e38e93a.js"
+    "revision": "8601b2fc3d4c199ecd18",
+    "url": "/assets/js/chunk-vendors.ab0f0889.js"
   },
   {
-    "revision": "be4bb58f5e8eed84bbfc5645c9b7d3a8",
+    "revision": "15de3382cec562d0454620bca19f10d5",
     "url": "/index.html"
   },
   {
@@ -20,12 +20,12 @@ self.__precacheManifest = [
     "url": "/browserconfig.xml"
   },
   {
-    "revision": "c299fcfcff1720c8a914b75646144f50",
-    "url": "/favicon-114.png"
-  },
-  {
     "revision": "7f03f28b342912faf296ec09d6592709",
     "url": "/favicon-120.png"
+  },
+  {
+    "revision": "c299fcfcff1720c8a914b75646144f50",
+    "url": "/favicon-114.png"
   },
   {
     "revision": "d987956a3e30d23025c7844abc9bcf5c",
@@ -36,12 +36,12 @@ self.__precacheManifest = [
     "url": "/favicon-150.png"
   },
   {
-    "revision": "450aca0c83fdccfd12e96a86b1f44610",
-    "url": "/favicon-152.png"
-  },
-  {
     "revision": "73be8597afae99e370efa50e10ea50df",
     "url": "/favicon-16.png"
+  },
+  {
+    "revision": "450aca0c83fdccfd12e96a86b1f44610",
+    "url": "/favicon-152.png"
   },
   {
     "revision": "175fdff97321f7989d82042bfdebd3f0",
@@ -96,12 +96,12 @@ self.__precacheManifest = [
     "url": "/faviconit-instructions.txt"
   },
   {
-    "revision": "9915fd87ad2f2ce7d0a49ac2d0bc65c1",
-    "url": "/images/icons/icon-128x128.png"
-  },
-  {
     "revision": "92e938d9cb850c0c7f6cee940266ab6c",
     "url": "/feather-sprite.svg"
+  },
+  {
+    "revision": "9915fd87ad2f2ce7d0a49ac2d0bc65c1",
+    "url": "/images/icons/icon-128x128.png"
   },
   {
     "revision": "215e0161486c1f04acab54d3746aae49",
