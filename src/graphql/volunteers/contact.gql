@@ -1,0 +1,8 @@
+query postContact (
+  $id: Int!
+) {
+  posts_by_pk(id: $id) {
+    id
+    contact
+  }
+}

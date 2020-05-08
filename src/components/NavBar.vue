@@ -1,78 +1,64 @@
 <template lang="pug">
 div
-  b-navbar
-    template(slot="brand")
-      b-navbar-item(tag='router-link' :to="{ path: '/' }")
+  nav.navbar
+    .navbar-brand
+      router-link.navbar-item(:to="{ path: '/' }")
         img(src="/images/icons/icon-144x144.png")
-      b-navbar-item(tag='router-link' :to="{ path: '/' }")
+      router-link.navbar-item(:to="{ path: '/' }")
         b CTH
         span Stars
-    template(slot="start")
-      b-navbar-item(tag="router-link" v-for="link in links" :to="{ path: link.path }" :key="link.text" active-class="is-active")
-        | {{ link.text }}
-    template(slot="end")
-      b-navbar-item(tag="div")
-        b-dropdown(v-if="isAuthenticated" position="is-bottom-left")
-          button(class="button" type="" slot="trigger")
-            figure(class="image is-24x24")
-              img(class="is-rounded" :src="user.picture")
-            b-icon(icon="caret-down" size="is-small")
-          b-dropdown-item(custom) {{ user.name }}
-          b-dropdown-item(v-if="isAuthenticated" @click="logout") Logout
-  div(class="mobile-navbar is-hidden-desktop")
-    div(class="columns is-mobile is-gapless")
-      div(class="column")
-        router-link(class="mobile-router-link has-text-white has-text-centered" :to="{name: 'show-list'}")
-          p(class="mobile-router-icon")
-            font-awesome-icon(icon="ticket-alt" size="1x" class="has-text-centered")
-          p(class="nav-title is-size-6") Shows
-      div(class="column")
-        router-link(class="mobile-router-link has-text-white has-text-centered" :to="{name: 'job-list'}")
-          p(class="mobile-router-icon")
-            font-awesome-icon(icon="hammer" size="1x" class="has-text-centered")
-          p(class="nav-title is-size-6") Jobs
-      div(class="column")
-        router-link(class="mobile-router-link has-text-white has-text-centered" :to="{name: 'volunteers'}")
-          p(class="mobile-router-icon")
-            font-awesome-icon(icon="users" size="1x" class="has-text-centered")
-          p(class="nav-title is-size-6") Volunteers
+      a.navbar-burger.burger(ref="burger" @click="toggleLinks" :class="{ 'is-active': showLinks }")
+        span
+        span
+        span
+    .navbar-menu(:class="{ 'is-active': showLinks }")
+      .navbar-start
+        router-link.navbar-item(:to="{ name: 'shows' }") Shows
+        router-link.navbar-item(:to="{ name: 'jobs' }") Jobs
+        router-link.navbar-item(:to="{ name: 'volunteers' }") Volunteers
+      .navbar-end
+        .navbar-item.has-dropdown.is-hoverable(v-if="user")
+          a.navbar-link Account
+          .navbar-dropdown.is-right
+            .navbar-item {{ user.name }}
+            a.navbar-item(@click="logout") Logout
+        .navbar-item(v-if="!user")
+          a.button.is-small.is-secondary(:class="{'is-loading': authLoading}" @click="login")
+            strong Login
 </template>
 
 <script>
-import authMixin from '@/mixins/authMixin'
-
 export default {
-  mixins: [authMixin],
-  props: {
-    links: Array
+  data () {
+    return {
+      showLinks: false
+    }
+  },
+  computed: {
+    authLoading () {
+      return !this.$auth.completed
+    },
+    user () {
+      return this.$auth.user
+    }
+  },
+  methods: {
+    login () {
+      this.$auth.login()
+    },
+    logout () {
+      this.$auth.logout()
+    },
+    routeByName (name) {
+      this.$router.push({ name: name })
+      this.showLinks = false
+    },
+    toggleLinks () {
+      this.showLinks = !this.showLinks
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import "src/scss/_variables";
-.is-active {
-  background-color: $white-ter !important;
-}
-.mobile-navbar {
-  position: fixed;
-  z-index: 100;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background-color: $primary;
-}
-.mobile-router-link {
-  width: 100%;
-}
-.mobile-router-icon {
-  margin-top: 0.5rem;
-}
-.nav-title {
-  margin-top: -0.3rem;
-  margin-bottom: 0.5rem;
-}
-.router-link-active p {
-  color: $yellow;
-}
 </style>

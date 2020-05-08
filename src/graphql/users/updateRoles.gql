@@ -1,0 +1,8 @@
+mutation updateRoles($userId: Int!, $roles: [roles_insert_input!]!) {
+  delete_roles(where: {user_id: {_eq: $userId}}) {
+    affected_rows
+  }
+  insert_roles(objects: $roles) {
+    affected_rows
+  }
+}

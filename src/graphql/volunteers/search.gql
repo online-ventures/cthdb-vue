@@ -1,0 +1,35 @@
+query searchVolunteerList (
+  $offset: Int!,
+  $limit: Int!,
+  $first_name: String!,
+  $last_name: String!,
+  $withPoints: Boolean!
+) {
+  volunteers(where: {
+    _and: [
+      {_or: [
+        {first_name: {_ilike: $first_name}},
+        {last_name: {_ilike: $first_name}}
+      ]},
+      {_or: [
+        {first_name: {_ilike: $last_name}},
+        {last_name: {_ilike: $last_name}}
+      ]},
+    ]},
+    order_by: {last_name: asc, first_name: asc},
+    limit: $limit,
+    offset: $offset
+  ) {
+    id
+    first_name
+    last_name
+    volunteer_shows_aggregate @include(if: $withPoints) {
+      aggregate {
+        count
+        sum {
+          points
+        }
+      }
+    }
+  }
+}

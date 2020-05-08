@@ -1,0 +1,33 @@
+query editVolunteer ($id: Int!) {
+  volunteers_by_pk(id: $id) {
+    id
+    joined_at
+    first_name
+    last_name
+    email
+    phone
+    street
+    city
+    all_star
+    notes
+  }
+  awards (where: {volunteer_id: {_eq: $id}}) {
+    awarded_at
+    level {
+      id
+      name
+    }
+  }
+  levels (order_by: {points: asc}) {
+    id
+    name
+    points
+  }
+  volunteer_shows_aggregate (where: {volunteer_id: {_eq: $id}}) {
+    aggregate {
+      sum {
+        points
+      }
+    }
+  }
+}

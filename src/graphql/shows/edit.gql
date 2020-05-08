@@ -1,0 +1,7 @@
+query editShow ($id: Int!) {
+  shows_by_pk(id: $id) {
+    id
+    name
+    occurred_at
+  }
+}

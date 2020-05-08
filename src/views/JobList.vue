@@ -3,14 +3,24 @@ div
   section.hero.is-primary
     .hero-body
       .container
-        p.title Jobs
+        h1.title Jobs
         p.subtitle View and manage jobs
-  section
-    .content
+  transition(name="long-fade")
+    section.section(v-if="jobs")
       .container
-        form.search-form(@submit.prevent)
-          b-field
-            b-input(icon="search" autofocus placeholder="search" type="search" v-model="search")
+        .columns
+          .column.is-10
+            form.search-form(@submit.prevent)
+              .control.has-icons-left
+                input.input(placeholder="search" @input="searchInput")
+                span.icon.is-small.is-left
+                  font-awesome-icon(icon="search" size="1x")
+          .column.has-text-right-tablet
+            button.button.is-primary.is-fullwidth(@click="addJob" v-if="canEdit")
+              span.icon.is-small
+                font-awesome-icon(icon="plus" size="1x")
+              span Add Job
+
         list-row(v-for="job in jobList"
           :key="job.id"
           :title="job.name"
@@ -18,28 +28,24 @@ div
           icon="coins"
           icon-type="is-warning"
           :item="job"
-          v-on:action="editModal")
-        .buttons
-          b-button(@click="moreJobs" v-if="displayMore") See more ({{ remainingCount }})
-          b-button(type="is-primary" @click="newModal" icon-left="plus" v-if="canEdit") Add job
+          v-on:action="editJob")
 </template>
 
 <script>
-import gql from 'graphql-tag'
 import ListRow from '@/components/ListRow'
-import EditJobModal from '@/components/modal/EditJobModal'
+import infiniteScrollingMixin from '@/mixins/infiniteScrollingMixin'
+import debounce from 'lodash/debounce'
+import JOB_LIST from '@/graphql/jobs/list.gql'
+import JOB_SEARCH from '@/graphql/jobs/search.gql'
 
 export default {
   components: {
-    ListRow,
-    EditJobModal
+    ListRow
   },
 
-  created () {
-    // Refetch on creation to invalidate a potentially outdated cache
-    this.$apollo.queries.jobs.refetch()
-    this.$apollo.queries.jobCount.refetch()
-  },
+  mixins: [
+    infiniteScrollingMixin
+  ],
 
   mounted () {
     window.scrollTo(0, 0)
@@ -47,80 +53,49 @@ export default {
 
   data () {
     return {
-      jobs: [],
-      jobCount: 0,
-      createdJobs: 0,
+      jobs: null,
       allJobs: [],
-      ignoreJobs: [],
-      search: '',
-      page: 1,
-      rowsPerPage: 5
+      search: ''
     }
   },
 
   computed: {
     canEdit () {
-      return this.$store.getters.can('edit-jobs')
-    },
-    offset () {
-      if (this.searching) {
-        return 0
-      } else {
-        return (this.page - 1) * this.rowsPerPage
-      }
+      return this.$auth.has('staff')
     },
     searching () {
       return this.search !== ''
     },
-    displayMore () {
-      return !this.searching &&
-        this.allJobs.length < (this.jobCount + this.createdJobs)
-    },
     jobList () {
       return this.searching ? this.jobs : this.allJobs
     },
-    remainingCount () {
-      return this.jobCount - this.allJobs.length
-    },
     jobName () {
       return '%' + this.search + '%'
+    },
+    query () {
+      return this.searching ? JOB_SEARCH : JOB_LIST
+    },
+    queryVariables () {
+      const variables = this.infiniteQueryVariables
+      if (this.searching) {
+        variables.search = this.jobName
+      } else {
+        delete variables.search
+      }
+      return variables
     }
   },
 
   apollo: {
     jobs: {
-      query: gql`query currentJobs($name: String, $offset: Int!, $limit: Int!, $ignore: [Int!]) {
-        jobs(where: {_and: [
-            {id: {_nin: $ignore}},
-            {deleted_at: {_is_null: true}},
-            {name: {_ilike: $name}}]},
-          order_by: {name: asc, points: asc},
-          limit: $limit,
-          offset: $offset) {
-          id
-          name
-          points
-        }
-      }`,
+      query () {
+        return this.query
+      },
       variables () {
-        return {
-          ignore: this.ignoreJobs,
-          offset: this.offset,
-          limit: this.rowsPerPage,
-          name: this.jobName
-        }
-      }
-    },
-    jobCount: {
-      query: gql`query jobCount {
-        jobs_aggregate(where: {deleted_at: {_is_null: true}}) {
-          aggregate {
-            count
-          }
-        }
-      }`,
-      update (data) {
-        return data.jobs_aggregate.aggregate.count
+        return this.queryVariables
+      },
+      update ({ jobs }) {
+        return this.processFetchedData(jobs, this.allJobs)
       }
     }
   },
@@ -132,75 +107,21 @@ export default {
     }
   },
 
-  watch: {
-    jobs (jobs) {
-      if (!this.searching) {
-        jobs.forEach(job => {
-          if (this.allJobs.every((existing) => job.id !== existing.id)) {
-            this.allJobs.push(Object.assign({}, job))
-          } else {
-            const i = this.allJobs.findIndex((existing) => job.id === existing.id)
-            this.allJobs[i] = Object.assign({}, job)
-          }
-        })
-      }
-    }
-  },
-
   methods: {
-    moreJobs () {
-      this.page++
+    searchInput: debounce(function (event) {
+      this.allJobs = []
+      this.page = 1
+      this.search = event.target.value
+    }, 300),
+    addJob () {
+      this.$router.push({ name: 'new-job' })
     },
-
-    addJob (added) {
-      this.ignoreJobs.push(added.id)
-      this.allJobs.push(added)
-      this.jobCount++
-    },
-
-    updateJob (updated) {
-      const job = this.allJobs.find(job => job.id === updated.id)
-      Object.assign(job, updated)
-    },
-
-    openModal (props) {
-      this.$buefy.modal.open({
-        parent: this,
-        component: EditJobModal,
-        hasModalCard: true,
-        props: props
-      })
-    },
-
-    newModal () {
-      this.openModal({
-        title: 'New Job',
-        item: {
-          name: '',
-          points: 0
-        }
-      })
-    },
-
-    editModal (item) {
-      if (!this.canEdit) {
-        return
-      }
-      this.openModal({
-        title: 'Edit Job',
-        item: item
-      })
-    },
-
-    onJobRemoved (item) {
-      this.allJobs = this.allJobs.filter((existing) => existing.id !== item.id)
+    editJob (item) {
+      this.$router.push({ name: 'edit-job', params: { id: item.id } })
     }
   }
 }
 </script>
 
 <style scoped>
-.search-form {
-  margin-bottom: 1.5rem;
-}
 </style>

@@ -1,0 +1,19 @@
+mutation deletePosition (
+  $showId:Int!,
+  $volunteerId:Int!,
+  $jobId:Int!
+) {
+  delete_positions (
+    where: {
+      show_id: {_eq: $showId},
+      volunteer_id: {_eq: $volunteerId},
+      job_id: {_eq: $jobId}
+    }
+  ) {
+    returning {
+      volunteer_id
+      show_id
+      job_id
+    }
+  }
+}

@@ -1,0 +1,24 @@
+mutation insertPosition (
+  $positions: [positions_insert_input!]!
+) {
+  insert_positions(
+    objects: $positions
+    on_conflict: {
+      constraint: positions_pkey,
+      update_columns: [
+        points
+      ]
+    }
+  ) {
+    returning {
+      show_id
+      volunteer_id
+      points
+      job {
+        id
+        name
+        points
+      }
+    }
+  }
+}

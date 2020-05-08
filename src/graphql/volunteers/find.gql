@@ -1,0 +1,36 @@
+query findVolunteer ($id: Int!) {
+  volunteers_by_pk(id: $id) {
+    id
+    joined_at
+    first_name
+    last_name
+    email
+    phone
+    street
+    city
+    notes
+    volunteer_shows {
+      points
+      show {
+        id
+        name
+        occurred_at
+        positions (where: {volunteer_id: {_eq: $id}}) {
+          points
+          job {
+            id
+            name
+            points
+          }
+        }
+      }
+    }
+    awards {
+      awarded_at
+      level {
+        id
+        name
+      }
+    }
+  }
+}

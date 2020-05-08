@@ -1,0 +1,10 @@
+query currentUser ($authId: String!) {
+  users(where: {auth_id: {_eq: $authId}}) {
+    id
+    auth_id
+    name
+    nickname
+    email
+    picture
+  }
+}

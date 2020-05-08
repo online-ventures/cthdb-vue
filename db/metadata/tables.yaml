@@ -1,0 +1,591 @@
+- table:
+    schema: public
+    name: awards
+  object_relationships:
+  - name: level
+    using:
+      foreign_key_constraint_on: level_id
+  - name: volunteer
+    using:
+      foreign_key_constraint_on: volunteer_id
+  insert_permissions:
+  - role: staff
+    permission:
+      check: {}
+      columns:
+      - awarded_at
+      - level_id
+      - volunteer_id
+      backend_only: false
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - volunteer_id
+      - level_id
+      - awarded_at
+      filter: {}
+  - role: staff
+    permission:
+      columns:
+      - awarded_at
+      - level_id
+      - volunteer_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - awarded_at
+      - level_id
+      - volunteer_id
+      filter: {}
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - awarded_at
+      - level_id
+      - volunteer_id
+      filter: {}
+      check: null
+  delete_permissions:
+  - role: staff
+    permission:
+      filter: {}
+- table:
+    schema: public
+    name: jobs
+  array_relationships:
+  - name: positions
+    using:
+      foreign_key_constraint_on:
+        column: job_id
+        table:
+          schema: public
+          name: positions
+  insert_permissions:
+  - role: staff
+    permission:
+      check: {}
+      columns:
+      - name
+      - points
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - name
+      - points
+      - created_at
+      - updated_at
+      - deleted_at
+      filter: {}
+      allow_aggregations: true
+  - role: staff
+    permission:
+      columns:
+      - id
+      - points
+      - name
+      - created_at
+      - deleted_at
+      - updated_at
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+      - id
+      - points
+      - name
+      - created_at
+      - deleted_at
+      - updated_at
+      filter: {}
+      allow_aggregations: true
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - deleted_at
+      - name
+      - points
+      filter: {}
+      check: null
+- table:
+    schema: public
+    name: levels
+  array_relationships:
+  - name: awards
+    using:
+      foreign_key_constraint_on:
+        column: level_id
+        table:
+          schema: public
+          name: awards
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - points
+      - name
+      - created_at
+      - updated_at
+      filter: {}
+  - role: staff
+    permission:
+      columns:
+      - id
+      - points
+      - name
+      - created_at
+      - updated_at
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - id
+      - created_at
+      - updated_at
+      - name
+      - points
+      filter: {}
+- table:
+    schema: public
+    name: positions
+  object_relationships:
+  - name: job
+    using:
+      foreign_key_constraint_on: job_id
+  - name: show
+    using:
+      foreign_key_constraint_on: show_id
+  - name: volunteer
+    using:
+      foreign_key_constraint_on: volunteer_id
+  insert_permissions:
+  - role: staff
+    permission:
+      check: {}
+      columns:
+      - hours
+      - job_id
+      - points
+      - show_id
+      - volunteer_id
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - created_at
+      - hours
+      - job_id
+      - points
+      - show_id
+      - updated_at
+      - volunteer_id
+      filter: {}
+      allow_aggregations: true
+  - role: staff
+    permission:
+      columns:
+      - created_at
+      - hours
+      - job_id
+      - points
+      - show_id
+      - updated_at
+      - volunteer_id
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+      - created_at
+      - hours
+      - job_id
+      - points
+      - show_id
+      - updated_at
+      - volunteer_id
+      filter: {}
+      allow_aggregations: true
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - hours
+      - job_id
+      - points
+      - show_id
+      - volunteer_id
+      filter: {}
+      check: null
+  delete_permissions:
+  - role: staff
+    permission:
+      filter: {}
+- table:
+    schema: public
+    name: roles
+  object_relationships:
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - user_id
+      - name
+      filter: {}
+  - role: staff
+    permission:
+      columns:
+      - user_id
+      - name
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - user_id
+      - name
+      filter: {}
+- table:
+    schema: public
+    name: shows
+  array_relationships:
+  - name: positions
+    using:
+      foreign_key_constraint_on:
+        column: show_id
+        table:
+          schema: public
+          name: positions
+  - name: volunteer_shows
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: volunteer_shows
+        column_mapping:
+          id: show_id
+  insert_permissions:
+  - role: staff
+    permission:
+      check: {}
+      columns:
+      - name
+      - occurred_at
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - name
+      - occurred_at
+      - created_at
+      - updated_at
+      filter: {}
+      allow_aggregations: true
+  - role: staff
+    permission:
+      columns:
+      - occurred_at
+      - id
+      - name
+      - created_at
+      - updated_at
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+      - id
+      - name
+      - occurred_at
+      - created_at
+      - updated_at
+      filter: {}
+      allow_aggregations: true
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - name
+      - occurred_at
+      filter: {}
+      check: null
+- table:
+    schema: public
+    name: tenants
+- table:
+    schema: public
+    name: users
+  array_relationships:
+  - name: roles
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          schema: public
+          name: roles
+  insert_permissions:
+  - role: staff
+    permission:
+      check:
+        auth_id:
+          _eq: x-hasura-user-id
+      columns:
+      - auth_id
+      - email
+      - last_login
+      - last_login_at
+      - name
+      - nickname
+      - picture
+  - role: user
+    permission:
+      check:
+        auth_id:
+          _eq: x-hasura-user-id
+      columns:
+      - auth_id
+      - email
+      - last_login
+      - last_login_at
+      - name
+      - nickname
+      - picture
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - nickname
+      - name
+      - email
+      - picture
+      - auth_id
+      - last_login_at
+      - created_at
+      - updated_at
+      - last_login
+      filter: {}
+  - role: staff
+    permission:
+      columns:
+      - id
+      - nickname
+      - name
+      - email
+      - picture
+      - auth_id
+      - last_login_at
+      - created_at
+      - updated_at
+      - last_login
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - id
+      - nickname
+      - name
+      - email
+      - picture
+      - auth_id
+      - last_login_at
+      - created_at
+      - updated_at
+      - last_login
+      filter: {}
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - auth_id
+      - email
+      - last_login
+      - last_login_at
+      - name
+      - nickname
+      - picture
+      filter:
+        auth_id:
+          _eq: x-hasura-user-id
+      check: null
+  - role: user
+    permission:
+      columns:
+      - auth_id
+      - email
+      - last_login
+      - last_login_at
+      - name
+      - nickname
+      - picture
+      filter:
+        auth_id:
+          _eq: x-hasura-user-id
+      check: null
+- table:
+    schema: public
+    name: volunteer_shows
+  object_relationships:
+  - name: show
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: shows
+        column_mapping:
+          show_id: id
+  - name: volunteer
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: volunteers
+        column_mapping:
+          volunteer_id: id
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - volunteer_id
+      - show_id
+      - points
+      filter: {}
+      allow_aggregations: true
+  - role: staff
+    permission:
+      columns:
+      - volunteer_id
+      - show_id
+      - points
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+      - show_id
+      - volunteer_id
+      - points
+      filter: {}
+      allow_aggregations: true
+- table:
+    schema: public
+    name: volunteers
+  array_relationships:
+  - name: awards
+    using:
+      foreign_key_constraint_on:
+        column: volunteer_id
+        table:
+          schema: public
+          name: awards
+  - name: positions
+    using:
+      foreign_key_constraint_on:
+        column: volunteer_id
+        table:
+          schema: public
+          name: positions
+  - name: volunteer_shows
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: volunteer_shows
+        column_mapping:
+          id: volunteer_id
+  insert_permissions:
+  - role: staff
+    permission:
+      check: {}
+      columns:
+      - all_star
+      - joined_at
+      - id
+      - city
+      - email
+      - first_name
+      - last_name
+      - notes
+      - phone
+      - street
+      - created_at
+      - updated_at
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - first_name
+      - last_name
+      - email
+      - phone
+      - street
+      - city
+      - created_at
+      - updated_at
+      - joined_at
+      - notes
+      - all_star
+      filter: {}
+      allow_aggregations: true
+  - role: staff
+    permission:
+      columns:
+      - all_star
+      - joined_at
+      - id
+      - city
+      - email
+      - first_name
+      - last_name
+      - notes
+      - phone
+      - street
+      - created_at
+      - updated_at
+      filter: {}
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+      - id
+      - first_name
+      - last_name
+      - email
+      - phone
+      - street
+      - city
+      - created_at
+      - updated_at
+      - joined_at
+      - notes
+      - all_star
+      filter: {}
+      allow_aggregations: true
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - all_star
+      - joined_at
+      - id
+      - city
+      - email
+      - first_name
+      - last_name
+      - notes
+      - phone
+      - street
+      - created_at
+      - updated_at
+      filter: {}
+      check: null

@@ -1,0 +1,23 @@
+query findShow ($id: Int!) {
+  shows_by_pk(id: $id) {
+    id
+    name
+    occurred_at
+    volunteer_shows {
+      points
+      volunteer {
+        id
+        first_name
+        last_name
+        positions (where: {show_id: {_eq: $id}}) {
+          points
+          job {
+            id
+            name
+            points
+          }
+        }
+      }
+    }
+  }
+}

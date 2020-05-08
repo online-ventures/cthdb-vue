@@ -1,0 +1,19 @@
+mutation insertAward (
+  $volunteer_id: Int!,
+  $level_id: Int!
+) {
+  insert_awards (
+    objects: {
+      volunteer_id: $volunteer_id,
+      level_id: $level_id
+    },
+  ) {
+    returning {
+      awarded_at
+      level {
+        id
+        name
+      }
+    }
+  }
+}

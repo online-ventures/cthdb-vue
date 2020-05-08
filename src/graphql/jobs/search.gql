@@ -1,0 +1,16 @@
+query searchJobList (
+  $offset: Int!,
+  $limit: Int!,
+  $search: String!
+) {
+  jobs(
+    where: {name: {_ilike: $search}},
+    order_by: {name: asc},
+    limit: $limit,
+    offset: $offset
+  ) {
+    id
+    name
+    points
+  }
+}

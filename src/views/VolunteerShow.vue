@@ -1,39 +1,42 @@
 <template lang="pug">
-div
-  section.hero.is-primary
-    .hero-body
+transition(name="long-fade")
+  div(v-if="volunteer")
+    section.hero.is-primary
+      .hero-body
+        .container
+          h1.title
+            | {{ volunteer | fullName }}
+            |
+            a.is-size-6(@click="editVolunteer" v-if="canEdit") edit
+          p.subtitle Joined {{ volunteer.joined_at | prettyMonth }}
+    section.section
       .container
-        p.title
-          | {{ volunteer | fullName }}
-          |
-          a.is-size-6(@click="editVolunteer" v-if="canEdit('volunteers')") edit
-        p.subtitle Joined {{ volunteer.joined_at | prettyMonth }}
-  section.content
-    div.container
-      .box
-        .columns
-          .column.has-text-centered
-            p.is-size-4.is-marginless.has-text-black ALL STAR POINTS
-            p.is-size-4.has-text-weight-medium.is-marginless
-              font-awesome-icon(icon="star" class="has-text-warning is-size-3")
-              span  {{ points }}
-          .column.has-text-centered
-            p.is-size-4.is-marginless.has-text-black ALL STAR STATUS
-            p.is-size-4.has-text-weight-medium.is-marginless
-              span {{ status }}
-      list-row(v-for="data in shows"
-        :key="data.show.id"
-        :title="data.show.name"
-        :subtitle="prettyJobs(data.show)"
-        :points="data.points"
-        icon="ticket-alt"
-        :item="data.show"
-        v-on:action="editShow")
+        .box
+          .columns
+            .column.has-text-centered
+              p.is-size-4.is-marginless.has-text-black ALL STAR POINTS
+              p.is-size-4.has-text-weight-medium.is-marginless
+                font-awesome-icon.has-text-warning.is-size-3(icon="star")
+                span  {{ points }}
+            .column.has-text-centered
+              p.is-size-4.is-marginless.has-text-black AWARDS
+              p.is-size-4.has-text-weight-medium.is-marginless
+                span {{ awards }}
+
+        br
+
+        list-row(v-for="data in shows"
+          :key="data.show.id"
+          :title="data.show.name"
+          :subtitle="prettyJobs(data.show)"
+          :points="data.points"
+          icon="ticket-alt"
+          :item="data.show"
+          v-on:action="editShow")
 </template>
 
 <script>
-import { VOLUNTEER_WITH_JOBS_AND_SHOWS } from '@/graphql/queries'
-import ManageVolunteerJobsModal from '@/components/modal/ManageVolunteerJobsModal'
+import VOLUNTEER from '@/graphql/volunteers/find.gql'
 import ListRow from '@/components/ListRow'
 
 export default {
@@ -43,7 +46,7 @@ export default {
 
   data () {
     return {
-      volunteer: {}
+      volunteer: null
     }
   },
 
@@ -58,8 +61,18 @@ export default {
         return sum + Math.min(show.points, 6)
       }, 0) * 0.5
     },
+    canEdit () {
+      return this.$auth.has('staff')
+    },
     status () {
+      if (this.volunteer.all_star) {
+        return 'Awarded'
+      }
       return this.points >= 15 ? 'Eligible' : 'Ineligible'
+    },
+    awards () {
+      const awards = this.volunteer.awards.map(award => award.level.name)
+      return awards.length === 0 ? 'None' : awards.join(', ')
     }
   },
 
@@ -84,7 +97,7 @@ export default {
 
   apollo: {
     volunteer: {
-      query: VOLUNTEER_WITH_JOBS_AND_SHOWS,
+      query: VOLUNTEER,
       variables () {
         return {
           id: parseInt(this.$route.params.id)
@@ -103,24 +116,6 @@ export default {
         .sort().join(', ')
     },
 
-    handleApolloError (error) {
-      this.batchError = error
-      console.error(error)
-      this.$buefy.toast.open({
-        message: 'There was an error applying this action',
-        type: 'is-danger'
-      })
-    },
-
-    openModal (modal, props) {
-      this.$buefy.modal.open({
-        parent: this,
-        component: modal,
-        hasModalCard: true,
-        props: props
-      })
-    },
-
     editVolunteer () {
       this.$router.push({ name: 'edit-volunteer', params: { id: this.$route.params.id } })
     },
@@ -134,17 +129,14 @@ export default {
     },
 
     editShow (show) {
-      if (!this.canEdit('shows')) {
-        return
-      }
-      this.openModal(ManageVolunteerJobsModal, {
-        show_id: show.id,
-        volunteer: this.volunteer
+      if (!this.$auth.has('staff')) return
+      this.$router.push({
+        name: 'volunteer-show',
+        params: {
+          id: this.$route.params.id,
+          show_id: show.id
+        }
       })
-    },
-
-    canEdit (type) {
-      return this.$store.getters.can('edit-' + type)
     }
   }
 }

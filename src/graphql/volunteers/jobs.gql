@@ -1,0 +1,26 @@
+query volunteerJobs ($id: Int!, $showId: Int!) {
+  volunteers_by_pk(id: $id) {
+    id
+    joined_at
+    first_name
+    last_name
+
+    volunteer_shows(where: {show_id: {_eq: $showId}}) {
+      points
+      show {
+        id
+        name
+        occurred_at
+        positions (where: {volunteer_id: {_eq: $id}}) {
+          hours
+          points
+          job {
+            id
+            name
+            points
+          }
+        }
+      }
+    }
+  }
+}

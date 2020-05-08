@@ -1,0 +1,15 @@
+query jobList (
+  $offset: Int!,
+  $limit: Int!
+) {
+  jobs(
+    where: {deleted_at: {_is_null: true}},
+    order_by: {name: asc},
+    limit: $limit,
+    offset: $offset
+  ) {
+    id
+    name
+    points
+  }
+}

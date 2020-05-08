@@ -1,0 +1,13 @@
+query nextPost (
+  $id: Int!
+) {
+  posts(where: {_and: [
+      {status: {_eq: pending}},
+      {id: {_lt: $id}}
+  ]},
+    limit: 1,
+    order_by: {id:desc}
+  ) {
+    id
+  }
+}

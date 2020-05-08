@@ -1,4 +1,6 @@
 <template lang="pug">
-.user
-  h1 The page you selected was not found
+section.content
+  .container
+    h1 Not found
+    p Sorry, the page you requested was not found
 </template>

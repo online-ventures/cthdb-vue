@@ -1,0 +1,14 @@
+mutation closePost (
+    $id: Int!
+  ) {
+  update_posts(
+    where: {id: {_eq: $id}},
+    _set: {
+      status: closed
+    }
+  ) {
+    returning {
+      id
+    }
+  }
+}

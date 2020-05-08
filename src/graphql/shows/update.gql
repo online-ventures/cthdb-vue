@@ -1,0 +1,17 @@
+mutation updateShow (
+  $id: Int!,
+  $name: String!,
+  $occurred_at: date!
+) {
+  update_shows(
+    where: {id: {_eq: $id}},
+    _set: {
+      name: $name,
+      occurred_at: $occurred_at
+    },
+  ) {
+    returning {
+      id
+    }
+  }
+}

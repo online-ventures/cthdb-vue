@@ -1,0 +1,16 @@
+query searchShowList (
+  $search: String!,
+  $offset: Int!,
+  $limit: Int!
+) {
+  shows (
+    where: {name: {_ilike: $search}},
+    order_by: {occurred_at: desc, name: asc},
+    limit: $limit,
+    offset: $offset
+  ) {
+    id
+    name
+    occurred_at
+  }
+}

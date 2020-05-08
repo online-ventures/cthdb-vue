@@ -1,0 +1,9 @@
+query levelList {
+  levels (
+    order_by: {points: asc}
+  ) {
+    id
+    name
+    points
+  }
+}

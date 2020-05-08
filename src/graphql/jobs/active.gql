@@ -1,0 +1,10 @@
+query jobList {
+  jobs (
+    where: {deleted_at: {_is_null: true}},
+    order_by: {name: asc}
+  ) {
+    id
+    name
+    points
+  }
+}

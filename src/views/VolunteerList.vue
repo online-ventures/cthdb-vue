@@ -3,66 +3,65 @@ div
   section.hero.is-primary
     .hero-body
       .container
-        p.title Volunteers
+        h1.title Volunteers
         p.subtitle View and manage volunteers
-  section
-    .content
+  transition(name="long-fade")
+    section.section(v-if="volunteers")
       .container
         .columns
-          .column
+          .column.is-10
             form.search-form(@submit.prevent)
-              b-field
-                b-input(icon="search" ref="search" placeholder="search" type="search" @input="searchInput")
-          .column.has-text-right
-            b-button(type="is-primary" @click="addVolunteer" icon-left="plus" v-if="canEdit") Add volunteer
+              .control.has-icons-left
+                input.input(placeholder="search" @input="searchInput")
+                span.icon.is-small.is-left
+                  font-awesome-icon(icon="search" size="1x")
+          .column.has-text-right-tablet
+            button.button.is-primary.is-fullwidth(@click="addVolunteer" v-if="canEdit")
+              span.icon.is-small
+                font-awesome-icon(icon="plus" size="1x")
+              span Add Volunteer
+
         list-row(v-for="volunteer in allVolunteers"
           :key="volunteer.id"
           :title="volunteer | name"
           :subtitle="volunteer | showCount"
           icon="ticket-alt"
           :item="volunteer"
+          :points="volunteer | points"
           v-on:action="showVolunteer")
-        infinite-loading(@infinite="infiniteHandler")
 </template>
 
 <script>
 import ListRow from '@/components/ListRow'
-import InfiniteLoading from 'vue-infinite-loading'
+import infiniteScrollingMixin from '@/mixins/infiniteScrollingMixin'
 import debounce from 'lodash/debounce'
-import { VOLUNTEER_LIST, SEARCH_VOLUNTEER_LIST } from '@/graphql/queries'
+import VOLUNTEER_LIST from '@/graphql/volunteers/list.gql'
+import VOLUNTEER_SEARCH from '@/graphql/volunteers/search.gql'
 
 export default {
   components: {
-    InfiniteLoading,
     ListRow
   },
 
+  mixins: [
+    infiniteScrollingMixin
+  ],
+
   mounted () {
     window.scrollTo(0, 0)
-    setTimeout(() => {
-      this.$refs.search.focus()
-    }, 100)
   },
 
   data () {
     return {
-      volunteers: [],
+      volunteers: null,
       allVolunteers: [],
-      search: '',
-      pageNum: 0,
-      rowsPerPage: 15
+      search: ''
     }
   },
 
   computed: {
     canEdit () {
-      return this.$store.getters.can('edit-volunteers')
-    },
-    page () {
-      return this.pageNum <= 1 ? 1 : this.pageNum
-    },
-    offset () {
-      return (this.page - 1) * this.rowsPerPage
+      return this.$auth.has('staff')
     },
     names () {
       return this.search.split(/\s+/)
@@ -77,23 +76,20 @@ export default {
       return this.search !== ''
     },
     query () {
-      return this.searching ? SEARCH_VOLUNTEER_LIST : VOLUNTEER_LIST
+      return this.searching ? VOLUNTEER_SEARCH : VOLUNTEER_LIST
     },
     queryVariables () {
-      return {
-        offset: this.offset,
-        limit: this.rowsPerPage,
-        first_name: this.firstName,
-        last_name: this.lastName
+      const variables = this.infiniteQueryVariables
+      if (this.searching) {
+        variables.first_name = this.firstName
+        variables.last_name = this.lastName
+        variables.withPoints = true
+      } else {
+        delete variables.first_name
+        delete variables.last_name
+        delete variables.withPoints
       }
-    },
-    searchSensitiveQueryVariables () {
-      return Object.keys(this.queryVariables).reduce((map, attribute) => {
-        if (attribute === 'offset' || attribute === 'limit' || this.searching) {
-          map[attribute] = this.queryVariables[attribute]
-        }
-        return map
-      }, {})
+      return variables
     }
   },
 
@@ -105,53 +101,35 @@ export default {
       const shows = person.volunteer_shows_aggregate
       const count = (shows && shows.aggregate.count) || 0
       return count + ' show' + (count === 1 ? '' : 's')
+    },
+    points (person) {
+      return person.volunteer_shows_aggregate.aggregate.sum.points || 0
     }
   },
 
   apollo: {
     volunteers: {
-      fetchPolicy: 'no-cache',
-      loadingKey: 'loading',
       query () {
         return this.query
       },
       variables () {
-        return this.searchSensitiveQueryVariables
-      }
-    }
-  },
-
-  watch: {
-    volunteers (volunteers) {
-      volunteers.forEach(person => {
-        this.allVolunteers.push(person)
-      })
-      if (this.infinite) {
-        if (volunteers.length > 0) {
-          this.infinite.loaded()
-        } else {
-          this.infinite.complete()
-        }
+        return this.queryVariables
+      },
+      update ({ volunteers }) {
+        return this.processFetchedData(volunteers, this.allVolunteers)
       }
     }
   },
 
   methods: {
-    searchInput: debounce(function (value) {
+    searchInput: debounce(function (event) {
       this.allVolunteers = []
-      this.pageNum = 1
-      this.search = value
+      this.page = 1
+      this.search = event.target.value
     }, 300),
-
-    infiniteHandler ($state) {
-      this.pageNum++
-      this.infinite = $state
-    },
-
     addVolunteer () {
       this.$router.push({ name: 'new-volunteer' })
     },
-
     showVolunteer (item) {
       this.$router.push({ name: 'volunteer', params: { id: item.id } })
     }
@@ -160,6 +138,4 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.search-form {
-}
 </style>

@@ -1,0 +1,16 @@
+query managePosts (
+  $status: post_statuses_enum!,
+  $offset: Int!,
+  $limit: Int!
+) {
+  posts(
+    where: {status: {_eq: $status}},
+    order_by: {created_at: desc},
+    limit: $limit,
+    offset: $offset
+  ) {
+    id
+    title
+    created_at
+  }
+}

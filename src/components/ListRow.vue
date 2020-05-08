@@ -4,22 +4,20 @@ div(:class="rowClasses" @click="performClick")
     font-awesome-icon(icon="check-circle" size="2x" :class="iconClass")
   .column
     p.title.is-4 {{ title }}
-    .subtitle.is-6.level.is-mobile
-      .level-left
-        .level-item(v-if="icon")
-          b-icon(:icon="icon" size="is-small" :type="iconTypeOrDefault")
-        .level-item
-          span {{ subtitle }}
-  .column.is-2-tablet.is-one-quarter-mobile.has-text-centered(v-if="points")
-    b-icon(icon="coins" size="is-medium" type="is-warning")
+    .subtitle.is-6.is-mobile
+      .icon(v-if="icon")
+        font-awesome-icon(:icon="icon" size="1x" :class="iconClass")
+      span {{ subtitle }}
+  .column.is-2-tablet.is-one-quarter-mobile.has-text-right(v-if="showPoints")
+    span.icon.is-medium.has-text-warning
+      font-awesome-icon(icon="coins" size="lg")
     span.is-size-3.has-text-weight-medium  {{ points | points }}
 </template>
 
 <script>
 export default {
   data () {
-    return {
-    }
+    return {}
   },
 
   created () {
@@ -86,6 +84,9 @@ export default {
       } else {
         return 'has-text-grey-light'
       }
+    },
+    showPoints () {
+      return this.points !== null
     }
   },
   filters: {

@@ -1,0 +1,15 @@
+mutation insertJob (
+  $name: String!,
+  $points: Int!
+) {
+  insert_jobs(
+    objects: {
+      name: $name,
+      points: $points
+    },
+  ) {
+    returning {
+      id
+    }
+  }
+}

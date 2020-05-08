@@ -1,50 +1,62 @@
 <template lang="pug">
 div
-  b-loading(:active="displayLoader")
-  nav-bar(:links='topNavLinks')
-  div(class="view-container")
-    transition(:name='viewTransition')
-      router-view(:class="{ 'is-invisible': displayLoader }")
+  nav-bar
+  transition(name="shrink")
+    .notification.is-warning.has-text-centered.is-radiusless.is-marginless(v-if="newContent")
+      | A new version if available.
+      |
+      a(@click="refresh") Refresh
+      |
+      | now to load it.
+  transition(appear name='slide-fade' mode='out-in')
+    router-view
 </template>
 
 <script>
-import NavBar from './components/NavBar'
+import NavBar from '@/components/NavBar'
 
 export default {
   name: 'App',
+
   components: {
     NavBar
   },
+
   created () {
+    if (process.env.NODE_ENV === 'production') {
+      setTimeout(this.checkForUpdate, 10000)
+      setTimeout(this.requireUpdateCheck, 1000)
+    }
   },
+
   data () {
     return {
-      viewTransition: '',
-      topNavLinks: [
-        { text: 'Shows', path: '/shows' },
-        { text: 'Jobs', path: '/jobs' },
-        { text: 'Volunteers', path: '/volunteers' }
-      ]
+      newContent: false
     }
   },
+
   computed: {
-    displayLoader () {
-      const auth = this.$store.state.auth
-      return auth && auth.status !== 'authenticated'
-    }
   },
+
   methods: {
-  },
-  watch: {
-    '$route' (to, from) {
-      const fromIndex = this.topNavLinks.findIndex(link => link.path === from.path)
-      const toIndex = this.topNavLinks.findIndex(link => link.path === to.path)
-      if (fromIndex === -1 || toIndex === -1) {
-        const direction = to.path.length > from.path.length ? 'right' : 'left'
-        this.viewTransition = 'slide-' + direction
+    refresh () {
+      this.$router.go()
+    },
+    checkForUpdate () {
+      if (this.newContent) return
+      navigator.serviceWorker.getRegistration('/service-worker.js').then(reg => {
+        reg.update()
+      })
+      setTimeout(this.checkForUpdate, 10000)
+    },
+    requireUpdateCheck () {
+      if (this.newContent) return
+
+      const elem = document.getElementById('service-worker-data')
+      if (elem && elem.getAttribute('data-new-content')) {
+        this.newContent = true
       } else {
-        const direction = fromIndex < toIndex ? 'right' : 'left'
-        this.viewTransition = 'slide-' + direction
+        setTimeout(this.requireUpdateCheck, 1000)
       }
     }
   }
@@ -53,30 +65,53 @@ export default {
 
 <style lang="scss">
 @import "src/scss/_variables";
-@import "src/scss/layout";
 @import "~bulma";
-@import "~buefy/src/scss/buefy";
 
-.view-container {
-  position: relative;
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all .3s;
 }
-.slide-left-enter-active,
-.slide-left-leave-active,
-.slide-right-enter-active,
-.slide-right-leave-active {
-  transition: all .3s ease;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+.slide-fade-enter {
+  opacity: 0;
+  transform: translateX(20px);
 }
-.slide-left-enter, .slide-left-leave-to, .slide-right-enter, .slide-right-leave-to {
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .2s;
+}
+.fade-enter, .fade-leave-to {
   opacity: 0;
 }
-.slide-right-enter, .slide-left-leave-to {
-  transform: translateX(100%);
+.long-fade-enter-active, .long-fade-leave-active {
+  transition: opacity .5s;
 }
-.slide-left-enter, .slide-right-leave-to {
-  transform: translateX(-100%);
+.long-fade-enter, .long-fade-leave-to {
+  opacity: 0;
+}
+.notification {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  max-height: 6em;
+}
+.shrink-enter-active {
+  transition: all 0.3s;
+}
+.shrink-enter {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.shrink-leave-active {
+  transition: all 0.3s;
+  overflow: hidden;
+}
+.shrink-leave-to {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 </style>

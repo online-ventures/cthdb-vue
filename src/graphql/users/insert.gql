@@ -1,0 +1,31 @@
+mutation createUser(
+    $nickname: String!,
+    $name: String!,
+    $email: String!,
+    $picture: String!,
+    $auth_id: String!,
+    $last_login: timestamptz!,
+  ) {
+  insert_users(objects: {
+    nickname: $nickname,
+    name: $name,
+    email: $email,
+    picture: $picture,
+    auth_id: $auth_id,
+    last_login: $last_login,
+  },
+  on_conflict: {
+    constraint: users_auth_id_key,
+    update_columns: [
+      nickname,
+      name,
+      email,
+      picture,
+      last_login
+    ]
+  }) {
+    returning {
+      id
+    }
+  }
+}

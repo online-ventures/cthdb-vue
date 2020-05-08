@@ -1,0 +1,30 @@
+mutation updatePosition (
+  $volunteerId: Int!,
+  $showId: Int!,
+  $jobId: Int!,
+  $newJobId: Int!,
+  $points: Int
+) {
+  update_positions(
+    where: {_and: [
+      {volunteer_id: {_eq: $volunteerId}},
+      {show_id: {_eq: $showId}},
+      {job_id: {_eq: $jobId}}
+    ]},
+    _set: {
+      job_id: $newJobId,
+      points: $points
+    }
+  ) {
+    returning {
+      show_id
+      volunteer_id
+      points
+      job {
+        id
+        name
+        points
+      }
+    }
+  }
+}

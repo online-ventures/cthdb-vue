@@ -1,0 +1,24 @@
+mutation insertPosition (
+  $volunteerId: Int!,
+  $showId: Int!,
+  $jobId: Int!
+) {
+  insert_positions(
+    objects: {
+      volunteer_id: $volunteerId,
+      show_id: $showId,
+      job_id: $jobId
+    },
+  ) {
+    returning {
+      show_id
+      volunteer_id
+      points
+      job {
+        id
+        name
+        points
+      }
+    }
+  }
+}

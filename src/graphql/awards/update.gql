@@ -1,0 +1,23 @@
+mutation updateAward (
+  $volunteer_id: Int!,
+  $level_id: Int!,
+  $awarded_at: date!
+) {
+  update_awards (
+    where: {_and: [
+      {volunteer_id: {_eq: $volunteer_id}},
+      {level_id: {_eq: $level_id}}
+    ]},
+    _set: {
+      awarded_at: $awarded_at
+    }
+  ) {
+    returning {
+      awarded_at
+      level {
+        id
+        name
+      }
+    }
+  }
+}

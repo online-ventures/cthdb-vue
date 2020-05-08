@@ -1,0 +1,15 @@
+mutation insertShow (
+  $name: String!,
+  $occurred_at: date!
+) {
+  insert_shows(
+    objects: {
+      name: $name,
+      occurred_at: $occurred_at
+    },
+  ) {
+    returning {
+      id
+    }
+  }
+}

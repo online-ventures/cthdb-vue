@@ -1,31 +1,54 @@
-// Core
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store/store'
+import { Auth0Plugin } from '@/auth/auth'
+import apolloProvider from '@/apollo'
+import FontAwesomeIcon from '@/icons'
 import './registerServiceWorker'
-
-// Helpers
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
+import * as Sentry from '@sentry/browser'
+import * as Integrations from '@sentry/integrations'
 
-// Apollo
-import apolloProvider from '@/apollo'
+// Sentry
+const sentryIntegration = new Integrations.Vue({
+  Vue,
+  attachProps: true,
+  logErrors: process.env.NODE_ENV === 'development'
+})
+Sentry.init({
+  dsn: 'https://7e2a0dd135014308a98f7ac5e6686b09@o71452.ingest.sentry.io/5219602',
+  integrations: [sentryIntegration]
+})
+Vue.prototype.$sentry = Sentry
 
-// Visuals
-import Buefy from 'buefy'
-import FontAwesomeIcon from '@/icons'
+// Auth0
+Vue.use(Auth0Plugin, {
+  apollo: apolloProvider,
+  onRedirectCallback: appState => {
+    router.push(
+      appState && appState.targetUrl
+        ? appState.targetUrl
+        : window.location.pathname
+    )
+  }
+})
+
+// Font awesome icons
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
+Vue.config.productionTip = false
+
+// Base components
+// Calling these W components, for WOV
 const requireComponent = require.context(
   // The relative path of the components folder
   './components',
   // Whether or not to look in subfolders
   false,
   // The regular expression used to match base component filenames
-  /Base[A-Z]\w+\.(vue|js)$/
+  /W[A-Z]\w+\.(vue|js)$/
 )
-
 requireComponent.keys().forEach(fileName => {
   // Get component config
   const componentConfig = requireComponent(fileName)
@@ -40,7 +63,6 @@ requireComponent.keys().forEach(fileName => {
         .replace(/\.\w+$/, '')
     )
   )
-
   // Register component globally
   Vue.component(
     componentName,
@@ -51,17 +73,8 @@ requireComponent.keys().forEach(fileName => {
   )
 })
 
-Vue.config.productionTip = false
-
-Vue.use(Buefy, {
-  defaultIconPack: 'fas',
-  defaultIconComponent: FontAwesomeIcon,
-  defaultToastDuration: 4000
-})
-
 new Vue({
   router,
-  store,
   apolloProvider,
   render: h => h(App)
 }).$mount('#app')

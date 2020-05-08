@@ -1,16 +1,16 @@
 <template lang="pug">
 div
-  section(class="hero is-primary")
-    div(class="hero-body")
-      div(class="container")
-        p(class="title") Welcome!
-        p(class="subtitle") Here are some interesting statistics on our numbers to-date
-  section(class="content")
-    nav(class="level is-mobile" v-for="row in stats")
-      div(class="level-item has-text-centered" v-for="stat in row" :key="stat.id")
+  section.hero.is-primary
+    .hero-body
+      .container
+        p.title Welcome!
+        p.subtitle Here are some interesting statistics on our numbers to-date
+  section.section
+    nav.level.is-mobile(v-for="row in stats")
+      .level-item.has-text-centered(v-for="stat in row" :key="stat.id")
         div
-          p(class="heading") {{ stat.subtitle }}
-          p(class="title") {{ stat.value }}
+          p.heading {{ stat.subtitle }}
+          p.title {{ stat.value }}
 </template>
 
 <script>

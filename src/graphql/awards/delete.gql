@@ -1,0 +1,15 @@
+mutation deleteAward (
+  $volunteer_id:Int!,
+  $level_id:Int!
+) {
+  delete_awards (
+    where: {
+      volunteer_id: {_eq: $volunteer_id},
+      level_id: {_eq: $level_id}
+    }
+  ) {
+    returning {
+      level_id
+    }
+  }
+}

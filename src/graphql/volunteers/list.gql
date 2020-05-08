@@ -1,0 +1,22 @@
+query volunteerList (
+  $offset: Int!,
+  $limit: Int!
+) {
+  volunteers(
+    order_by: {last_name: asc, first_name: asc},
+    limit: $limit,
+    offset: $offset
+  ) {
+    id
+    first_name
+    last_name
+    volunteer_shows_aggregate {
+      aggregate {
+        count
+        sum {
+          points
+        }
+      }
+    }
+  }
+}

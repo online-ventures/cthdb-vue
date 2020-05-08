@@ -1,43 +1,50 @@
 <template lang="pug">
 div
-  section(class="hero is-primary")
-    div(class="hero-body")
-      div(class="container")
-        p(class="title") Show Listings
-        p(class="subtitle") View and manage shows
-  section(class="content")
-    div(class="container")
-      form(class="search-form" @submit.prevent)
-        b-field
-          b-input(icon="search" autofocus placeholder="search" type="search" v-model="search")
-      list-row(v-for="show in showList"
-        :key="show.id"
-        :title="show.name"
-        :subtitle="show.occurred_at | prettyMonth"
-        icon="calendar-week"
-        :item="show"
-        v-on:action="manageShow")
-      div(class="buttons")
-        b-button(@click="moreShows" v-if="displayMore") See more
-        b-button(type="is-primary" @click="newModal" icon-left="plus" v-if="canEdit") Add show
+  section.hero.is-primary
+    .hero-body
+      .container
+        h1.title Show Listings
+        p.subtitle View and manage shows
+  transition(name="long-fade")
+    section.section(v-if="shows")
+      .container
+        .columns
+          .column.is-10
+            form.search-form(@submit.prevent)
+              .control.has-icons-left
+                input.input(placeholder="search" @input="searchInput")
+                span.icon.is-small.is-left
+                  font-awesome-icon(icon="search" size="1x")
+          .column.has-text-right-tablet
+            button.button.is-primary.is-fullwidth(@click="addShow" v-if="canEdit")
+              span.icon.is-small
+                font-awesome-icon(icon="plus" size="1x")
+              span Add Show
+
+        list-row(v-for="show in showList"
+          :key="show.id"
+          :title="show.name"
+          :subtitle="show.occurred_at | prettyMonth"
+          icon="calendar-week"
+          :item="show"
+          v-on:action="manageShow")
 </template>
 
 <script>
-import gql from 'graphql-tag'
 import ListRow from '@/components/ListRow'
-import EditShowModal from '@/components/modal/EditShowModal'
+import infiniteScrollingMixin from '@/mixins/infiniteScrollingMixin'
+import debounce from 'lodash/debounce'
+import SHOW_LIST from '@/graphql/shows/list.gql'
+import SHOW_SEARCH from '@/graphql/shows/search.gql'
 
 export default {
   components: {
-    ListRow,
-    EditShowModal
+    ListRow
   },
 
-  created () {
-    // Refetch on creation to invalidate a potentially outdated cache
-    this.$apollo.queries.shows.refetch()
-    this.$apollo.queries.showCount.refetch()
-  },
+  mixins: [
+    infiniteScrollingMixin
+  ],
 
   mounted () {
     window.scrollTo(0, 0)
@@ -45,20 +52,15 @@ export default {
 
   data () {
     return {
-      search: '',
-      shows: [],
-      showCount: 0,
+      shows: null,
       allShows: [],
-      ignoreShows: [],
-      createdShows: 0,
-      page: 1,
-      rowsPerPage: 20
+      search: ''
     }
   },
 
   computed: {
     canEdit () {
-      return this.$store.getters.can('edit-shows')
+      return this.$auth.has('staff')
     },
     today () {
       const now = new Date()
@@ -79,56 +81,33 @@ export default {
     showList () {
       return this.searching ? this.shows : this.allShows
     },
-    offset () {
-      if (this.searching) {
-        return 0
-      } else {
-        return (this.page - 1) * this.rowsPerPage
-      }
-    },
-    displayMore () {
-      return !this.searching &&
-        this.allShows.length < (this.showCount + this.createdShows)
-    },
-    remainingCount () {
-      return this.showCount - this.allShows.length
-    },
     showName () {
       return '%' + this.search + '%'
+    },
+    query () {
+      return this.searching ? SHOW_SEARCH : SHOW_LIST
+    },
+    queryVariables () {
+      const variables = this.infiniteQueryVariables
+      if (this.searching) {
+        variables.search = this.showName
+      } else {
+        delete variables.search
+      }
+      return variables
     }
   },
 
   apollo: {
     shows: {
-      query: gql`query currentShows($name: String, $offset: Int!, $limit: Int!, $ignore: [Int!]) {
-        shows(where: {_and: [{id: {_nin: $ignore}}, {name: {_ilike: $name}}]},
-          order_by: {occurred_at: desc, name: asc},
-          limit: $limit,
-          offset: $offset) {
-          id
-          name
-          occurred_at
-        }
-      }`,
+      query () {
+        return this.query
+      },
       variables () {
-        return {
-          ignore: this.ignoreShows,
-          offset: this.offset,
-          name: this.showName,
-          limit: this.rowsPerPage
-        }
-      }
-    },
-    showCount: {
-      query: gql`query showCount {
-        shows_aggregate {
-          aggregate {
-            count
-          }
-        }
-      }`,
-      update (data) {
-        return data.shows_aggregate.aggregate.count
+        return this.queryVariables
+      },
+      update ({ shows }) {
+        return this.processFetchedData(shows, this.allShows)
       }
     }
   },
@@ -141,65 +120,20 @@ export default {
     }
   },
 
-  watch: {
-    shows (shows) {
-      if (!this.searching) {
-        shows.forEach(show => {
-          if (this.allShows.every((existing) => show.id !== existing.id)) {
-            this.allShows.push(Object.assign({}, show))
-          }
-        })
-      }
-    }
-  },
-
   methods: {
-    moreShows () {
-      this.page++
+    searchInput: debounce(function (event) {
+      this.allShows = []
+      this.page = 1
+      this.search = event.target.value
+    }, 300),
+    addShow () {
+      this.$router.push({ name: 'new-show' })
     },
-
-    addShow (added) {
-      this.ignoreShows.push(added.id)
-      this.allShows.push(added)
-      this.showCount++
-      this.createdShows++
+    editShow (item) {
+      this.$router.push({ name: 'edit-show', params: { id: item.id } })
     },
-
-    updateShow (updated) {
-      const show = this.allShows.find(show => show.id === updated.id)
-      Object.assign(show, updated)
-    },
-
-    openModal (props) {
-      this.$buefy.modal.open({
-        parent: this,
-        component: EditShowModal,
-        hasModalCard: true,
-        props: props
-      })
-    },
-
-    newModal () {
-      this.openModal({
-        title: 'New Show',
-        item: {
-          name: '',
-          occurred_at: this.today
-        }
-      })
-    },
-
-    editModal (item) {
-      this.openModal({
-        title: 'Edit Show',
-        item: item
-      })
-    },
-
     manageShow (item) {
-      if (!this.canEdit) {
-        return
-      }
+      if (!this.canEdit) return
       this.$router.push({ name: 'show-manage', params: { id: item.id } })
     }
   }
@@ -207,7 +141,4 @@ export default {
 </script>
 
 <style scoped>
-.search-form {
-  margin-bottom: 1.5rem;
-}
 </style>
