@@ -3,7 +3,7 @@ query searchVolunteerList (
   $limit: Int!,
   $first_name: String!,
   $last_name: String!,
-  $sort: volunteer_list_order_by!
+  $sort: [volunteer_list_order_by!]
 ) {
   volunteer_list (where: {
     _and: [

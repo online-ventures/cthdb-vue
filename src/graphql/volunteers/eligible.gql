@@ -1,0 +1,17 @@
+query volunteerEligible (
+  $offset: Int!,
+  $limit: Int!,
+  $sort: [volunteer_eligible_order_by!]
+) {
+  volunteer_eligible (
+    order_by: $sort,
+    limit: $limit,
+    offset: $offset
+  ) {
+    id
+    first_name
+    last_name
+    points
+    shows
+  }
+}

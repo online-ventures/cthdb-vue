@@ -22,6 +22,19 @@ div
               span Add Volunteer
         .columns
           .column
+            .field.has-addons
+              .control
+                button.button.is-small(
+                  :class="{ 'has-background-white-ter': filter === 'all' }"
+                  @click="filter = 'all'")
+                  span All
+              .control
+                button.button.is-small(
+                  :class="{ 'has-background-white-ter': filter === 'eligible' }"
+                  @click="filter = 'eligible'")
+                  span Eligible
+
+          .column
             .field.has-addons.is-pulled-right
               .control
                 button.button.is-small(
@@ -53,6 +66,7 @@ import ListRow from '@/components/ListRow'
 import infiniteScrollingMixin from '@/mixins/infiniteScrollingMixin'
 import debounce from 'lodash/debounce'
 import VOLUNTEER_LIST from '@/graphql/volunteers/list.gql'
+import VOLUNTEER_ELIGIBLE from '@/graphql/volunteers/eligible.gql'
 import VOLUNTEER_SEARCH from '@/graphql/volunteers/search.gql'
 
 export default {
@@ -73,7 +87,8 @@ export default {
       volunteers: null,
       allVolunteers: [],
       search: '',
-      sort: 'points'
+      sort: 'points',
+      filter: 'all'
     }
   },
 
@@ -94,7 +109,13 @@ export default {
       return this.search !== ''
     },
     query () {
-      return this.searching ? VOLUNTEER_SEARCH : VOLUNTEER_LIST
+      if (this.filter === 'eligible') {
+        return VOLUNTEER_ELIGIBLE
+      } else if (this.searching) {
+        return VOLUNTEER_SEARCH
+      } else {
+        return VOLUNTEER_LIST
+      }
     },
     querySort () {
       if (this.sort === 'points') {
@@ -139,7 +160,8 @@ export default {
         return this.queryVariables
       },
       update (data) {
-        return this.processFetchedData(data.volunteer_list, this.allVolunteers)
+        const volunteers = data.volunteer_list || data.volunteer_eligible
+        return this.processFetchedData(volunteers, this.allVolunteers)
       }
     }
   },

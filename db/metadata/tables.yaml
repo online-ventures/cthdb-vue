@@ -451,6 +451,37 @@
       check: null
 - table:
     schema: public
+    name: volunteer_eligible
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - first_name
+      - last_name
+      - shows
+      - points
+      filter: {}
+  - role: staff
+    permission:
+      columns:
+      - id
+      - shows
+      - points
+      - first_name
+      - last_name
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - id
+      - shows
+      - points
+      - first_name
+      - last_name
+      filter: {}
+- table:
+    schema: public
     name: volunteer_list
   select_permissions:
   - role: anonymous
