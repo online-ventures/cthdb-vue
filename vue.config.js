@@ -1,7 +1,10 @@
 module.exports = {
   pwa: {
     name: 'CTH Stars',
-    themeColor: '#A21F4B'
+    themeColor: '#A21F4B',
+    workboxOptions: {
+      skipWaiting: true
+    }
   },
 
   css: {
