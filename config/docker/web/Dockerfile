@@ -3,9 +3,6 @@ FROM nginx
 # Install dependencies
 RUN apt-get update -qq && apt-get -y install apache2-utils
 
-# Brotli compression
-RUN apt-get install nginx-plus-module-brotli
-
 # Copy Nginx config template
 COPY config/docker/web/nginx.conf /etc/nginx/conf.d/default.conf
 
