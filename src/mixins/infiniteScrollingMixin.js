@@ -5,7 +5,7 @@ export default {
         document.documentElement.scrollTop,
         document.body.scrollTop)
       const outerPosition = position + window.innerHeight
-      const atBottom = outerPosition === document.documentElement.offsetHeight
+      const atBottom = outerPosition >= document.documentElement.offsetHeight - 1
       if (atBottom) this.fetchMore()
     }
   },
@@ -37,6 +37,9 @@ export default {
       this.page += 1
     },
     processFetchedData (newRecords, allRecords) {
+      if (this.page === 1) {
+        allRecords.length = 0
+      }
       newRecords.forEach(record => {
         const index = allRecords.findIndex(existing => existing.id === record.id)
         if (index >= 0) {

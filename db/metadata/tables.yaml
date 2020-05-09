@@ -55,6 +55,10 @@
 - table:
     schema: public
     name: jobs
+  object_relationships:
+  - name: editor
+    using:
+      foreign_key_constraint_on: editor_id
   array_relationships:
   - name: positions
     using:
@@ -68,6 +72,7 @@
     permission:
       check: {}
       columns:
+      - editor_id
       - name
       - points
   select_permissions:
@@ -80,27 +85,30 @@
       - created_at
       - updated_at
       - deleted_at
+      - editor_id
       filter: {}
       allow_aggregations: true
   - role: staff
     permission:
       columns:
-      - id
-      - points
-      - name
       - created_at
       - deleted_at
+      - editor_id
+      - id
+      - name
+      - points
       - updated_at
       filter: {}
       allow_aggregations: true
   - role: user
     permission:
       columns:
-      - id
-      - points
-      - name
       - created_at
       - deleted_at
+      - editor_id
+      - id
+      - name
+      - points
       - updated_at
       filter: {}
       allow_aggregations: true
@@ -109,6 +117,7 @@
     permission:
       columns:
       - deleted_at
+      - editor_id
       - name
       - points
       filter: {}
@@ -256,6 +265,10 @@
 - table:
     schema: public
     name: shows
+  object_relationships:
+  - name: editor
+    using:
+      foreign_key_constraint_on: editor_id
   array_relationships:
   - name: positions
     using:
@@ -277,36 +290,40 @@
     permission:
       check: {}
       columns:
+      - editor_id
       - name
       - occurred_at
   select_permissions:
   - role: anonymous
     permission:
       columns:
+      - created_at
+      - editor_id
       - id
       - name
       - occurred_at
-      - created_at
       - updated_at
       filter: {}
       allow_aggregations: true
   - role: staff
     permission:
       columns:
-      - occurred_at
+      - created_at
+      - editor_id
       - id
       - name
-      - created_at
+      - occurred_at
       - updated_at
       filter: {}
       allow_aggregations: true
   - role: user
     permission:
       columns:
+      - created_at
+      - editor_id
       - id
       - name
       - occurred_at
-      - created_at
       - updated_at
       filter: {}
       allow_aggregations: true
@@ -314,6 +331,7 @@
   - role: staff
     permission:
       columns:
+      - editor_id
       - name
       - occurred_at
       filter: {}
@@ -433,6 +451,37 @@
       check: null
 - table:
     schema: public
+    name: volunteer_list
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - first_name
+      - last_name
+      - shows
+      - points
+      filter: {}
+  - role: staff
+    permission:
+      columns:
+      - id
+      - shows
+      - points
+      - first_name
+      - last_name
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - id
+      - shows
+      - points
+      - first_name
+      - last_name
+      filter: {}
+- table:
+    schema: public
     name: volunteer_shows
   object_relationships:
   - name: show
@@ -479,6 +528,10 @@
 - table:
     schema: public
     name: volunteers
+  object_relationships:
+  - name: editor
+    using:
+      foreign_key_constraint_on: editor_id
   array_relationships:
   - name: awards
     using:
@@ -507,85 +560,79 @@
     permission:
       check: {}
       columns:
-      - all_star
-      - joined_at
-      - id
       - city
+      - editor_id
       - email
       - first_name
+      - joined_at
       - last_name
       - notes
       - phone
       - street
-      - created_at
-      - updated_at
   select_permissions:
   - role: anonymous
     permission:
       columns:
+      - joined_at
+      - editor_id
       - id
+      - city
+      - email
       - first_name
       - last_name
-      - email
+      - notes
       - phone
       - street
-      - city
       - created_at
       - updated_at
-      - joined_at
-      - notes
-      - all_star
       filter: {}
       allow_aggregations: true
   - role: staff
     permission:
       columns:
-      - all_star
-      - joined_at
-      - id
       - city
+      - created_at
+      - editor_id
       - email
       - first_name
+      - id
+      - joined_at
       - last_name
       - notes
       - phone
       - street
-      - created_at
       - updated_at
       filter: {}
       allow_aggregations: true
   - role: user
     permission:
       columns:
-      - id
-      - first_name
-      - last_name
-      - email
-      - phone
-      - street
       - city
       - created_at
-      - updated_at
+      - editor_id
+      - email
+      - first_name
+      - id
       - joined_at
+      - last_name
       - notes
-      - all_star
+      - phone
+      - street
+      - updated_at
       filter: {}
       allow_aggregations: true
   update_permissions:
   - role: staff
     permission:
       columns:
-      - all_star
-      - joined_at
-      - id
       - city
+      - editor_id
       - email
       - first_name
+      - joined_at
       - last_name
       - notes
       - phone
       - street
-      - created_at
-      - updated_at
       filter: {}
       check: null

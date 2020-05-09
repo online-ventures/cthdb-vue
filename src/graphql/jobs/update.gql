@@ -1,13 +1,15 @@
 mutation updateJobs (
   $id: Int!,
   $name: String!,
-  $points: Int!
+  $points: Int!,
+  $editor_id: Int
 ) {
   update_jobs(
     where: {id: {_eq: $id}},
     _set: {
       name: $name,
-      points: $points
+      points: $points,
+      editor_id: $editor_id
     }
   ) {
     returning {

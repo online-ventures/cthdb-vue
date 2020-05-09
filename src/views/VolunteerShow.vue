@@ -64,12 +64,6 @@ export default {
     canEdit () {
       return this.$auth.has('staff')
     },
-    status () {
-      if (this.volunteer.all_star) {
-        return 'Awarded'
-      }
-      return this.points >= 15 ? 'Eligible' : 'Ineligible'
-    },
     awards () {
       const awards = this.volunteer.awards.map(award => award.level.name)
       return awards.length === 0 ? 'None' : awards.join(', ')

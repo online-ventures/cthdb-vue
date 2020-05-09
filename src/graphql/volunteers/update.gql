@@ -7,7 +7,7 @@ mutation updateVolunteer (
   $street: String,
   $city: String,
   $notes: String,
-  $all_star: Boolean
+  $editor_id: Int
 ) {
   update_volunteers(
     where: {id: {_eq: $id}},
@@ -19,7 +19,7 @@ mutation updateVolunteer (
       street: $street,
       city: $city,
       notes: $notes,
-      all_star: $all_star
+      editor_id: $editor_id
     },
   ) {
     returning {

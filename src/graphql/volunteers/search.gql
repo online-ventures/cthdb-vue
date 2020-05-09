@@ -3,9 +3,9 @@ query searchVolunteerList (
   $limit: Int!,
   $first_name: String!,
   $last_name: String!,
-  $withPoints: Boolean!
+  $sort: volunteer_list_order_by!
 ) {
-  volunteers(where: {
+  volunteer_list (where: {
     _and: [
       {_or: [
         {first_name: {_ilike: $first_name}},
@@ -16,20 +16,14 @@ query searchVolunteerList (
         {last_name: {_ilike: $last_name}}
       ]},
     ]},
-    order_by: {last_name: asc, first_name: asc},
+    order_by: $sort,
     limit: $limit,
     offset: $offset
   ) {
     id
     first_name
     last_name
-    volunteer_shows_aggregate @include(if: $withPoints) {
-      aggregate {
-        count
-        sum {
-          points
-        }
-      }
-    }
+    shows
+    points
   }
 }

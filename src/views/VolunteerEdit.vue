@@ -11,6 +11,7 @@ div
         :cancel="onCancel"
         :complete="onComplete"
         :record="record"
+        :editorId="$auth.userId"
         :mutation="mutation")
 
         h2.title.is-4 Required fields
@@ -227,7 +228,6 @@ export default {
     },
     async updateAward (level) {
       const award = this.awardFor(level)
-      console.log('updating', award)
       this.awardSaving[level.id] = true
       await this.$apollo.mutate({
         mutation: UPDATE_AWARD,

@@ -33,6 +33,10 @@ export default {
       type: Object,
       required: true
     },
+    editorId: {
+      type: Number,
+      required: false
+    },
     complete: {
       type: Function,
       required: true
@@ -127,6 +131,15 @@ export default {
       } else {
         return null
       }
+    },
+    queryVariables () {
+      const variables = this.beforeSave
+        ? this.beforeSave(this.record)
+        : this.record
+      if (this.editorId) {
+        variables.editor_id = this.editorId
+      }
+      return variables
     }
   },
 
@@ -166,10 +179,9 @@ export default {
     },
 
     update () {
-      const variables = this.beforeSave ? this.beforeSave(this.record) : this.record
       return this.$apollo.mutate({
         mutation: this.mutation,
-        variables: variables,
+        variables: this.queryVariables,
         loadingKey: 'savingCounter'
       }).then(result => {
         const keys = Object.keys(result.data).filter(key => {

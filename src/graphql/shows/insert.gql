@@ -1,11 +1,13 @@
 mutation insertShow (
   $name: String!,
-  $occurred_at: date!
+  $occurred_at: date!,
+  $editor_id: Int
 ) {
   insert_shows(
     objects: {
       name: $name,
-      occurred_at: $occurred_at
+      occurred_at: $occurred_at,
+      editor_id: $editor_id
     },
   ) {
     returning {

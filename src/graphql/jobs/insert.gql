@@ -1,11 +1,13 @@
 mutation insertJob (
   $name: String!,
-  $points: Int!
+  $points: Int!,
+  $editor_id: Int
 ) {
   insert_jobs(
     objects: {
       name: $name,
-      points: $points
+      points: $points,
+      editor_id: $editor_id
     },
   ) {
     returning {

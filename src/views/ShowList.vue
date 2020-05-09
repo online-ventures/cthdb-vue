@@ -107,6 +107,7 @@ export default {
         return this.queryVariables
       },
       update ({ shows }) {
+        console.log(shows)
         return this.processFetchedData(shows, this.allShows)
       }
     }

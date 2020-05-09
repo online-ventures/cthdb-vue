@@ -19,6 +19,7 @@ import {
   faTrash,
   faSave,
   faSearch,
+  faSort,
   faStar
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -43,6 +44,7 @@ library.add(
   faTrash,
   faSave,
   faSearch,
+  faSort,
   faStar
 )
 

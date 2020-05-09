@@ -169,8 +169,7 @@ export default {
           first_name: this.firstName,
           last_name: this.lastName,
           offset: 0,
-          limit: 15,
-          withPoints: false
+          limit: 15
         }
       },
       update ({ volunteers }) {
@@ -207,7 +206,7 @@ export default {
         return false
       }
       if (!this.points) {
-        this.error = 'You need to select a points first'
+        this.error = 'You need to select a point value first'
         return false
       }
       if (!this.volunteers.some(v => v.record !== null)) {

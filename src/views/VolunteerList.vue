@@ -20,6 +20,23 @@ div
               span.icon.is-small
                 font-awesome-icon(icon="plus" size="1x")
               span Add Volunteer
+        .columns
+          .column
+            .field.has-addons.is-pulled-right
+              .control
+                button.button.is-small(
+                  :class="{ 'has-background-white-ter': sort === 'name' }"
+                  @click="changeSort('name')")
+                  span.icon.is-small(v-if="sort === 'name'")
+                    font-awesome-icon(icon="sort" size="1x")
+                  span Name
+              .control
+                button.button.is-small(
+                  :class="{ 'has-background-white-ter': sort === 'points' }"
+                  @click="changeSort('points')")
+                  span.icon.is-small(v-if="sort === 'points'")
+                    font-awesome-icon(icon="sort" size="1x")
+                  span Points
 
         list-row(v-for="volunteer in allVolunteers"
           :key="volunteer.id"
@@ -55,7 +72,8 @@ export default {
     return {
       volunteers: null,
       allVolunteers: [],
-      search: ''
+      search: '',
+      sort: 'points'
     }
   },
 
@@ -78,17 +96,23 @@ export default {
     query () {
       return this.searching ? VOLUNTEER_SEARCH : VOLUNTEER_LIST
     },
+    querySort () {
+      if (this.sort === 'points') {
+        return { points: 'desc' }
+      } else {
+        return [{ last_name: 'asc' }, { first_name: 'asc' }]
+      }
+    },
     queryVariables () {
       const variables = this.infiniteQueryVariables
       if (this.searching) {
         variables.first_name = this.firstName
         variables.last_name = this.lastName
-        variables.withPoints = true
       } else {
         delete variables.first_name
         delete variables.last_name
-        delete variables.withPoints
       }
+      variables.sort = this.querySort
       return variables
     }
   },
@@ -98,12 +122,11 @@ export default {
       return person.first_name + ' ' + person.last_name
     },
     showCount (person) {
-      const shows = person.volunteer_shows_aggregate
-      const count = (shows && shows.aggregate.count) || 0
+      const count = person.shows
       return count + ' show' + (count === 1 ? '' : 's')
     },
     points (person) {
-      return person.volunteer_shows_aggregate.aggregate.sum.points || 0
+      return person.points || 0
     }
   },
 
@@ -115,16 +138,23 @@ export default {
       variables () {
         return this.queryVariables
       },
-      update ({ volunteers }) {
-        return this.processFetchedData(volunteers, this.allVolunteers)
+      update (data) {
+        return this.processFetchedData(data.volunteer_list, this.allVolunteers)
       }
     }
   },
 
   methods: {
-    searchInput: debounce(function (event) {
+    changeSort (sort) {
+      this.sort = sort
+      this.resetResults()
+    },
+    resetResults () {
       this.allVolunteers = []
       this.page = 1
+    },
+    searchInput: debounce(function (event) {
+      this.resetResults()
       this.search = event.target.value
     }, 300),
     addVolunteer () {

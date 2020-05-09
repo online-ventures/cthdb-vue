@@ -3,5 +3,8 @@ query editShow ($id: Int!) {
     id
     name
     occurred_at
+    editor {
+      name
+    }
   }
 }

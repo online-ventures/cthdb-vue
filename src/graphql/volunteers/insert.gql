@@ -6,7 +6,7 @@ mutation insertVolunteer (
   $street: String,
   $city: String,
   $notes: String,
-  $all_star: Boolean
+  $editor_id: Int
 ) {
   insert_volunteers(
     objects: {
@@ -17,7 +17,7 @@ mutation insertVolunteer (
       street: $street,
       city: $city,
       notes: $notes,
-      all_star: $all_star
+      editor_id: $editor_id
     },
   ) {
     returning {

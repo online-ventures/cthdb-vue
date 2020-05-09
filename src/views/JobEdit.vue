@@ -12,6 +12,7 @@ div
         :complete="onComplete"
         :record="record"
         :mutation="mutation"
+        :editorId="$auth.userId"
         :beforeSave="beforeSave")
         .columns
           .column

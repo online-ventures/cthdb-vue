@@ -12,6 +12,7 @@ div
         :cancel="onCancel"
         :complete="onComplete"
         :record="record"
+        :editorId="$auth.userId"
         :mutation="mutation")
 
         h2.title.is-4 Required fields

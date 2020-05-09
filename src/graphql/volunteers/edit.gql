@@ -8,8 +8,10 @@ query editVolunteer ($id: Int!) {
     phone
     street
     city
-    all_star
     notes
+    editor {
+      name
+    }
   }
   awards (where: {volunteer_id: {_eq: $id}}) {
     awarded_at

@@ -36,6 +36,9 @@ export const useAuth0 = options => {
     computed: {
       completed () {
         return !this.loading && (!this.accessToken || this.user)
+      },
+      userId () {
+        return this.user && this.user.id
       }
     },
 

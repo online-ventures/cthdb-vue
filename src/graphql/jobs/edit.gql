@@ -3,5 +3,8 @@ query editJob ($id: Int!) {
     id
     name
     points
+    editor {
+      name
+    }
   }
 }
