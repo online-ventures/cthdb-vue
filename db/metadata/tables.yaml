@@ -138,28 +138,31 @@
     permission:
       columns:
       - id
-      - points
-      - name
       - created_at
       - updated_at
+      - name
+      - points
+      - color
       filter: {}
   - role: staff
     permission:
       columns:
-      - id
-      - points
-      - name
+      - color
       - created_at
+      - id
+      - name
+      - points
       - updated_at
       filter: {}
   - role: user
     permission:
       columns:
       - id
+      - points
+      - color
+      - name
       - created_at
       - updated_at
-      - name
-      - points
       filter: {}
 - table:
     schema: public
@@ -452,6 +455,15 @@
 - table:
     schema: public
     name: volunteer_eligible
+  array_relationships:
+  - name: awards
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: awards
+        column_mapping:
+          id: volunteer_id
   select_permissions:
   - role: anonymous
     permission:
@@ -483,6 +495,15 @@
 - table:
     schema: public
     name: volunteer_list
+  array_relationships:
+  - name: awards
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: awards
+        column_mapping:
+          id: volunteer_id
   select_permissions:
   - role: anonymous
     permission:
