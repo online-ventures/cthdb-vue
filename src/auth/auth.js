@@ -166,37 +166,45 @@ export const useAuth0 = options => {
       })
       if (this.debug) console.log('created client')
 
-      let loginRedirect = false
-      try {
-        // If the user is returning to the app after authentication
-        if (
-          window.location.search.includes('code=') &&
-          window.location.search.includes('state=')
-        ) {
-          loginRedirect = true
-          // handle the redirect and retrieve tokens
-          if (this.debug) console.log('handling redirect')
-          const { appState } = await this.auth0Client.handleRedirectCallback()
-          await this.authenticate()
-          this.onRedirectCallback(appState)
-        } else {
-          await this.authenticate()
+      if (window.location.pathname === '/login') {
+        // Login url support
+        this.login()
+      } else if (window.location.pathname === '/logout') {
+        // Logout url support
+        this.logout()
+      } else {
+        let loginRedirect = false
+        try {
+          // If the user is returning to the app after authentication
+          if (
+            window.location.search.includes('code=') &&
+            window.location.search.includes('state=')
+          ) {
+            loginRedirect = true
+            // handle the redirect and retrieve tokens
+            if (this.debug) console.log('handling redirect')
+            const { appState } = await this.auth0Client.handleRedirectCallback()
+            await this.authenticate()
+            this.onRedirectCallback(appState)
+          } else {
+            await this.authenticate()
+          }
+        } catch (e) {
+          console.log(e)
+          this.error = e
+          if (e.message === 'Invalid state') this.onRedirectCallback()
         }
-      } catch (e) {
-        console.log(e)
-        this.error = e
-        if (e.message === 'Invalid state') this.onRedirectCallback()
-      }
-      if (this.debug) console.log('auth complete')
-      this.loading = false
+        if (this.debug) console.log('auth complete')
+        this.loading = false
 
-      // If we successfully logged in do some database operations
-      if (this.auth0User) {
-        // Update the user record
-        if (loginRedirect) await this.updateDb()
+        // If we successfully logged in do some database operations
+        if (this.auth0User) {
+          // Update the user record
+          if (loginRedirect) await this.updateDb()
 
-        // Load the user record
-        this.authId = this.auth0User.sub
+          // Load the user record
+          this.authId = this.auth0User.sub
+        }
       }
     }
   })

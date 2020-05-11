@@ -14,6 +14,7 @@ import JobEdit from '@/views/JobEdit.vue'
 import Home from '@/views/Home.vue'
 import Callback from '@/views/Callback.vue'
 import Login from '@/views/Login.vue'
+import Logout from '@/views/Logout.vue'
 import NotFound from '@/views/NotFound.vue'
 
 Vue.use(Router)
@@ -110,6 +111,11 @@ const router = new Router({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: Logout
     },
     {
       path: '*',
