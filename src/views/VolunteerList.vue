@@ -66,6 +66,8 @@ div
         list-row(v-for="volunteer in allVolunteers"
           :key="volunteer.id"
           :title="volunteer | name"
+          :badge="volunteer.awards | badge"
+          :badgeColor="volunteer.awards | badgeColor"
           :subtitle="volunteer | showCount"
           icon="ticket-alt"
           :item="volunteer"
@@ -170,6 +172,14 @@ export default {
     },
     points (person) {
       return person.points || 0
+    },
+    badge (awards) {
+      if (!awards.length) return null
+      return 'star'
+    },
+    badgeColor (awards) {
+      if (!awards.length) return null
+      return awards[0].level.color
     }
   },
 

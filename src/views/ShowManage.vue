@@ -54,7 +54,7 @@ export default {
     },
     canEdit () {
       return this.$auth.has('staff')
-    },
+    }
   },
 
   filters: {

@@ -1,7 +1,13 @@
 <template lang="pug">
 .columns.is-6.row.is-mobile.is-vcentered(:class="rowClasses" @click="performClick")
   .column
-    p.title.is-4 {{ title }}
+    p.title.is-4
+      span {{ title }}
+      span.icon.is-medium(v-if="badge")
+        font-awesome-icon.title-icon(
+          :icon="badge"
+          size="xs"
+          :style="{ color: badgeColor || 'grey' }")
     .columns
       .column.is-narrow.subtitle-column(v-for="subtitle in subtitleList")
         .subtitle.is-6.is-mobile
@@ -29,6 +35,14 @@ export default {
     },
     subtitle: {
       type: [String, Array],
+      required: false
+    },
+    badge: {
+      type: String,
+      required: false
+    },
+    badgeColor: {
+      type: String,
       required: false
     },
     icon: {
