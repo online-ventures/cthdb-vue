@@ -31,7 +31,7 @@ export const useAuth0 = options => {
         auth0Client: null,
         auth0User: null,
         error: null,
-        debug: true
+        debug: false
       }
     },
 
@@ -43,7 +43,6 @@ export const useAuth0 = options => {
         return this.user && this.user.id
       },
       tenantId () {
-        console.log(this.tenant)
         return this.tenant && this.tenant.id
       }
     },

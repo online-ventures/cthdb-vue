@@ -43,7 +43,6 @@ export default {
       return this.$auth.user
     },
     displayTenantLinks () {
-      console.log('display tenant links', this.$auth.tenant)
       return this.$auth.tenantId
     }
   },

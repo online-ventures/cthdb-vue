@@ -4,7 +4,10 @@ query tenentSearch (
   $limit: Int!
 ) {
   tenants (
-    where: {name: {_ilike: $search}},
+    where: {_and: [
+      {name: {_ilike: $search}},
+      {status: {_eq: "active"}}
+    ]},
     order_by: {name: asc},
     limit: $limit,
     offset: $offset

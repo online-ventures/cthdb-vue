@@ -3,6 +3,7 @@ query tenantList (
   $limit: Int!
 ) {
   tenants (
+    where: {status: {_eq: "active"}},
     order_by: {name: asc},
     limit: $limit,
     offset: $offset
