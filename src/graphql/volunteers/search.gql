@@ -27,5 +27,14 @@ query volunteerSearchList (
     last_name
     shows
     points
+    awards (
+      order_by: {level: {points: desc}},
+      limit: 1
+    ) {
+      level {
+        name
+        color
+      }
+    }
   }
 }
