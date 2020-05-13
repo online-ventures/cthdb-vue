@@ -41,6 +41,9 @@ export const useAuth0 = options => {
       },
       userId () {
         return this.user && this.user.id
+      },
+      tenantId () {
+        return this.tenant && this.tenant.id
       }
     },
 

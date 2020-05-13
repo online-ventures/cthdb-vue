@@ -147,7 +147,7 @@ export default {
     },
     queryVariables () {
       const variables = this.infiniteQueryVariables
-      variables.tenant_id = this.$auth.tenant.id
+      variables.tenant_id = this.$auth.tenantId
       if (this.searching) {
         variables.first_name = this.firstName
         variables.last_name = this.lastName
