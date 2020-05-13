@@ -10,6 +10,7 @@ const httpLink = new HttpLink({
 })
 
 const authHeader = (auth, queryName) => {
+  if (auth.debug) console.log('Getting token for apollo', auth.accessToken)
   if (auth.accessToken) {
     const headers = { headers: { authorization: `Bearer ${auth.accessToken}` } }
     // TODO: apply different x-hasura-role for specific operations
