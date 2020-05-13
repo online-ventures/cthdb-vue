@@ -8,7 +8,7 @@ transition(name="long-fade")
             | {{ volunteer | fullName }}
             |
             a.is-size-6(@click="editVolunteer" v-if="canEdit") edit
-          p.subtitle Joined {{ volunteer.joined_at | prettyMonth }}
+          p.subtitle Joined {{ prettyMonth(volunteer.joined_at) }}
     section.section
       .container
         .box
@@ -28,9 +28,9 @@ transition(name="long-fade")
         list-row(v-for="data in shows"
           :key="data.show.id"
           :title="data.show.name"
-          :subtitle="prettyJobs(data.show)"
+          :subtitle="[prettyMonth(data.show.occurred_at), prettyJobs(data.show)]"
+          :icon="['calendar-week', 'ticket-alt']"
           :points="data.points"
-          icon="ticket-alt"
           :item="data.show"
           v-on:action="editShow")
 </template>
@@ -78,11 +78,6 @@ export default {
         return ''
       }
     },
-    prettyMonth (value) {
-      const date = new Date(value + 'T12:00:00')
-      const options = { year: 'numeric', month: 'long' }
-      return date.toLocaleDateString('en-US', options)
-    },
     iconColor (volunteer) {
       const empty = volunteer.jobs.length === 1 && !volunteer.jobs[0]
       return 'is-' + (empty ? 'grey-light' : 'success')
@@ -110,6 +105,12 @@ export default {
         .sort().join(', ')
     },
 
+    prettyMonth (value) {
+      const date = new Date(value + 'T12:00:00')
+      const options = { year: 'numeric', month: 'long' }
+      return date.toLocaleDateString('en-US', options)
+    },
+
     editVolunteer () {
       this.$router.push({ name: 'edit-volunteer', params: { id: this.$route.params.id } })
     },
@@ -123,14 +124,17 @@ export default {
     },
 
     editShow (show) {
-      if (!this.$auth.has('staff')) return
-      this.$router.push({
-        name: 'volunteer-show',
-        params: {
-          id: this.$route.params.id,
-          show_id: show.id
-        }
-      })
+      if (this.$auth.has('staff')) {
+        this.$router.push({
+          name: 'volunteer-show',
+          params: {
+            id: this.$route.params.id,
+            show_id: show.id
+          }
+        })
+      } else {
+        this.$router.push({ name: 'show-manage', params: { id: show.id } })
+      }
     }
   }
 }

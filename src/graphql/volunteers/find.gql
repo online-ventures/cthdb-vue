@@ -4,7 +4,7 @@ query volunteerFind ($id: Int!) {
     joined_at
     first_name
     last_name
-    volunteer_shows {
+    volunteer_shows (order_by: {show: {occurred_at: desc}}) {
       points
       show {
         id

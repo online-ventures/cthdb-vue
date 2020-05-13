@@ -1,13 +1,12 @@
 <template lang="pug">
-div(:class="rowClasses" @click="performClick")
-  .column.is-1.has-text-centered(v-if="checkable")
-    font-awesome-icon(icon="check-circle" size="2x" :class="iconClass")
+.columns.is-6.row.is-mobile.is-vcentered(:class="rowClasses" @click="performClick")
   .column
     p.title.is-4 {{ title }}
-    .subtitle.is-6.is-mobile
-      .icon(v-if="icon")
-        font-awesome-icon(:icon="icon" size="1x" :class="iconClass")
-      span {{ subtitle }}
+    .columns
+      .column.is-narrow.subtitle-column(v-for="subtitle in subtitleList")
+        .subtitle.is-6.is-mobile
+          font-awesome-icon.subtitle-icon(:icon="subtitle.icon" size="1x" class="has-text-grey-light")
+          p.subtitle-text {{ subtitle.text }}
   .column.is-2-tablet.is-one-quarter-mobile.has-text-right(v-if="showPoints")
     span.icon.is-medium.has-text-warning
       font-awesome-icon(icon="coins" size="lg")
@@ -29,15 +28,11 @@ export default {
       required: true
     },
     subtitle: {
-      type: String,
+      type: [String, Array],
       required: false
     },
     icon: {
-      type: String,
-      required: false
-    },
-    iconType: {
-      type: String,
+      type: [String, Array],
       required: false
     },
     item: {
@@ -47,16 +42,6 @@ export default {
     onClick: {
       type: Function,
       required: false
-    },
-    checkable: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    checked: {
-      type: Boolean,
-      required: false,
-      default: false
     },
     disabled: {
       type: Boolean,
@@ -70,23 +55,22 @@ export default {
     }
   },
   computed: {
-    iconTypeOrDefault () {
-      return this.iconType || 'is-grey-lighter'
-    },
     rowClasses () {
-      return 'columns is-6 row is-mobile' + (this.disabled ? ' disabled' : '')
-    },
-    iconClass () {
-      if (this.checked) {
-        return 'has-text-success'
-      } else if (this.disabled) {
-        return 'has-text-grey-lighter'
-      } else {
-        return 'has-text-grey-light'
-      }
+      return this.disabled ? ' disabled' : ''
     },
     showPoints () {
       return this.points !== null
+    },
+    subtitleList () {
+      const subtitles = Array.isArray(this.subtitle)
+        ? this.subtitle
+        : [this.subtitle]
+      const icons = Array.isArray(this.icon)
+        ? this.icon
+        : [this.icon]
+      return subtitles.map((subtitle, index) => {
+        return { text: subtitle, icon: icons[index] }
+      })
     }
   },
   filters: {
@@ -99,17 +83,18 @@ export default {
       if (this.disabled) {
         return
       }
-      if (this.checkable) {
-        this.$emit('check', this.item)
-      } else {
-        this.$emit('action', this.item)
-      }
+      this.$emit('action', this.item)
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+.row {
+  @media only screen and (max-width: 768px) {
+    margin-bottom: 1.5em;
+  }
+}
 .row:hover {
   background: hsl(0, 0%, 96%);
   cursor: pointer;
@@ -123,5 +108,20 @@ export default {
   .title {
     color: hsl(0, 0%, 80%);
   }
+}
+p.title {
+  margin-bottom: 0.75em;
+}
+.subtitle-column {
+  padding-top: 0;
+  padding-bottom: 0;
+  position: relative;
+}
+.subtitle-text {
+  margin-left: 1.75em;
+}
+.subtitle-icon {
+  width: 1.5em;
+  float: left;
 }
 </style>

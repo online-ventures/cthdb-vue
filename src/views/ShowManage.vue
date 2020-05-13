@@ -12,7 +12,7 @@ transition(name="long-fade")
 
     section.section
       .container
-        .buttons
+        .buttons(v-if="canEdit")
           button.button.is-secondary(@click="addVolunteer")
             span.icon.is-small
               font-awesome-icon(icon="plus")
@@ -51,7 +51,10 @@ export default {
   computed: {
     showId () {
       return parseInt(this.$route.params.id)
-    }
+    },
+    canEdit () {
+      return this.$auth.has('staff')
+    },
   },
 
   filters: {
@@ -93,13 +96,14 @@ export default {
       })
     },
     editVolunteer (volunteerShow) {
-      this.$router.push({ name: 'volunteer-show',
-        params: {
-          id: volunteerShow.volunteer.id,
-          show_id: this.showId,
-          from: 'show'
-        }
-      })
+      const id = volunteerShow.volunteer.id
+      if (this.canEdit) {
+        this.$router.push({ name: 'volunteer-show',
+          params: { id: id, show_id: this.showId, from: 'show' }
+        })
+      } else {
+        this.$router.push({ name: 'volunteer', params: { id: id } })
+      }
     },
     editShow () {
       this.$router.push({ name: 'edit-show', params: { id: this.showId } })

@@ -70,8 +70,7 @@ const router = new Router({
     {
       path: '/shows/:id/manage',
       name: 'show-manage',
-      component: ShowManage,
-      meta: { role: 'staff' }
+      component: ShowManage
     },
     {
       path: '/shows/new',

@@ -131,7 +131,6 @@ export default {
       this.$router.push({ name: 'edit-show', params: { id: item.id } })
     },
     manageShow (item) {
-      if (!this.canEdit) return
       this.$router.push({ name: 'show-manage', params: { id: item.id } })
     }
   }
