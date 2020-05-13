@@ -5,13 +5,14 @@ div
       router-link.navbar-item(:to="{ path: '/' }")
         img(src="/images/icons/icon-144x144.png")
       router-link.navbar-item(:to="{ path: '/' }")
-        b CTH
-        span Stars
+        b All
+        span Star
       a.navbar-burger.burger(ref="burger" @click="toggleLinks" :class="{ 'is-active': showLinks }")
         span
         span
         span
     .navbar-menu(:class="{ 'is-active': showLinks }")
+      router-link.navbar-item(v-if="displayTheatreLink" :to="{ name: 'theatres' }") Theatres
       .navbar-start(v-if="displayTenantLinks")
         router-link.navbar-item(:to="{ name: 'shows' }") Shows
         router-link.navbar-item(:to="{ name: 'jobs' }") Jobs
@@ -42,7 +43,12 @@ export default {
     user () {
       return this.$auth.user
     },
+    displayTheatreLink () {
+      if (this.authLoading) return false
+      return !this.$auth.userId
+    },
     displayTenantLinks () {
+      if (this.authLoading) return false
       return this.$auth.tenantId
     }
   },
