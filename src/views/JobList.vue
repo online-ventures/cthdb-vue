@@ -115,6 +115,7 @@ export default {
       this.$router.push({ name: 'new-job' })
     },
     editJob (item) {
+      if (!this.$auth.has('staff')) return
       this.$router.push({ name: 'edit-job', params: { id: item.id } })
     }
   }

@@ -19,7 +19,6 @@ mutation userUpsert (
     update_columns: [
       nickname,
       name,
-      email,
       picture,
       last_login
     ]
