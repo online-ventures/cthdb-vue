@@ -174,11 +174,11 @@ export default {
       return person.points || 0
     },
     badge (awards) {
-      if (!awards.length) return null
+      if (!awards || !awards.length) return null
       return 'star'
     },
     badgeColor (awards) {
-      if (!awards.length) return null
+      if (!awards || !awards.length) return null
       return awards[0].level.color
     }
   },
