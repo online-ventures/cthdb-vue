@@ -139,6 +139,7 @@ export const useAuth0 = options => {
         this.accessToken = await this.getTokenSilently()
         if (this.accessToken) {
           if (this.debug) console.log('Retreived access token')
+          if (this.debug) console.log(this.accessToken)
 
           if (this.debug) console.log('loading roles')
           this.roles = await this.loadRoles()
