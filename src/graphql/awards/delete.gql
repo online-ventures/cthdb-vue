@@ -1,4 +1,4 @@
-mutation deleteAward (
+mutation awardDelete (
   $volunteer_id:Int!,
   $level_id:Int!
 ) {

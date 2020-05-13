@@ -1,4 +1,4 @@
-query findAwards ($volunteer_id: Int!) {
+query awardFind ($volunteer_id: Int!) {
   awards (where: {volunteer_id: {_eq: $volunteer_id}}) {
     level {
       id

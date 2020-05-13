@@ -1,5 +1,8 @@
-query levelList {
+query levelList (
+  $tenant_id: Int!
+) {
   levels (
+    where: {tenant_id: {_eq: $tenant_id}},
     order_by: {points: asc}
   ) {
     id

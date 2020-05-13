@@ -1,4 +1,4 @@
-mutation createUser(
+mutation userUpsert (
     $nickname: String!,
     $name: String!,
     $email: String!,

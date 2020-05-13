@@ -1,9 +1,11 @@
 query volunteerEligible (
+  $tenant_id: Int!,
   $offset: Int!,
   $limit: Int!,
   $sort: [volunteer_eligible_order_by!]
 ) {
   volunteer_eligible (
+    where: {tenant_id: {_eq: $tenant_id}},
     order_by: $sort,
     limit: $limit,
     offset: $offset

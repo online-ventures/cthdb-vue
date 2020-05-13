@@ -9,6 +9,7 @@ import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
+import VueCookies from 'vue-cookies'
 
 // Sentry
 const sentryIntegration = new Integrations.Vue({
@@ -18,7 +19,8 @@ const sentryIntegration = new Integrations.Vue({
 })
 Sentry.init({
   dsn: 'https://7e2a0dd135014308a98f7ac5e6686b09@o71452.ingest.sentry.io/5219602',
-  integrations: [sentryIntegration]
+  integrations: [sentryIntegration],
+  environment: process.env.NODE_ENV
 })
 Vue.prototype.$sentry = Sentry
 
@@ -33,6 +35,10 @@ Vue.use(Auth0Plugin, {
     )
   }
 })
+
+// Cookies
+Vue.use(VueCookies)
+Vue.$cookies.config('120d')
 
 // Font awesome icons
 Vue.component('font-awesome-icon', FontAwesomeIcon)

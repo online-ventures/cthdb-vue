@@ -1,0 +1,15 @@
+mutation userUpdateTenant (
+  $id: Int!,
+  $tenant_id: Int
+) {
+  update_users (
+    where: {id: {_eq: $id}},
+    _set: {
+      tenant_id: $tenant_id
+    },
+  ) {
+    returning {
+      id
+    }
+  }
+}

@@ -11,7 +11,10 @@
   insert_permissions:
   - role: staff
     permission:
-      check: {}
+      check:
+        volunteer:
+          tenant_id:
+            _eq: x-hasura-tenant-id
       columns:
       - awarded_at
       - level_id
@@ -46,12 +49,18 @@
       - awarded_at
       - level_id
       - volunteer_id
-      filter: {}
+      filter:
+        volunteer:
+          tenant_id:
+            _eq: x-hasura-tenant-id
       check: null
   delete_permissions:
   - role: staff
     permission:
-      filter: {}
+      filter:
+        volunteer:
+          tenant_id:
+            _eq: x-hasura-tenant-id
 - table:
     schema: public
     name: jobs
@@ -59,6 +68,9 @@
   - name: editor
     using:
       foreign_key_constraint_on: editor_id
+  - name: tenant
+    using:
+      foreign_key_constraint_on: tenant_id
   array_relationships:
   - name: positions
     using:
@@ -70,11 +82,14 @@
   insert_permissions:
   - role: staff
     permission:
-      check: {}
+      check:
+        tenant_id:
+          _eq: x-hasura-tenant-id
       columns:
       - editor_id
       - name
       - points
+      - tenant_id
   select_permissions:
   - role: anonymous
     permission:
@@ -86,30 +101,33 @@
       - updated_at
       - deleted_at
       - editor_id
+      - tenant_id
       filter: {}
       allow_aggregations: true
   - role: staff
     permission:
       columns:
-      - created_at
-      - deleted_at
-      - editor_id
       - id
       - name
       - points
+      - created_at
       - updated_at
+      - deleted_at
+      - editor_id
+      - tenant_id
       filter: {}
       allow_aggregations: true
   - role: user
     permission:
       columns:
-      - created_at
-      - deleted_at
-      - editor_id
       - id
       - name
       - points
+      - created_at
       - updated_at
+      - deleted_at
+      - editor_id
+      - tenant_id
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -120,11 +138,17 @@
       - editor_id
       - name
       - points
-      filter: {}
+      filter:
+        tenant_id:
+          _eq: x-hasura-tenant-id
       check: null
 - table:
     schema: public
     name: levels
+  object_relationships:
+  - name: tenant
+    using:
+      foreign_key_constraint_on: tenant_id
   array_relationships:
   - name: awards
     using:
@@ -133,6 +157,23 @@
         table:
           schema: public
           name: awards
+  insert_permissions:
+  - role: staff
+    permission:
+      check:
+        _and:
+        - tenant:
+            owner:
+              auth_id:
+                _eq: x-hasura-user-id
+        - tenant_id:
+            _eq: x-hasura-tenant-id
+      columns:
+      - color
+      - name
+      - points
+      - tenant_id
+      backend_only: false
   select_permissions:
   - role: anonymous
     permission:
@@ -164,6 +205,23 @@
       - created_at
       - updated_at
       filter: {}
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - color
+      - name
+      - points
+      - tenant_id
+      filter:
+        _and:
+        - tenant:
+            owner:
+              auth_id:
+                _eq: x-hasura-user-id
+        - tenant_id:
+            _eq: x-hasura-tenant-id
+      check: null
 - table:
     schema: public
     name: positions
@@ -180,7 +238,10 @@
   insert_permissions:
   - role: staff
     permission:
-      check: {}
+      check:
+        show:
+          tenant_id:
+            _eq: x-hasura-tenant-id
       columns:
       - hours
       - job_id
@@ -233,38 +294,94 @@
       - points
       - show_id
       - volunteer_id
-      filter: {}
+      filter:
+        show:
+          tenant_id:
+            _eq: x-hasura-tenant-id
       check: null
   delete_permissions:
   - role: staff
     permission:
-      filter: {}
+      filter:
+        show:
+          tenant_id:
+            _eq: x-hasura-tenant-id
 - table:
     schema: public
     name: roles
   object_relationships:
+  - name: tenant
+    using:
+      foreign_key_constraint_on: tenant_id
   - name: user
     using:
       foreign_key_constraint_on: user_id
-  select_permissions:
-  - role: anonymous
+  insert_permissions:
+  - role: staff
     permission:
+      check:
+        _and:
+        - tenant:
+            owner:
+              auth_id:
+                _eq: x-hasura-user-id
+        - name:
+            _in:
+            - staff
       columns:
+      - tenant_id
       - user_id
       - name
-      filter: {}
+      backend_only: false
+  select_permissions:
   - role: staff
     permission:
       columns:
+      - tenant_id
       - user_id
       - name
-      filter: {}
+      filter:
+        _or:
+        - user:
+            auth_id:
+              _eq: x-hasura-user-id
+        - tenant:
+            owner:
+              auth_id:
+                _eq: x-hasura-user-id
   - role: user
     permission:
       columns:
+      - tenant_id
       - user_id
       - name
-      filter: {}
+      filter:
+        user:
+          auth_id:
+            _eq: x-hasura-user-id
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - name
+      filter:
+        _and:
+        - tenant:
+            owner:
+              auth_id:
+                _eq: x-hasura-user-id
+        - name:
+            _in:
+            - staff
+      check: null
+  delete_permissions:
+  - role: staff
+    permission:
+      filter:
+        tenant:
+          owner:
+            auth_id:
+              _eq: x-hasura-user-id
 - table:
     schema: public
     name: shows
@@ -272,6 +389,9 @@
   - name: editor
     using:
       foreign_key_constraint_on: editor_id
+  - name: tenant
+    using:
+      foreign_key_constraint_on: tenant_id
   array_relationships:
   - name: positions
     using:
@@ -296,38 +416,42 @@
       - editor_id
       - name
       - occurred_at
+      - tenant_id
   select_permissions:
   - role: anonymous
     permission:
       columns:
-      - created_at
-      - editor_id
       - id
       - name
       - occurred_at
+      - created_at
       - updated_at
+      - editor_id
+      - tenant_id
       filter: {}
       allow_aggregations: true
   - role: staff
     permission:
       columns:
-      - created_at
-      - editor_id
       - id
       - name
       - occurred_at
+      - created_at
       - updated_at
+      - editor_id
+      - tenant_id
       filter: {}
       allow_aggregations: true
   - role: user
     permission:
       columns:
-      - created_at
-      - editor_id
       - id
       - name
       - occurred_at
+      - created_at
       - updated_at
+      - editor_id
+      - tenant_id
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -342,10 +466,104 @@
 - table:
     schema: public
     name: tenants
+  object_relationships:
+  - name: owner
+    using:
+      foreign_key_constraint_on: owner_id
+  array_relationships:
+  - name: jobs
+    using:
+      foreign_key_constraint_on:
+        column: tenant_id
+        table:
+          schema: public
+          name: jobs
+  - name: levels
+    using:
+      foreign_key_constraint_on:
+        column: tenant_id
+        table:
+          schema: public
+          name: levels
+  - name: roles
+    using:
+      foreign_key_constraint_on:
+        column: tenant_id
+        table:
+          schema: public
+          name: roles
+  - name: shows
+    using:
+      foreign_key_constraint_on:
+        column: tenant_id
+        table:
+          schema: public
+          name: shows
+  - name: volunteers
+    using:
+      foreign_key_constraint_on:
+        column: tenant_id
+        table:
+          schema: public
+          name: volunteers
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - created_at
+      - updated_at
+      - name
+      - owner_id
+      - status
+      - point_multiplier
+      - max_points_per_show
+      filter:
+        status:
+          _eq: active
+  - role: staff
+    permission:
+      columns:
+      - id
+      - created_at
+      - updated_at
+      - name
+      - owner_id
+      - status
+      - point_multiplier
+      - max_points_per_show
+      filter:
+        status:
+          _eq: active
+  - role: user
+    permission:
+      columns:
+      - id
+      - created_at
+      - updated_at
+      - name
+      - owner_id
+      - status
+      - point_multiplier
+      - max_points_per_show
+      filter:
+        status:
+          _eq: active
 - table:
     schema: public
     name: users
+  object_relationships:
+  - name: tenant
+    using:
+      foreign_key_constraint_on: tenant_id
   array_relationships:
+  - name: jobs
+    using:
+      foreign_key_constraint_on:
+        column: editor_id
+        table:
+          schema: public
+          name: jobs
   - name: roles
     using:
       foreign_key_constraint_on:
@@ -353,6 +571,27 @@
         table:
           schema: public
           name: roles
+  - name: shows
+    using:
+      foreign_key_constraint_on:
+        column: editor_id
+        table:
+          schema: public
+          name: shows
+  - name: tenants
+    using:
+      foreign_key_constraint_on:
+        column: owner_id
+        table:
+          schema: public
+          name: tenants
+  - name: volunteers
+    using:
+      foreign_key_constraint_on:
+        column: editor_id
+        table:
+          schema: public
+          name: volunteers
   insert_permissions:
   - role: staff
     permission:
@@ -362,11 +601,13 @@
       columns:
       - auth_id
       - email
+      - first_name
       - last_login
-      - last_login_at
+      - last_name
       - name
       - nickname
       - picture
+      - tenant_id
   - role: user
     permission:
       check:
@@ -375,65 +616,61 @@
       columns:
       - auth_id
       - email
+      - first_name
       - last_login
-      - last_login_at
+      - last_name
       - name
       - nickname
       - picture
+      - tenant_id
   select_permissions:
-  - role: anonymous
-    permission:
-      columns:
-      - id
-      - nickname
-      - name
-      - email
-      - picture
-      - auth_id
-      - last_login_at
-      - created_at
-      - updated_at
-      - last_login
-      filter: {}
   - role: staff
     permission:
       columns:
-      - id
-      - nickname
-      - name
-      - email
-      - picture
       - auth_id
-      - last_login_at
       - created_at
-      - updated_at
+      - email
+      - first_name
+      - id
       - last_login
-      filter: {}
+      - last_name
+      - name
+      - nickname
+      - picture
+      - tenant_id
+      - updated_at
+      filter:
+        auth_id:
+          _eq: x-hasura-user-id
   - role: user
     permission:
       columns:
-      - id
-      - nickname
-      - name
-      - email
-      - picture
       - auth_id
-      - last_login_at
       - created_at
-      - updated_at
+      - email
+      - first_name
+      - id
       - last_login
-      filter: {}
+      - last_name
+      - name
+      - nickname
+      - picture
+      - tenant_id
+      - updated_at
+      filter:
+        auth_id:
+          _eq: x-hasura-user-id
   update_permissions:
   - role: staff
     permission:
       columns:
-      - auth_id
-      - email
+      - first_name
       - last_login
-      - last_login_at
+      - last_name
       - name
       - nickname
       - picture
+      - tenant_id
       filter:
         auth_id:
           _eq: x-hasura-user-id
@@ -441,13 +678,13 @@
   - role: user
     permission:
       columns:
-      - auth_id
-      - email
+      - first_name
       - last_login
-      - last_login_at
+      - last_name
       - name
       - nickname
       - picture
+      - tenant_id
       filter:
         auth_id:
           _eq: x-hasura-user-id
@@ -473,11 +710,15 @@
       - last_name
       - shows
       - points
+      - tenant_id
+      - recently_involved_at
       filter: {}
   - role: staff
     permission:
       columns:
+      - recently_involved_at
       - id
+      - tenant_id
       - shows
       - points
       - first_name
@@ -486,7 +727,9 @@
   - role: user
     permission:
       columns:
+      - recently_involved_at
       - id
+      - tenant_id
       - shows
       - points
       - first_name
@@ -513,24 +756,30 @@
       - last_name
       - shows
       - points
+      - tenant_id
+      - recently_involved_at
       filter: {}
   - role: staff
     permission:
       columns:
       - id
-      - shows
-      - points
       - first_name
       - last_name
+      - shows
+      - points
+      - tenant_id
+      - recently_involved_at
       filter: {}
   - role: user
     permission:
       columns:
       - id
-      - shows
-      - points
       - first_name
       - last_name
+      - shows
+      - points
+      - tenant_id
+      - recently_involved_at
       filter: {}
 - table:
     schema: public
@@ -584,6 +833,9 @@
   - name: editor
     using:
       foreign_key_constraint_on: editor_id
+  - name: tenant
+    using:
+      foreign_key_constraint_on: tenant_id
   array_relationships:
   - name: awards
     using:
@@ -610,7 +862,9 @@
   insert_permissions:
   - role: staff
     permission:
-      check: {}
+      check:
+        tenant_id:
+          _eq: x-hasura-tenant-id
       columns:
       - city
       - editor_id
@@ -621,55 +875,46 @@
       - notes
       - phone
       - street
+      - tenant_id
   select_permissions:
   - role: anonymous
     permission:
       columns:
-      - joined_at
-      - editor_id
-      - id
-      - city
-      - email
-      - first_name
-      - last_name
-      - notes
-      - phone
-      - street
       - created_at
+      - first_name
+      - id
+      - joined_at
+      - last_name
       - updated_at
       filter: {}
       allow_aggregations: true
   - role: staff
     permission:
       columns:
-      - city
-      - created_at
-      - editor_id
-      - email
-      - first_name
       - id
-      - joined_at
+      - first_name
       - last_name
-      - notes
+      - email
       - phone
       - street
+      - city
+      - created_at
       - updated_at
+      - joined_at
+      - notes
+      - editor_id
+      - tenant_id
       filter: {}
       allow_aggregations: true
   - role: user
     permission:
       columns:
-      - city
       - created_at
       - editor_id
-      - email
       - first_name
       - id
       - joined_at
       - last_name
-      - notes
-      - phone
-      - street
       - updated_at
       filter: {}
       allow_aggregations: true
@@ -686,5 +931,7 @@
       - notes
       - phone
       - street
-      filter: {}
+      filter:
+        tenant_id:
+          _eq: x-hasura-tenant-id
       check: null

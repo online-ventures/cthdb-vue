@@ -9,19 +9,19 @@ div
     section.section(v-if="jobs")
       .container
         .columns
-          .column.is-10
+          .column(:class="canEdit ? 'is-10' : 'is-12'")
             form.search-form(@submit.prevent)
               .control.has-icons-left
                 input.input(placeholder="search" @input="searchInput")
                 span.icon.is-small.is-left
                   font-awesome-icon(icon="search" size="1x")
-          .column.has-text-right-tablet
-            button.button.is-primary.is-fullwidth(@click="addJob" v-if="canEdit")
+          .column.has-text-right-tablet(v-if="canEdit")
+            button.button.is-primary.is-fullwidth(@click="addJob")
               span.icon.is-small
                 font-awesome-icon(icon="plus" size="1x")
               span Add Job
 
-        list-row(v-for="job in jobList"
+        list-row(v-for="job in allJobs"
           :key="job.id"
           :title="job.name"
           :subtitle="job.points | prettyPoints"
@@ -66,9 +66,6 @@ export default {
     searching () {
       return this.search !== ''
     },
-    jobList () {
-      return this.searching ? this.jobs : this.allJobs
-    },
     jobName () {
       return '%' + this.search + '%'
     },
@@ -77,6 +74,7 @@ export default {
     },
     queryVariables () {
       const variables = this.infiniteQueryVariables
+      variables.tenant_id = this.$auth.tenant.id
       if (this.searching) {
         variables.search = this.jobName
       } else {

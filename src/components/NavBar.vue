@@ -12,7 +12,7 @@ div
         span
         span
     .navbar-menu(:class="{ 'is-active': showLinks }")
-      .navbar-start
+      .navbar-start(v-if="$auth.tenant")
         router-link.navbar-item(:to="{ name: 'shows' }") Shows
         router-link.navbar-item(:to="{ name: 'jobs' }") Jobs
         router-link.navbar-item(:to="{ name: 'volunteers' }") Volunteers
@@ -21,6 +21,7 @@ div
           a.navbar-link Account
           .navbar-dropdown.is-right
             .navbar-item {{ user.name }}
+            a.navbar-item(@click="routeByName('theatres')") Theatres
             a.navbar-item(@click="logout") Logout
         .navbar-item(v-if="!user")
           a.button.is-small.is-secondary(:class="{'is-loading': authLoading}" @click="login")

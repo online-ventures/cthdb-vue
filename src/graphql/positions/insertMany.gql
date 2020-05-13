@@ -1,4 +1,4 @@
-mutation insertPosition (
+mutation positionInsertMany (
   $positions: [positions_insert_input!]!
 ) {
   insert_positions(

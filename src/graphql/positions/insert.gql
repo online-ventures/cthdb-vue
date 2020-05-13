@@ -1,4 +1,4 @@
-mutation insertPosition (
+mutation positionInsert (
   $volunteerId: Int!,
   $showId: Int!,
   $jobId: Int!

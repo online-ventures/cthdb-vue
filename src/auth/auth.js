@@ -3,7 +3,8 @@ import router from '@/router'
 import createAuth0Client from '@auth0/auth0-spa-js'
 import jwtDecode from 'jwt-decode'
 import CURRENT_USER from '@/graphql/users/current.gql'
-import INSERT_USER from '@/graphql/users/insert.gql'
+import UPSERT_USER from '@/graphql/users/upsert.gql'
+import SET_TENANT from '@/graphql/users/updateTenant.gql'
 
 let instance
 
@@ -24,12 +25,13 @@ export const useAuth0 = options => {
         accessToken: null,
         authId: null,
         user: null,
+        tenant: null,
         roles: [],
         emailVerified: false,
         auth0Client: null,
         auth0User: null,
         error: null,
-        debug: false
+        debug: true
       }
     },
 
@@ -54,12 +56,17 @@ export const useAuth0 = options => {
         update ({ users }) {
           if (users) {
             const user = users[0]
-            if (this.$sentry && user) {
-              this.$sentry.setUser({
-                id: user.id,
-                username: user.name,
-                email: user.email
-              })
+            if (user) {
+              if (user.tenant) {
+                this.setTenant({ id: user.tenant.id, name: user.tenant.name })
+              }
+              if (this.$sentry) {
+                this.$sentry.setUser({
+                  id: user.id,
+                  username: user.name,
+                  email: user.email
+                })
+              }
             }
             return user
           }
@@ -67,6 +74,8 @@ export const useAuth0 = options => {
         error (error) {
           if (error.message.match('JWTIssuedAtFuture')) {
             console.log('The JWT is issued at future again.')
+            console.log(this.accessToken)
+            console.log('Current time: ' + Date.now())
           }
         }
       }
@@ -114,7 +123,7 @@ export const useAuth0 = options => {
       updateDb () {
         if (this.debug) console.log('updating db')
         return this.$apollo.mutate({
-          mutation: INSERT_USER,
+          mutation: UPSERT_USER,
           variables: this.userData(this.auth0User)
         })
       },
@@ -130,6 +139,7 @@ export const useAuth0 = options => {
 
           if (this.debug) console.log('loading roles')
           this.roles = await this.loadRoles()
+          if (this.debug) console.log('Roles: ', this.roles)
           if (this.has('staff')) {
             // We disable the cache if they can make changes.
             this.$apollo.query.fetchPolicy = 'no-cache'
@@ -144,13 +154,42 @@ export const useAuth0 = options => {
       },
       async reAuthenticate () {
         this.loading = true
+        this.tenant = null
         this.accessToken = null
         this.auth0User = null
+        this.error = null
         this.roles = []
-        this.emailVerified = false
+        this.auth0Client = await this.createClient()
         await this.authenticate()
         this.loading = false
         return this.accessToken
+      },
+      setTenant (tenant) {
+        this.$cookies.set('tenant', tenant)
+        if (this.debug) console.log('Cookie saved for tenant', tenant)
+        this.tenant = tenant
+      },
+      async saveTenant (tenant) {
+        // Safeguard loading check since this takes several seconds
+        if (this.loading || !this.user) return
+        await this.$apollo.mutate({
+          mutation: SET_TENANT,
+          variables: {
+            id: this.user.id,
+            tenant_id: tenant.id
+          }
+        })
+        if (this.debug) console.log('Tenant saved for user', tenant)
+        this.setTenant(tenant)
+        await this.$auth.reAuthenticate()
+      },
+      createClient () {
+        return createAuth0Client({
+          domain: process.env.VUE_APP_AUTH0_DOMAIN,
+          redirect_uri: `${window.location.origin}/callback`,
+          client_id: process.env.VUE_APP_AUTH0_CLIENT_ID,
+          audience: process.env.VUE_APP_AUTH0_AUDIENCE
+        })
       }
     },
 
@@ -158,12 +197,7 @@ export const useAuth0 = options => {
     async created () {
       if (this.debug) console.log('auth starting')
       // Create a new instance of the SDK client using members of the given options object
-      this.auth0Client = await createAuth0Client({
-        domain: process.env.VUE_APP_AUTH0_DOMAIN,
-        redirect_uri: `${window.location.origin}/callback`,
-        client_id: process.env.VUE_APP_AUTH0_CLIENT_ID,
-        audience: process.env.VUE_APP_AUTH0_AUDIENCE
-      })
+      this.auth0Client = await this.createClient()
       if (this.debug) console.log('created client')
 
       if (window.location.pathname === '/login') {
@@ -194,8 +228,13 @@ export const useAuth0 = options => {
           this.error = e
           if (e.message === 'Invalid state') this.onRedirectCallback()
         }
-        if (this.debug) console.log('auth complete')
+        // Load the tenant from the cookie
+        // This way we don't have to wait for apollo
+        this.tenant = this.$cookies.get('tenant')
+        if (this.debug) console.log('Tenant: ', this.tenant)
+
         this.loading = false
+        if (this.debug) console.log('auth complete')
 
         // If we successfully logged in do some database operations
         if (this.auth0User) {
@@ -204,6 +243,11 @@ export const useAuth0 = options => {
 
           // Load the user record
           this.authId = this.auth0User.sub
+        }
+
+        // If there is no tenant set we redirect to tenant selection
+        if (!this.tenant && router.currentRoute.name !== 'theatres') {
+          router.push({ name: 'theatres' })
         }
       }
     }

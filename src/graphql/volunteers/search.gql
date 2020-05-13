@@ -1,4 +1,5 @@
-query searchVolunteerList (
+query volunteerSearchList (
+  $tenant_id: Int!,
   $offset: Int!,
   $limit: Int!,
   $first_name: String!,
@@ -15,6 +16,7 @@ query searchVolunteerList (
         {first_name: {_ilike: $last_name}},
         {last_name: {_ilike: $last_name}}
       ]},
+      {tenant_id: {_eq: $tenant_id}},
     ]},
     order_by: $sort,
     limit: $limit,

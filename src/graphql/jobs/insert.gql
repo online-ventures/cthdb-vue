@@ -1,4 +1,5 @@
-mutation insertJob (
+mutation jobInsert (
+  $tenant_id: Int!,
   $name: String!,
   $points: Int!,
   $editor_id: Int
@@ -7,7 +8,8 @@ mutation insertJob (
     objects: {
       name: $name,
       points: $points,
-      editor_id: $editor_id
+      editor_id: $editor_id,
+      tenant_id: $tenant_id
     },
   ) {
     returning {

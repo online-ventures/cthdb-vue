@@ -1,4 +1,4 @@
-query currentUser ($authId: String!) {
+query userCurrent ($authId: String!) {
   users(where: {auth_id: {_eq: $authId}}) {
     id
     auth_id
@@ -6,5 +6,13 @@ query currentUser ($authId: String!) {
     nickname
     email
     picture
+    tenant {
+      id
+      name
+    }
+    tenants {
+      id
+      name
+    }
   }
 }

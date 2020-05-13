@@ -1,9 +1,13 @@
 query jobList (
+  $tenant_id: Int!,
   $offset: Int!,
   $limit: Int!
 ) {
   jobs(
-    where: {deleted_at: {_is_null: true}},
+    where: {_and: [
+      {deleted_at: {_is_null: true}},
+      {tenant_id: {_eq: $tenant_id}}
+    ]},
     order_by: {name: asc},
     limit: $limit,
     offset: $offset

@@ -1,4 +1,4 @@
-mutation updateShow (
+mutation showUpdate (
   $id: Int!,
   $name: String!,
   $occurred_at: date!,

@@ -1,4 +1,4 @@
-mutation insertVolunteer (
+mutation volunteerInsert (
   $first_name: String!,
   $last_name: String!,
   $email: String,
@@ -6,7 +6,9 @@ mutation insertVolunteer (
   $street: String,
   $city: String,
   $notes: String,
-  $editor_id: Int
+  $editor_id: Int,
+  $tenant_id: Int!
+
 ) {
   insert_volunteers(
     objects: {
@@ -17,7 +19,8 @@ mutation insertVolunteer (
       street: $street,
       city: $city,
       notes: $notes,
-      editor_id: $editor_id
+      editor_id: $editor_id,
+      tenant_id: $tenant_id
     },
   ) {
     returning {

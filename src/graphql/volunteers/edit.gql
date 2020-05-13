@@ -1,4 +1,4 @@
-query editVolunteer ($id: Int!) {
+query volunteerEdit ($id: Int!) {
   volunteers_by_pk(id: $id) {
     id
     joined_at
@@ -9,9 +9,6 @@ query editVolunteer ($id: Int!) {
     street
     city
     notes
-    editor {
-      name
-    }
   }
   awards (where: {volunteer_id: {_eq: $id}}) {
     awarded_at

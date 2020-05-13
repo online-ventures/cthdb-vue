@@ -9,19 +9,19 @@ div
     section.section(v-if="shows")
       .container
         .columns
-          .column.is-10
+          .column(:class="canEdit ? 'is-10' : 'is-12'")
             form.search-form(@submit.prevent)
               .control.has-icons-left
                 input.input(placeholder="search" @input="searchInput")
                 span.icon.is-small.is-left
                   font-awesome-icon(icon="search" size="1x")
-          .column.has-text-right-tablet
-            button.button.is-primary.is-fullwidth(@click="addShow" v-if="canEdit")
+          .column.has-text-right-tablet(v-if="canEdit")
+            button.button.is-primary.is-fullwidth(@click="addShow")
               span.icon.is-small
                 font-awesome-icon(icon="plus" size="1x")
               span Add Show
 
-        list-row(v-for="show in showList"
+        list-row(v-for="show in allShows"
           :key="show.id"
           :title="show.name"
           :subtitle="show.occurred_at | prettyMonth"
@@ -78,9 +78,6 @@ export default {
     searching () {
       return this.search !== ''
     },
-    showList () {
-      return this.searching ? this.shows : this.allShows
-    },
     showName () {
       return '%' + this.search + '%'
     },
@@ -89,6 +86,7 @@ export default {
     },
     queryVariables () {
       const variables = this.infiniteQueryVariables
+      variables.tenant_id = this.$auth.tenant.id
       if (this.searching) {
         variables.search = this.showName
       } else {
@@ -107,7 +105,6 @@ export default {
         return this.queryVariables
       },
       update ({ shows }) {
-        console.log(shows)
         return this.processFetchedData(shows, this.allShows)
       }
     }

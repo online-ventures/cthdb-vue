@@ -1,4 +1,4 @@
-mutation insertAward (
+mutation awardInsert (
   $volunteer_id: Int!,
   $level_id: Int!
 ) {

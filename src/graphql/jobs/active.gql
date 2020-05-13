@@ -1,6 +1,11 @@
-query jobList {
+query jobActiveList (
+  $tenant_id: Int!
+) {
   jobs (
-    where: {deleted_at: {_is_null: true}},
+    where: {_and: [
+      {deleted_at: {_is_null: true}},
+      {tenant_id: {_eq: $tenant_id}}
+    ]},
     order_by: {name: asc}
   ) {
     id

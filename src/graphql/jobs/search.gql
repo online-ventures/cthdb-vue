@@ -1,10 +1,14 @@
-query searchJobList (
+query jobSearchList (
+  $tenant_id: Int!,
   $offset: Int!,
   $limit: Int!,
   $search: String!
 ) {
   jobs(
-    where: {name: {_ilike: $search}},
+    where: {_and: [
+      {name: {_ilike: $search}},
+      {tenant_id: {_eq: $tenant_id}}
+    ]},
     order_by: {name: asc},
     limit: $limit,
     offset: $offset

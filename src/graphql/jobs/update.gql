@@ -1,4 +1,4 @@
-mutation updateJobs (
+mutation jobUpdate (
   $id: Int!,
   $name: String!,
   $points: Int!,

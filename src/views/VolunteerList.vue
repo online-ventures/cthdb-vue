@@ -9,14 +9,14 @@ div
     section.section(v-if="volunteers")
       .container
         .columns
-          .column.is-10
+          .column(:class="canEdit ? 'is-10' : 'is-12'")
             form.search-form(@submit.prevent)
               .control.has-icons-left
                 input.input(placeholder="search" @input="searchInput")
                 span.icon.is-small.is-left
                   font-awesome-icon(icon="search" size="1x")
-          .column.has-text-right-tablet
-            button.button.is-primary.is-fullwidth(@click="addVolunteer" v-if="canEdit")
+          .column.has-text-right-tablet(v-if="canEdit")
+            button.button.is-primary.is-fullwidth(@click="addVolunteer")
               span.icon.is-small
                 font-awesome-icon(icon="plus" size="1x")
               span Add Volunteer
@@ -26,11 +26,13 @@ div
               .control
                 button.button.is-small(
                   :class="{ 'has-background-white-ter': filter === 'all' }"
+                  :disabled="searching"
                   @click="filter = 'all'")
                   span All
               .control
                 button.button.is-small(
                   :class="{ 'has-background-white-ter': filter === 'eligible' }"
+                  :disabled="searching"
                   @click="filter = 'eligible'")
                   span Eligible
 
@@ -38,7 +40,16 @@ div
             .field.has-addons.is-pulled-right
               .control
                 button.button.is-small(
+                  :class="{ 'has-background-white-ter': sort === 'activity' }"
+                  :disabled="searching"
+                  @click="changeSort('activity')")
+                  span.icon.is-small(v-if="sort === 'activity'")
+                    font-awesome-icon(icon="sort" size="1x")
+                  span Activity
+              .control
+                button.button.is-small(
                   :class="{ 'has-background-white-ter': sort === 'name' }"
+                  :disabled="searching"
                   @click="changeSort('name')")
                   span.icon.is-small(v-if="sort === 'name'")
                     font-awesome-icon(icon="sort" size="1x")
@@ -46,6 +57,7 @@ div
               .control
                 button.button.is-small(
                   :class="{ 'has-background-white-ter': sort === 'points' }"
+                  :disabled="searching"
                   @click="changeSort('points')")
                   span.icon.is-small(v-if="sort === 'points'")
                     font-awesome-icon(icon="sort" size="1x")
@@ -87,7 +99,7 @@ export default {
       volunteers: null,
       allVolunteers: [],
       search: '',
-      sort: 'points',
+      sort: 'activity',
       filter: 'all'
     }
   },
@@ -109,23 +121,33 @@ export default {
       return this.search !== ''
     },
     query () {
-      if (this.filter === 'eligible') {
-        return VOLUNTEER_ELIGIBLE
-      } else if (this.searching) {
+      if (this.searching) {
         return VOLUNTEER_SEARCH
+      } else if (this.filter === 'eligible') {
+        return VOLUNTEER_ELIGIBLE
       } else {
         return VOLUNTEER_LIST
       }
     },
     querySort () {
-      if (this.sort === 'points') {
-        return { points: 'desc' }
-      } else {
+      let primary = ''
+      if (this.sort === 'activity') {
+        primary = 'recently_involved_at'
+      } else if (this.sort === 'points') {
+        primary = 'points'
+      }
+      if (this.sort === 'name' || this.searching) {
         return [{ last_name: 'asc' }, { first_name: 'asc' }]
       }
+      return [
+        { [primary]: 'desc_nulls_last' },
+        { last_name: 'asc' },
+        { first_name: 'asc' }
+      ]
     },
     queryVariables () {
       const variables = this.infiniteQueryVariables
+      variables.tenant_id = this.$auth.tenant.id
       if (this.searching) {
         variables.first_name = this.firstName
         variables.last_name = this.lastName

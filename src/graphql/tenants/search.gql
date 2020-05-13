@@ -1,0 +1,16 @@
+query tenentSearch (
+  $search: String!,
+  $offset: Int!,
+  $limit: Int!
+) {
+  tenants (
+    where: {name: {_ilike: $search}},
+    order_by: {name: asc},
+    limit: $limit,
+    offset: $offset
+  ) {
+    id
+    name
+    created_at
+  }
+}

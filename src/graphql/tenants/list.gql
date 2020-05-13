@@ -1,0 +1,14 @@
+query tenantList (
+  $offset: Int!,
+  $limit: Int!
+) {
+  tenants (
+    order_by: {name: asc},
+    limit: $limit,
+    offset: $offset
+  ) {
+    id
+    name
+    created_at
+  }
+}

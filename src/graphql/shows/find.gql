@@ -1,4 +1,4 @@
-query findShow ($id: Int!) {
+query showFind ($id: Int!) {
   shows_by_pk(id: $id) {
     id
     name

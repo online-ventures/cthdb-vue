@@ -1,8 +1,10 @@
 query showList (
+  $tenant_id: Int!,
   $offset: Int!,
   $limit: Int!
 ) {
   shows (
+    where: {tenant_id: {_eq: $tenant_id}},
     order_by: {occurred_at: desc, name: asc},
     limit: $limit,
     offset: $offset

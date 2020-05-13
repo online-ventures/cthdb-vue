@@ -13,6 +13,7 @@ div
         :record="record"
         :mutation="mutation"
         :editorId="$auth.userId"
+        :tenantId="$auth.tenant.id"
         :beforeSave="beforeSave")
         .columns
           .column

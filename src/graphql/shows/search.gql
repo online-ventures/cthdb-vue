@@ -1,10 +1,14 @@
-query searchShowList (
+query showSearchList (
+  $tenant_id: Int!,
   $search: String!,
   $offset: Int!,
   $limit: Int!
 ) {
   shows (
-    where: {name: {_ilike: $search}},
+    where: {_and: [
+      {name: {_ilike: $search}},
+      {tenant_id: {_eq: $tenant_id}}
+    ]},
     order_by: {occurred_at: desc, name: asc},
     limit: $limit,
     offset: $offset

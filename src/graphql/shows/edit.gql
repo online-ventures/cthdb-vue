@@ -1,10 +1,7 @@
-query editShow ($id: Int!) {
+query showEdit ($id: Int!) {
   shows_by_pk(id: $id) {
     id
     name
     occurred_at
-    editor {
-      name
-    }
   }
 }

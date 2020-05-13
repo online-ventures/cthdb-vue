@@ -5,6 +5,7 @@ import VolunteerList from '@/views/VolunteerList.vue'
 import VolunteerEdit from '@/views/VolunteerEdit.vue'
 import VolunteerShow from '@/views/VolunteerShow.vue'
 import VolunteerJobs from '@/views/VolunteerJobs.vue'
+import TenantList from '@/views/TenantList.vue'
 import ShowList from '@/views/ShowList.vue'
 import ShowManage from '@/views/ShowManage.vue'
 import ShowEdit from '@/views/ShowEdit.vue'
@@ -27,6 +28,11 @@ const router = new Router({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/theatres',
+      name: 'theatres',
+      component: TenantList
     },
     {
       path: '/volunteers',

@@ -12,6 +12,7 @@ div
         :complete="onComplete"
         :record="record"
         :editorId="$auth.userId"
+        :tenantId="$auth.tenant.id"
         :mutation="mutation")
 
         h2.title.is-4 Required fields

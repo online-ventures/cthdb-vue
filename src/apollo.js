@@ -9,31 +9,34 @@ const httpLink = new HttpLink({
   uri: process.env.VUE_APP_GRAPHQL_URL
 })
 
-const authHeader = auth => {
+const authHeader = (auth, queryName) => {
   if (auth.accessToken) {
-    return { headers: { authorization: `Bearer ${auth.accessToken}` } }
+    const headers = { headers: { authorization: `Bearer ${auth.accessToken}` } }
+    // TODO: apply different x-hasura-role for specific operations
+    // console.log(queryName)
+    return headers
   }
   return { headers: {} }
 }
 
-const getAccessToken = () => {
+const getAccessToken = request => {
   const auth = Vue.prototype.$auth
   return new Promise((resolve, reject) => {
     if (!auth.loading) {
-      resolve(authHeader(auth))
+      resolve(authHeader(auth, request.operationName))
     }
 
     // Watch for the loading property to change before we check accessToken
     auth.$watch('loading', loading => {
       if (loading === false) {
-        resolve(authHeader(auth))
+        resolve(authHeader(auth, request.operationName))
       }
     })
   })
 }
 
-const middlewareLink = setContext(async () => {
-  const token = await getAccessToken()
+const middlewareLink = setContext(async request => {
+  const token = await getAccessToken(request)
   // console.log(token)
   return token
 })

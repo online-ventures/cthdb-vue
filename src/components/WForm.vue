@@ -37,6 +37,10 @@ export default {
       type: Number,
       required: false
     },
+    tenantId: {
+      type: Number,
+      required: false
+    },
     complete: {
       type: Function,
       required: true
@@ -138,6 +142,9 @@ export default {
         : this.record
       if (this.editorId) {
         variables.editor_id = this.editorId
+      }
+      if (this.tenantId && !this.record.id) {
+        variables.tenant_id = this.tenantId
       }
       return variables
     }

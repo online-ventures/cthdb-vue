@@ -1,4 +1,4 @@
-mutation deletePosition (
+mutation positionDelete (
   $showId:Int!,
   $volunteerId:Int!,
   $jobId:Int!

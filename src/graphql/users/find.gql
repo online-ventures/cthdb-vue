@@ -1,4 +1,4 @@
-query findUser ($id: Int!) {
+query userFind ($id: Int!) {
   users_by_pk(id: $id) {
     id
     name
