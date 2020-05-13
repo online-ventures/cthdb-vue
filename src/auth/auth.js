@@ -31,7 +31,7 @@ export const useAuth0 = options => {
         auth0Client: null,
         auth0User: null,
         error: null,
-        debug: false
+        debug: true
       }
     },
 
@@ -43,6 +43,7 @@ export const useAuth0 = options => {
         return this.user && this.user.id
       },
       tenantId () {
+        console.log(this.tenant)
         return this.tenant && this.tenant.id
       }
     },
@@ -157,8 +158,8 @@ export const useAuth0 = options => {
         }
       },
       async reAuthenticate () {
+        if (this.debug) console.log('Reauthenticating')
         this.loading = true
-        this.tenant = null
         this.accessToken = null
         this.auth0User = null
         this.error = null
@@ -174,6 +175,7 @@ export const useAuth0 = options => {
         this.tenant = tenant
       },
       async saveTenant (tenant) {
+        this.setTenant(tenant)
         // Safeguard loading check since this takes several seconds
         if (this.loading || !this.user) return
         await this.$apollo.mutate({
@@ -184,8 +186,7 @@ export const useAuth0 = options => {
           }
         })
         if (this.debug) console.log('Tenant saved for user', tenant)
-        this.setTenant(tenant)
-        await this.$auth.reAuthenticate()
+        await this.reAuthenticate()
       },
       createClient () {
         return createAuth0Client({

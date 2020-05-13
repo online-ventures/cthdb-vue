@@ -12,7 +12,7 @@ div
         span
         span
     .navbar-menu(:class="{ 'is-active': showLinks }")
-      .navbar-start(v-if="$auth.tenant")
+      .navbar-start(v-if="displayTenantLinks")
         router-link.navbar-item(:to="{ name: 'shows' }") Shows
         router-link.navbar-item(:to="{ name: 'jobs' }") Jobs
         router-link.navbar-item(:to="{ name: 'volunteers' }") Volunteers
@@ -41,6 +41,10 @@ export default {
     },
     user () {
       return this.$auth.user
+    },
+    displayTenantLinks () {
+      console.log('display tenant links', this.$auth.tenant)
+      return this.$auth.tenantId
     }
   },
   methods: {
