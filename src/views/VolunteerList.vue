@@ -190,6 +190,7 @@ export default {
 
   methods: {
     changeSort (sort) {
+      if (this.sort === sort) return
       this.sort = sort
       this.resetResults()
     },
