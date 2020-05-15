@@ -100,7 +100,7 @@ export default {
       show: null,
       job: null,
       points: '',
-      jobs: null,
+      jobs: [],
       filteredJobs: [],
       filteredVolunteers: [],
       volunteerSearch: null,
@@ -155,6 +155,9 @@ export default {
     },
     jobs: {
       query: JOB_LIST,
+      variables () {
+        return { tenant_id: this.$auth.tenantId }
+      },
       update (data) {
         return data.jobs
       }
@@ -166,14 +169,15 @@ export default {
       query: VOLUNTEER_SEARCH,
       variables () {
         return {
+          tenant_id: this.$auth.tenantId,
           first_name: this.firstName,
           last_name: this.lastName,
           offset: 0,
           limit: 15
         }
       },
-      update ({ volunteers }) {
-        return volunteers
+      update (data) {
+        return data.volunteer_list
           .filter(volunteer => {
             return this.volunteers.every(existing => {
               return !existing.record || volunteer.id !== existing.record.id
