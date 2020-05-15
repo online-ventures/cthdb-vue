@@ -63,6 +63,56 @@
             _eq: x-hasura-tenant-id
 - table:
     schema: public
+    name: job_volunteers
+  object_relationships:
+  - name: job
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: jobs
+        column_mapping:
+          job_id: id
+  - name: show
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: shows
+        column_mapping:
+          show_id: id
+  - name: volunteer
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: volunteers
+        column_mapping:
+          volunteer_id: id
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - job_id
+      - volunteer_id
+      - show_id
+      filter: {}
+  - role: staff
+    permission:
+      columns:
+      - job_id
+      - volunteer_id
+      - show_id
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - job_id
+      - volunteer_id
+      - show_id
+      filter: {}
+- table:
+    schema: public
     name: jobs
   object_relationships:
   - name: editor
@@ -72,6 +122,14 @@
     using:
       foreign_key_constraint_on: tenant_id
   array_relationships:
+  - name: job_volunteers
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: job_volunteers
+        column_mapping:
+          id: job_id
   - name: positions
     using:
       foreign_key_constraint_on:

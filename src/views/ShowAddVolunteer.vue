@@ -191,7 +191,7 @@ export default {
 
   methods: {
     cancel () {
-      this.$router.push({ name: 'show-manage', params: { id: this.showId } })
+      this.$router.push({ name: 'show', params: { id: this.showId } })
     },
     addVolunteer () {
       this.volunteers.push({ id: this.nextVolunteerId, record: null })

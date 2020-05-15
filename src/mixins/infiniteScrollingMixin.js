@@ -1,20 +1,27 @@
 export default {
   mounted () {
+    // Always start at the top.  Starting at bottom breaks this component!
+    window.scrollTo(0, 0)
+    // Add scroll listener
     window.onscroll = () => {
       const position = Math.max(window.pageYOffset,
         document.documentElement.scrollTop,
         document.body.scrollTop)
       const outerPosition = position + window.innerHeight
-      const atBottom = outerPosition >= document.documentElement.offsetHeight - 1
+      const height = document.documentElement.offsetHeight
+      const atBottom = outerPosition >= height - 1
+      if (this.infiniteDebug) console.log('Scroll position: ' + outerPosition + '/' + height)
       if (atBottom) this.fetchMore()
     }
   },
 
   data () {
     return {
+      infiniteDebug: false,
       page: 1,
       rowsPerPage: 25,
-      hasMore: false
+      hasMore: false,
+      infiniteIdKey: 'id'
     }
   },
 
@@ -41,7 +48,9 @@ export default {
         allRecords.length = 0
       }
       newRecords.forEach(record => {
-        const index = allRecords.findIndex(existing => existing.id === record.id)
+        const index = allRecords.findIndex(existing => {
+          return existing[this.infiniteIdKey] === record[this.infiniteIdKey]
+        })
         if (index >= 0) {
           allRecords[index] = record
         } else {

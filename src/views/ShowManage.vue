@@ -22,6 +22,7 @@ transition(name="long-fade")
           :key="row.volunteer.id"
           :title="row.volunteer | fullName"
           :subtitle="row.volunteer.positions | jobList"
+          :awards="row.volunteer.awards"
           icon="hammer"
           icon-type="is-grey-light"
           :item="row"

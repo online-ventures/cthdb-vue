@@ -1,0 +1,40 @@
+query jobVolunteers (
+  $id: Int!,
+  $offset: Int!,
+  $limit: Int!
+) {
+  job_volunteers (
+    where: {job_id: {_eq: $id}},
+    order_by: {show: {occurred_at: desc}},
+    limit: $limit,
+    offset: $offset
+  ) {
+    volunteer_id
+    volunteer {
+      id
+      first_name
+      last_name
+      volunteer_shows_aggregate {
+        aggregate {
+          sum {
+            points
+          }
+        }
+      }
+      awards (
+        order_by: {level: {points: desc}},
+        limit: 1
+      ) {
+        level {
+          name
+          color
+        }
+      }
+    }
+    show {
+      id
+      name
+      occurred_at
+    }
+  }
+}

@@ -147,6 +147,9 @@ export default {
     },
     jobs: {
       query: JOB_LIST,
+      variables () {
+        return { tenant_id: this.$auth.tenantId }
+      },
       update (data) {
         return data.jobs
       }
@@ -159,7 +162,7 @@ export default {
     },
     done () {
       if (this.returnTo === 'show') {
-        this.$router.push({ name: 'show-manage', params: { id: this.showId } })
+        this.$router.push({ name: 'show', params: { id: this.showId } })
       } else {
         this.$router.push({ name: 'volunteer', params: { id: this.volunteerId } })
       }

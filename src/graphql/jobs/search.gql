@@ -16,5 +16,10 @@ query jobSearchList (
     id
     name
     points
+    positions_aggregate (distinct_on: volunteer_id) {
+      aggregate {
+        count
+      }
+    }
   }
 }

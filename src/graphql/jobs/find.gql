@@ -1,0 +1,14 @@
+query jobsFind ($id: Int!) {
+  jobs_by_pk(id: $id) {
+    id
+    name
+    points
+    created_at
+    updated_at
+    positions_aggregate (distinct_on: volunteer_id) {
+      aggregate {
+        count
+      }
+    }
+  }
+}

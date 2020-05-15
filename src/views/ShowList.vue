@@ -46,10 +46,6 @@ export default {
     infiniteScrollingMixin
   ],
 
-  mounted () {
-    window.scrollTo(0, 0)
-  },
-
   data () {
     return {
       shows: null,
@@ -131,7 +127,7 @@ export default {
       this.$router.push({ name: 'edit-show', params: { id: item.id } })
     },
     manageShow (item) {
-      this.$router.push({ name: 'show-manage', params: { id: item.id } })
+      this.$router.push({ name: 'show', params: { id: item.id } })
     }
   }
 }

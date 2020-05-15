@@ -12,6 +12,7 @@ import ShowEdit from '@/views/ShowEdit.vue'
 import ShowAddVolunteer from '@/views/ShowAddVolunteer.vue'
 import JobList from '@/views/JobList.vue'
 import JobEdit from '@/views/JobEdit.vue'
+import JobManage from '@/views/JobManage.vue'
 import Home from '@/views/Home.vue'
 import Callback from '@/views/Callback.vue'
 import Login from '@/views/Login.vue'
@@ -68,24 +69,24 @@ const router = new Router({
       component: ShowList
     },
     {
-      path: '/shows/:id/manage',
-      name: 'show-manage',
+      path: '/show/:id',
+      name: 'show',
       component: ShowManage
     },
     {
-      path: '/shows/new',
+      path: '/show/new',
       name: 'new-show',
       component: ShowEdit,
       meta: { role: 'staff' }
     },
     {
-      path: '/shows/:id/edit',
+      path: '/show/:id/edit',
       name: 'edit-show',
       component: ShowEdit,
       meta: { role: 'staff' }
     },
     {
-      path: '/shows/:id/add-volunteer',
+      path: '/show/:id/add-volunteer',
       name: 'show-add-volunteer',
       component: ShowAddVolunteer,
       meta: { role: 'staff' }
@@ -94,6 +95,11 @@ const router = new Router({
       path: '/jobs',
       name: 'jobs',
       component: JobList
+    },
+    {
+      path: '/job/:id',
+      name: 'job',
+      component: JobManage
     },
     {
       path: '/job/new',

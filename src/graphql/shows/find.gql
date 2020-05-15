@@ -17,6 +17,13 @@ query showFind ($id: Int!) {
             points
           }
         }
+        awards {
+          awarded_at
+          level {
+            name
+            color
+          }
+        }
       }
     }
   }

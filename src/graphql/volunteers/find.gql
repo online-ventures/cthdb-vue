@@ -23,8 +23,8 @@ query volunteerFind ($id: Int!) {
     awards {
       awarded_at
       level {
-        id
         name
+        color
       }
     }
   }

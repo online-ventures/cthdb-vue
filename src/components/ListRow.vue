@@ -3,11 +3,11 @@
   .column
     p.title.is-4
       span {{ title }}
-      span.icon.is-medium(v-if="badge")
+      span.icon.is-medium(v-if="badgeIcon")
         font-awesome-icon.title-icon(
-          :icon="badge"
+          :icon="badgeIcon"
           size="xs"
-          :style="{ color: badgeColor || 'grey' }")
+          :style="{ color: badgeIconColor || 'grey' }")
     .columns
       .column.is-narrow.subtitle-column(v-for="subtitle in subtitleList")
         .subtitle.is-6.is-mobile
@@ -37,13 +37,7 @@ export default {
       type: [String, Array],
       required: false
     },
-    badge: {
-      type: String,
-      required: false
-    },
-    badgeColor: {
-      type: String,
-      required: false
+    awards: {
     },
     icon: {
       type: [String, Array],
@@ -85,6 +79,13 @@ export default {
       return subtitles.map((subtitle, index) => {
         return { text: subtitle, icon: icons[index] }
       })
+    },
+    badgeIcon () {
+      if (!this.awards || !this.awards.length) return null
+      return 'star'
+    },
+    badgeIconColor () {
+      return this.awards[0].level.color
     }
   },
   filters: {
@@ -106,7 +107,7 @@ export default {
 <style scoped lang="scss">
 .row {
   @media only screen and (max-width: 768px) {
-    margin-bottom: 1.5em;
+    margin-bottom: 0.75em;
   }
 }
 .row:hover {
@@ -130,6 +131,9 @@ p.title {
   padding-top: 0;
   padding-bottom: 0;
   position: relative;
+  &:last-child {
+    padding-bottom: 0.75em;
+  }
 }
 .subtitle-text {
   margin-left: 1.75em;

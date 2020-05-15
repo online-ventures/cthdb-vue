@@ -48,10 +48,6 @@ export default {
     infiniteScrollingMixin
   ],
 
-  mounted () {
-    window.scrollTo(0, 0)
-  },
-
   data () {
     return {
       tenants: null,

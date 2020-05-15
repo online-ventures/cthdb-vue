@@ -115,14 +115,6 @@ export default {
       this.$router.push({ name: 'edit-volunteer', params: { id: this.$route.params.id } })
     },
 
-    onPositionsChanged (volunteer, positions) {
-      // this.$apollo.queries.volunteer.refetch()
-    },
-
-    onVolunteerRemoved (volunteer, showId) {
-      this.$apollo.queries.volunteer.refetch()
-    },
-
     editShow (show) {
       if (this.$auth.has('staff')) {
         this.$router.push({
@@ -133,7 +125,7 @@ export default {
           }
         })
       } else {
-        this.$router.push({ name: 'show-manage', params: { id: show.id } })
+        this.$router.push({ name: 'show', params: { id: show.id } })
       }
     }
   }

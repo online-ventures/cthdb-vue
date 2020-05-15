@@ -24,11 +24,11 @@ div
         list-row(v-for="job in allJobs"
           :key="job.id"
           :title="job.name"
-          :subtitle="job.points | prettyPoints"
-          icon="coins"
+          :subtitle="[jobPoints(job.points), jobCount(job)]"
+          :icon="['coins', 'user']"
           icon-type="is-warning"
           :item="job"
-          v-on:action="editJob")
+          v-on:action="viewJob")
 </template>
 
 <script>
@@ -46,10 +46,6 @@ export default {
   mixins: [
     infiniteScrollingMixin
   ],
-
-  mounted () {
-    window.scrollTo(0, 0)
-  },
 
   data () {
     return {
@@ -98,14 +94,16 @@ export default {
     }
   },
 
-  filters: {
-    prettyPoints (value) {
-      const plural = value > 2 ? 's' : ''
-      return (value * 0.5).toFixed(1) + ' point' + plural
-    }
-  },
-
   methods: {
+    jobPoints (points) {
+      const plural = points > 2 ? 's' : ''
+      return (points * 0.5).toFixed(1) + ' point' + plural
+    },
+    jobCount (job) {
+      const count = job.positions_aggregate.aggregate.count
+      const text = count === 1 ? 'person' : 'people'
+      return Intl.NumberFormat('en-US').format(count) + ' ' + text
+    },
     searchInput: debounce(function (event) {
       this.allJobs = []
       this.page = 1
@@ -117,6 +115,9 @@ export default {
     editJob (item) {
       if (!this.$auth.has('staff')) return
       this.$router.push({ name: 'edit-job', params: { id: item.id } })
+    },
+    viewJob (item) {
+      this.$router.push({ name: 'job', params: { id: item.id } })
     }
   }
 }
