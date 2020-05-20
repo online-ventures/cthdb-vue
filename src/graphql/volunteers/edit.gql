@@ -17,7 +17,10 @@ query volunteerEdit ($id: Int!) {
       name
     }
   }
-  levels (order_by: {points: asc}) {
+  levels (
+    where: {deleted_at: {_is_null: true}},
+    order_by: {points: asc}
+  ) {
     id
     name
     points

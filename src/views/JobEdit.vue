@@ -76,7 +76,6 @@ export default {
       update (data) {
         const job = data.jobs_by_pk
         this.record = { ...job }
-        this.record.points *= 0.5
         delete this.record.__typename
         return job
       }

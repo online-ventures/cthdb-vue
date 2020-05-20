@@ -61,7 +61,12 @@ export const useAuth0 = options => {
             const user = users[0]
             if (user) {
               if (user.tenant) {
-                this.setTenant({ id: user.tenant.id, name: user.tenant.name })
+                this.setTenant({
+                  id: user.tenant.id,
+                  short_name: user.tenant.short_name,
+                  name: user.tenant.name,
+                  max_points_per_show: user.tenant.max_points_per_show
+                })
               }
               if (this.$sentry) {
                 this.$sentry.setUser({
@@ -200,6 +205,11 @@ export const useAuth0 = options => {
     /** Use this lifecycle method to instantiate the SDK client */
     async created () {
       if (this.debug) console.log('auth starting')
+
+      // Load the tenant from the cookie
+      this.tenant = this.$cookies.get('tenant')
+      if (this.debug) console.log('Tenant: ', this.tenant)
+
       // Create a new instance of the SDK client using members of the given options object
       this.auth0Client = await this.createClient()
       if (this.debug) console.log('created client')
@@ -232,10 +242,6 @@ export const useAuth0 = options => {
           this.error = e
           if (e.message === 'Invalid state') this.onRedirectCallback()
         }
-        // Load the tenant from the cookie
-        // This way we don't have to wait for apollo
-        this.tenant = this.$cookies.get('tenant')
-        if (this.debug) console.log('Tenant: ', this.tenant)
 
         this.loading = false
         if (this.debug) console.log('auth complete')

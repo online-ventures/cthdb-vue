@@ -17,7 +17,7 @@ transition(name="long-fade")
               p.is-size-4.is-marginless.has-text-black ALL STAR POINTS
               p.is-size-4.has-text-weight-medium.is-marginless
                 font-awesome-icon.has-text-warning.is-size-3(icon="star")
-                span  {{ job.points * 0.5 }}
+                span  {{ job.points }}
             .column.has-text-centered
               p.is-size-4.is-marginless.has-text-black VOLUNTEERS
               p.is-size-4.has-text-weight-medium.is-marginless

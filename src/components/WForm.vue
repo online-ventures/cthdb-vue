@@ -13,7 +13,7 @@ form(ref="form" @submit.prevent="save")
         button.button.is-danger(@click.prevent="onDelete" :disabled="formDisabled") Delete
     .column
       .control.buttons.is-right
-        button.button(@click.prevent="cancel") Cancel
+        button.button(v-if="cancel" @click.prevent="cancel") Cancel
         button.button.is-primary(
           :disabled="formDisabled"
           @click.prevent="save"
@@ -84,6 +84,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    showSuccessMessage: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
 
@@ -115,11 +120,9 @@ export default {
         return this.validationMessage
       } else if (this.status === 'broken') {
         return this.brokeMessage
-      } else if (!this.showSummaryError) {
-        return null
-      } else if (this.status === 'error') {
+      } else if (this.showSummaryError && this.status === 'error') {
         return this.errorMessage
-      } else if (this.status === 'successful') {
+      } else if (this.showSuccessMessage && this.status === 'successful') {
         return this.successMessage
       } else {
         return null

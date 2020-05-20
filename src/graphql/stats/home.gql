@@ -1,0 +1,31 @@
+query homeStats ($id: Int!) {
+  jobs_aggregate(where: {_and: [
+    {deleted_at: {_is_null: true}},
+    {tenant_id: {_eq: $id}},
+  ]}
+  ) {
+    aggregate {
+      count
+    }
+  }
+  shows_aggregate(where: {tenant_id: {_eq: $id}}) {
+    aggregate {
+      count
+    }
+  }
+  volunteers_aggregate(where: {tenant_id: {_eq: $id}}) {
+    aggregate {
+      count
+    }
+  }
+  awards_aggregate(
+    where: {_and: [
+      {level: {tenant_id: {_eq: $id}}}
+    ]},
+    distinct_on: volunteer_id
+  ) {
+    aggregate {
+      count
+    }
+  }
+}

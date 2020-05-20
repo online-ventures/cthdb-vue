@@ -6,9 +6,13 @@ query userCurrent ($authId: String!) {
     nickname
     email
     picture
+    first_name
+    last_name
     tenant {
       id
+      short_name
       name
+      max_points_per_show
     }
     tenants {
       id

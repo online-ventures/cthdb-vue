@@ -19,12 +19,27 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce'
+
 export default {
   inheritAttrs: false,
 
   props: {
-    value: [Object, Number, String],
-    default: null
+    value: {
+      type: [Object, Number, String],
+      required: false,
+      default: null
+    },
+    debounce: {
+      type: Function,
+      required: false,
+      default: null
+    },
+    debounceItem: {
+      type: Object,
+      required: false,
+      default: null
+    }
   },
 
   mounted () {
@@ -37,7 +52,8 @@ export default {
     return {
       text: '',
       isValid: true,
-      error: null
+      error: null,
+      debounceTimeout: null
     }
   },
 
@@ -60,9 +76,20 @@ export default {
       if (this.isValid) this.error = null
       this.$emit('change', this.text)
     },
-    inputChanged () {
+    inputChanged (event) {
       this.runValidations()
       this.$emit('input', this.text)
+      if (this.debounce) {
+        if (this.debounceTimeout) clearTimeout(this.debounceTimeout)
+        const that = this
+        this.debounceTimeout = setTimeout(function () {
+          that.debounce({
+            value: that.text,
+            valid: that.isValid,
+            item: that.debounceItem
+          })
+        }, 1000)
+      }
     },
     onInvalid (event) {
       const validity = this.$refs.input.validity

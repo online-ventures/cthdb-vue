@@ -19,10 +19,10 @@ div
             button.button.is-primary.is-fullwidth(@click="addTenant")
               span.icon.is-small
                 font-awesome-icon(icon="plus" size="1x")
-              span Add Tenant
+              span Add Theatre
 
         transition(name="fade")
-          template(v-if="!loading")
+          div(v-if="!loading")
             list-row(v-for="tenant in allTenants"
               :key="tenant.id"
               :title="tenant.name"
@@ -60,7 +60,6 @@ export default {
   computed: {
     canAdd () {
       const user = this.$auth.user || {}
-      return false
       return user.tenants && user.tenants.length === 0
     },
     searching () {
@@ -112,11 +111,16 @@ export default {
       this.search = event.target.value
     }, 300),
     addTenant () {
-      this.$router.push({ name: 'new-tenant' })
+      this.$router.push({ name: 'new-theatre' })
     },
     async setTenant (item) {
       this.loading = true
-      const tenant = { id: item.id, name: item.name }
+      const tenant = {
+        id: item.id,
+        short_name: item.short_name,
+        name: item.name,
+        max_points_per_show: item.max_points_per_show
+      }
       await this.$auth.saveTenant(tenant)
       this.loading = false
       this.$router.push({ name: 'home' })

@@ -1,0 +1,13 @@
+query tenantsFind ($id: Int!) {
+  tenants_by_pk(id: $id) {
+    id
+    name
+    points_multiplier
+    max_points_per_show
+    city
+    state
+    created_at
+    updated_at
+    owner_id
+  }
+}

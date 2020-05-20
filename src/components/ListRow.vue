@@ -16,7 +16,7 @@
   .column.is-2-tablet.is-one-quarter-mobile.has-text-right(v-if="showPoints")
     span.icon.is-medium.has-text-warning
       font-awesome-icon(icon="coins" size="lg")
-    span.is-size-3.has-text-weight-medium  {{ points | points }}
+    span.is-size-3.has-text-weight-medium  {{ points }}
 </template>
 
 <script>
@@ -86,11 +86,6 @@ export default {
     },
     badgeIconColor () {
       return this.awards[0].level.color
-    }
-  },
-  filters: {
-    points (value) {
-      return value * 0.5
     }
   },
   methods: {

@@ -1,0 +1,20 @@
+mutation levelInsert (
+    $tenant_id: Int!,
+    $name: String!,
+    $points: Int!,
+    $color: String!,
+  ) {
+  insert_levels (objects: {
+    tenant_id: $tenant_id,
+    name: $name,
+    points: $points,
+    color: $color
+  }) {
+    returning {
+      id
+      name
+      points
+      color
+    }
+  }
+}

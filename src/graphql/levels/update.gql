@@ -1,0 +1,19 @@
+mutation levelUpdate (
+  $id: Int!,
+  $name: String!,
+  $points: Int!,
+  $color: String!
+) {
+  update_levels (
+    where: {id: {_eq: $id}},
+    _set: {
+      name: $name,
+      points: $points,
+      color: $color
+    }
+  ) {
+    returning {
+      id
+    }
+  }
+}

@@ -1,0 +1,21 @@
+mutation tenantInsert (
+  $name: String!,
+  $short_name: String!,
+  $city: String!,
+  $state: String!,
+  $owner_id: Int!
+) {
+  insert_tenants (
+    objects: {
+      owner_id: $owner_id
+      name: $name,
+      short_name: $short_name,
+      city: $city,
+      state: $state,
+    },
+  ) {
+    returning {
+      id
+    }
+  }
+}

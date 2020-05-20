@@ -20,7 +20,9 @@ import {
   faSave,
   faSearch,
   faSort,
-  faStar
+  faStar,
+  faQuestionCircle,
+  faPalette
 } from '@fortawesome/free-solid-svg-icons'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -45,7 +47,9 @@ library.add(
   faSave,
   faSearch,
   faSort,
-  faStar
+  faStar,
+  faQuestionCircle,
+  faPalette
 )
 
 export default FontAwesomeIcon

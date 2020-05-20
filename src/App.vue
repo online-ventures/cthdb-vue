@@ -95,6 +95,9 @@ export default {
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   max-height: 6em;
+  &.large {
+    max-height: 10em;
+  }
 }
 .shrink-enter-active {
   transition: all 0.3s;

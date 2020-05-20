@@ -5,8 +5,7 @@ div
       router-link.navbar-item(:to="{ path: '/' }")
         img(src="/images/icons/icon-144x144.png")
       router-link.navbar-item(:to="{ path: '/' }")
-        b All
-        span Star
+        span.is-uppercase.has-text-weight-bold {{ brandTitle }}
       a.navbar-burger.burger(ref="burger" @click="toggleLinks" :class="{ 'is-active': showLinks }")
         span
         span
@@ -22,7 +21,9 @@ div
           a.navbar-link Account
           .navbar-dropdown.is-right
             .navbar-item {{ user.name }}
-            a.navbar-item(@click="routeByName('theatres')") Theatres
+            a.navbar-item(@click="routeByName('account')") My profile
+            a.navbar-item(v-if="hasTheatre" @click="editMyTheatre") My Theatre
+            a.navbar-item(@click="routeByName('theatres')") Switch Theatre
             a.navbar-item(@click="logout") Logout
         .navbar-item(v-if="!user")
           a.button.is-small.is-secondary(:class="{'is-loading': authLoading}" @click="login")
@@ -50,6 +51,15 @@ export default {
     displayTenantLinks () {
       if (this.authLoading) return false
       return this.$auth.tenantId
+    },
+    brandTitle () {
+      if (this.$auth.tenant) {
+        return this.$auth.tenant.short_name
+      }
+      return 'AllStar'
+    },
+    hasTheatre () {
+      return this.$auth.user.tenants[0]
     }
   },
   methods: {
@@ -65,6 +75,12 @@ export default {
     },
     toggleLinks () {
       this.showLinks = !this.showLinks
+    },
+    editMyTheatre () {
+      this.$router.push({
+        name: 'edit-theatre',
+        params: { id: this.$auth.user.tenants[0].id }
+      })
     }
   }
 }

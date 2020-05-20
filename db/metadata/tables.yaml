@@ -28,6 +28,7 @@
       - level_id
       - awarded_at
       filter: {}
+      allow_aggregations: true
   - role: staff
     permission:
       columns:
@@ -35,6 +36,7 @@
       - level_id
       - volunteer_id
       filter: {}
+      allow_aggregations: true
   - role: user
     permission:
       columns:
@@ -42,6 +44,7 @@
       - level_id
       - volunteer_id
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: staff
     permission:
@@ -219,13 +222,23 @@
   - role: staff
     permission:
       check:
-        _and:
-        - tenant:
-            owner:
-              auth_id:
-                _eq: x-hasura-user-id
-        - tenant_id:
-            _eq: x-hasura-tenant-id
+        tenant:
+          owner:
+            auth_id:
+              _eq: x-hasura-user-id
+      columns:
+      - color
+      - name
+      - points
+      - tenant_id
+      backend_only: false
+  - role: user
+    permission:
+      check:
+        tenant:
+          owner:
+            auth_id:
+              _eq: x-hasura-user-id
       columns:
       - color
       - name
@@ -236,31 +249,37 @@
   - role: anonymous
     permission:
       columns:
-      - id
+      - color
       - created_at
-      - updated_at
+      - deleted_at
+      - id
       - name
       - points
-      - color
+      - tenant_id
+      - updated_at
       filter: {}
   - role: staff
     permission:
       columns:
       - color
       - created_at
+      - deleted_at
       - id
       - name
       - points
+      - tenant_id
       - updated_at
       filter: {}
   - role: user
     permission:
       columns:
-      - id
-      - points
       - color
-      - name
       - created_at
+      - deleted_at
+      - id
+      - name
+      - points
+      - tenant_id
       - updated_at
       filter: {}
   update_permissions:
@@ -268,17 +287,29 @@
     permission:
       columns:
       - color
+      - deleted_at
       - name
       - points
       - tenant_id
       filter:
-        _and:
-        - tenant:
-            owner:
-              auth_id:
-                _eq: x-hasura-user-id
-        - tenant_id:
-            _eq: x-hasura-tenant-id
+        tenant:
+          owner:
+            auth_id:
+              _eq: x-hasura-user-id
+      check: null
+  - role: user
+    permission:
+      columns:
+      - color
+      - deleted_at
+      - name
+      - points
+      - tenant_id
+      filter:
+        tenant:
+          owner:
+            auth_id:
+              _eq: x-hasura-user-id
       check: null
 - table:
     schema: public
@@ -564,6 +595,53 @@
         table:
           schema: public
           name: volunteers
+  insert_permissions:
+  - role: staff
+    permission:
+      check:
+        _and:
+        - _not:
+            _exists:
+              _where:
+                owner:
+                  auth_id:
+                    _eq: x-hasura-user-id
+              _table:
+                schema: public
+                name: tenants
+        - owner:
+            auth_id:
+              _eq: x-hasura-user-id
+      columns:
+      - city
+      - name
+      - owner_id
+      - short_name
+      - state
+      backend_only: false
+  - role: user
+    permission:
+      check:
+        _and:
+        - _not:
+            _exists:
+              _where:
+                owner:
+                  auth_id:
+                    _eq: x-hasura-user-id
+              _table:
+                schema: public
+                name: tenants
+        - owner:
+            auth_id:
+              _eq: x-hasura-user-id
+      columns:
+      - city
+      - name
+      - owner_id
+      - short_name
+      - state
+      backend_only: false
   select_permissions:
   - role: anonymous
     permission:
@@ -576,6 +654,9 @@
       - status
       - point_multiplier
       - max_points_per_show
+      - city
+      - state
+      - short_name
       filter:
         status:
           _eq: active
@@ -583,13 +664,16 @@
     permission:
       columns:
       - id
+      - max_points_per_show
+      - owner_id
+      - point_multiplier
+      - city
+      - name
+      - short_name
+      - state
+      - status
       - created_at
       - updated_at
-      - name
-      - owner_id
-      - status
-      - point_multiplier
-      - max_points_per_show
       filter:
         status:
           _eq: active
@@ -597,16 +681,48 @@
     permission:
       columns:
       - id
+      - max_points_per_show
+      - owner_id
+      - point_multiplier
+      - city
+      - name
+      - short_name
+      - state
+      - status
       - created_at
       - updated_at
-      - name
-      - owner_id
-      - status
-      - point_multiplier
-      - max_points_per_show
       filter:
         status:
           _eq: active
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - city
+      - max_points_per_show
+      - name
+      - point_multiplier
+      - short_name
+      - state
+      filter:
+        owner:
+          auth_id:
+            _eq: x-hasura-user-id
+      check: null
+  - role: user
+    permission:
+      columns:
+      - city
+      - max_points_per_show
+      - name
+      - point_multiplier
+      - short_name
+      - state
+      filter:
+        owner:
+          auth_id:
+            _eq: x-hasura-user-id
+      check: null
 - table:
     schema: public
     name: users
@@ -943,6 +1059,7 @@
       - id
       - joined_at
       - last_name
+      - tenant_id
       - updated_at
       filter: {}
       allow_aggregations: true
@@ -973,6 +1090,7 @@
       - id
       - joined_at
       - last_name
+      - tenant_id
       - updated_at
       filter: {}
       allow_aggregations: true

@@ -1,0 +1,23 @@
+mutation tenantUpdate (
+  $id: Int!,
+  $name: String!,
+  $short_name: String!,
+  $city: String!,
+  $state: String!,
+  $max_points_per_show: Int!
+) {
+  update_tenants (
+    where: {id: {_eq: $id}},
+    _set: {
+      name: $name,
+      short_name: $short_name,
+      city: $city,
+      state: $state,
+      max_points_per_show: $max_points_per_show
+    }
+  ) {
+    returning {
+      id
+    }
+  }
+}

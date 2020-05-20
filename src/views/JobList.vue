@@ -96,8 +96,8 @@ export default {
 
   methods: {
     jobPoints (points) {
-      const plural = points > 2 ? 's' : ''
-      return (points * 0.5).toFixed(1) + ' point' + plural
+      const text = points > 1 ? ' points' : ' point'
+      return points + text
     },
     jobCount (job) {
       const count = job.positions_aggregate.aggregate.count

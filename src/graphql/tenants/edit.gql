@@ -1,0 +1,10 @@
+query tenantEdit ($id: Int!) {
+  tenants_by_pk(id: $id) {
+    id
+    name
+    short_name
+    city
+    state
+    max_points_per_show
+  }
+}

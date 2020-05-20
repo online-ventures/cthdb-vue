@@ -133,7 +133,7 @@ export default {
               volunteer_id: volunteer.record.id,
               show_id: this.showId,
               job_id: this.job.id,
-              points: this.points * 2
+              points: this.points
             }
           })
       }
@@ -239,7 +239,7 @@ export default {
     },
     onJobSelected (job) {
       this.filteredJobs = []
-      this.points = job.points * 0.5
+      this.points = job.points
     },
     setVolunteerText (volunteer) {
       return (volunteer && volunteer.name) || ''

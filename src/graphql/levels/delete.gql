@@ -1,0 +1,16 @@
+mutation levelDelete (
+  $id: Int!
+) {
+  update_levels (
+    where: {
+      id: {_eq: $id}
+    },
+    _set: {
+      deleted_at: "now()"
+    }
+  ) {
+    returning {
+      id
+    }
+  }
+}

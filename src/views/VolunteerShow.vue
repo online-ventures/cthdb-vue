@@ -58,8 +58,9 @@ export default {
     points () {
       if (!this.shows) return 0
       return this.shows.reduce((sum, show) => {
-        return sum + Math.min(show.points, 6)
-      }, 0) * 0.5
+        const max = this.$auth.tenant.max_points_per_show
+        return sum + Math.min(show.points, max)
+      }, 0)
     },
     canEdit () {
       return this.$auth.has('staff')

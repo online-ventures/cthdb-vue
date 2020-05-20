@@ -79,17 +79,19 @@ div
                   font-awesome-icon(icon="sticky-note")
                 w-input(v-model="record.notes" maxlength="80")
 
-  section
+  section.section
     .container
       template(v-if="eligibleLevels.length > 0")
         h2.title.is-4 Awards
         .columns.is-vcentered.is-centered(
           v-for="(level, index) in eligibleLevels"
           :class="{ 'has-background-white-ter': index % 2 === 0 }")
-          .column.is-4
+          .column.is-3
             p.title.is-5 {{ level.name }}
-          .column.is-4.is-hidden-mobile
-            .buttons.has-addons.is-right
+          .column.is-3
+            p.subtitle.is-6 {{ points }} points / {{ level.points }} needed
+          .column.is-3
+            .buttons.has-addons
               button.button(
                 @click="removeAward(level)"
                 :class="{ 'is-primary': !awarded(level), 'is-loading': awardSaving[level.id] }")
@@ -98,17 +100,7 @@ div
                 @click="addAward(level)"
                 :class="{ 'is-primary': awarded(level) }")
                 | Awarded
-          .column.is-hidden-tablet
-            .buttons.has-addons
-              button.button(
-                @click="removeAward(level)"
-                :class="{ 'is-primary': !awarded(level) }")
-                | Eligible
-              button.button(
-                @click="addAward(level)"
-                :class="{ 'is-primary': awarded(level) }")
-                | Awarded
-          .column.is-4
+          .column.is-3
             .field(v-if="awarded(level)")
               .control.has-icons-left
                 span.icon.is-small

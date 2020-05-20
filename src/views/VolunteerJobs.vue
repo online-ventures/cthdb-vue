@@ -43,7 +43,7 @@ transition(name="long-fade")
                   w-suggestion(
                     placeholder="job name"
                     v-model="position.job"
-                    :minLength="1"
+                    :minLen="1"
                     :items="filteredJobs"
                     :setLabel="setJobText"
                     @changed="updateSuggestions"
@@ -137,7 +137,7 @@ export default {
         this.positions = []
         this.show.show.positions.forEach(position => {
           this.positions.push({
-            points: position.points * 0.5,
+            points: position.points,
             currentJob: position.job,
             job: position.job
           })
@@ -182,7 +182,7 @@ export default {
         const data = result.data.update_positions || result.data.insert_positions
         const newPosition = data.returning[0]
         position.currentJob = position.job
-        position.points = newPosition.points * 0.5
+        position.points = newPosition.points
       })
     },
     remove (position) {
@@ -208,7 +208,7 @@ export default {
       })
     },
     update (position) {
-      const points = position.job.id === position.currentJob.id ? position.points * 2 : null
+      const points = position.job.id === position.currentJob.id ? position.points : null
       return this.$apollo.mutate({
         mutation: UPDATE_POSITION,
         variables: {
@@ -228,7 +228,7 @@ export default {
       const regex = new RegExp(words.join('.*'), 'i')
       this.filteredJobs = this.jobs
         .filter(job => job.name.match(regex))
-        .filter(job => this.positions.every(pos => job.id !== pos.job.id))
+        .filter(job => this.positions.every(pos => job.id !== (pos.job && pos.job.id)))
     },
     onJobSelected (position) {
       this.filteredJobs = []

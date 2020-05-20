@@ -1,25 +1,18 @@
 mutation userUpdate (
   $id: Int!,
-  $nickname: String,
-  $name: String,
-  $picture: String,
   $first_name: String,
   $last_name: String,
-  $tenant_id: Int
 ) {
   update_users (
     where: {id: {_eq: $id}},
     _set: {
-      nickname: $nickname,
-      name: $name,
-      picture: $picture,
       first_name: $first_name,
       last_name: $last_name,
-      tenant_id: $tenant_id
     },
   ) {
     returning {
       id
+      name
     }
   }
 }

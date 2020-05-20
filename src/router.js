@@ -6,6 +6,8 @@ import VolunteerEdit from '@/views/VolunteerEdit.vue'
 import VolunteerShow from '@/views/VolunteerShow.vue'
 import VolunteerJobs from '@/views/VolunteerJobs.vue'
 import TenantList from '@/views/TenantList.vue'
+import TenantNew from '@/views/TenantNew.vue'
+import TenantEdit from '@/views/TenantEdit.vue'
 import ShowList from '@/views/ShowList.vue'
 import ShowManage from '@/views/ShowManage.vue'
 import ShowEdit from '@/views/ShowEdit.vue'
@@ -17,6 +19,7 @@ import Home from '@/views/Home.vue'
 import Callback from '@/views/Callback.vue'
 import Login from '@/views/Login.vue'
 import Logout from '@/views/Logout.vue'
+import Account from '@/views/Account.vue'
 import NotFound from '@/views/NotFound.vue'
 
 Vue.use(Router)
@@ -34,6 +37,18 @@ const router = new Router({
       path: '/theatres',
       name: 'theatres',
       component: TenantList
+    },
+    {
+      path: '/theatre/new',
+      name: 'new-theatre',
+      component: TenantNew,
+      meta: { role: 'user' }
+    },
+    {
+      path: '/theatre/:id/edit',
+      name: 'edit-theatre',
+      component: TenantEdit,
+      meta: { role: 'user' }
     },
     {
       path: '/volunteers',
@@ -127,6 +142,11 @@ const router = new Router({
       path: '/logout',
       name: 'logout',
       component: Logout
+    },
+    {
+      path: '/account',
+      name: 'account',
+      component: Account
     },
     {
       path: '*',

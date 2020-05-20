@@ -2,11 +2,15 @@ query levelList (
   $tenant_id: Int!
 ) {
   levels (
-    where: {tenant_id: {_eq: $tenant_id}},
+    where: {_and: [
+      {tenant_id: {_eq: $tenant_id}},
+      {deleted_at: {_is_null: true}}
+    ]},
     order_by: {points: asc}
   ) {
     id
     name
     points
+    color
   }
 }

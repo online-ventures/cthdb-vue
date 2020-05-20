@@ -10,6 +10,8 @@ query tenantList (
   ) {
     id
     name
+    short_name
+    max_points_per_show
     created_at
   }
 }

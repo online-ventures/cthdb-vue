@@ -24,6 +24,10 @@ Sentry.init({
 })
 Vue.prototype.$sentry = Sentry
 
+// Cookies
+Vue.use(VueCookies)
+Vue.$cookies.config('120d')
+
 // Auth0
 Vue.use(Auth0Plugin, {
   apollo: apolloProvider,
@@ -35,10 +39,6 @@ Vue.use(Auth0Plugin, {
     )
   }
 })
-
-// Cookies
-Vue.use(VueCookies)
-Vue.$cookies.config('120d')
 
 // Font awesome icons
 Vue.component('font-awesome-icon', FontAwesomeIcon)
