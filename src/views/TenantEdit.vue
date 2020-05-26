@@ -454,9 +454,10 @@ export default {
           variables: this.record
         })
         this.notificationMessage = 'Theatre updated successfully'
-        this.updating = false
       } catch (error) {
         console.log('There was an error saving this record')
+      } finally {
+        this.updating = false
       }
     },
     async updateLevel (data) {
