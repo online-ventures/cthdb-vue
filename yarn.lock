@@ -1133,6 +1133,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.21.tgz#c00e9603399126925806bed2d9a1e37da506965e"
   integrity sha512-PQKsydPxYxF1DsAFWmunaxd3sOi3iMt6Zmx/tgaagHYmwJ/9cRH91hQkeJZaUGWbvn0K5HlSVEXkn5U/llWPpQ==
 
+"@types/node@^13.13.1":
+  version "13.13.9"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.9.tgz#79df4ae965fb76d31943b54a6419599307a21394"
+  integrity sha512-EPZBIGed5gNnfWCiwEIwTE2Jdg4813odnG8iNPMQGrqVxrI+wL68SPtPeCX+ZxGBaA6pKAVc6jaKgP/Q0QzfdQ==
+
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
@@ -1720,6 +1725,13 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
+
+animated-scroll-to@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/animated-scroll-to/-/animated-scroll-to-2.0.8.tgz#9e1a0c33e03869a0496249360eeb40b1f82e9904"
+  integrity sha512-7/q9Fc8X3v4FHcQI9/yweaBcx7fy9Rw5SVoVOTU2478x/xMHIvyHZ/hPCOIiGUpk8N9Q72ys7xyOp/JAUaBQYA==
+  dependencies:
+    "@types/node" "^13.13.1"
 
 ansi-align@^2.0.0:
   version "2.0.0"

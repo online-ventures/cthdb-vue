@@ -88,11 +88,6 @@ export default {
     },
     onComplete (data) {
       this.$router.push({ name: 'jobs' })
-    },
-    beforeSave (job) {
-      const newJob = { ...job }
-      newJob.points *= 2
-      return newJob
     }
   }
 }

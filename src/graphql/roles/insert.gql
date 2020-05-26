@@ -1,0 +1,12 @@
+mutation roleInsert (
+  $email: String!,
+  $tenant_id: Int!
+) {
+  add_editor (
+    email: $email,
+    tenant_id: $tenant_id
+  ) {
+    id
+    name
+  }
+}

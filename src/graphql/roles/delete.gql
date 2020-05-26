@@ -1,0 +1,19 @@
+mutation roleDelete (
+  $user_id:Int!,
+  $tenant_id:Int!,
+  $name:String!
+) {
+  delete_roles (
+    where: {
+      user_id: {_eq: $user_id},
+      tenant_id: {_eq: $tenant_id},
+      name: {_eq: $name}
+    }
+  ) {
+    returning {
+      user_id
+      tenant_id
+      name
+    }
+  }
+}

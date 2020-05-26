@@ -31,7 +31,7 @@ export const useAuth0 = options => {
         auth0Client: null,
         auth0User: null,
         error: null,
-        debug: false
+        debug: true
       }
     },
 
@@ -150,8 +150,11 @@ export const useAuth0 = options => {
           this.roles = await this.loadRoles()
           if (this.debug) console.log('Roles: ', this.roles)
           if (this.has('staff')) {
-            // We disable the cache if they can make changes.
+            if (this.debug) console.log('Disabling cache')
             this.$apollo.query.fetchPolicy = 'no-cache'
+          } else {
+            if (this.debug) console.log('Enabling cache')
+            this.$apollo.query.fetchPolicy = 'cache-and-network'
           }
 
           if (this.debug) console.log('getting auth0 user')

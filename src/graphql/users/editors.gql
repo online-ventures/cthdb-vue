@@ -1,0 +1,22 @@
+query editorList (
+  $tenant_id: Int!,
+  $user_id: Int!,
+  $name: String!
+) {
+  users (
+    where: {_and: [
+      {roles: {_and: [
+        {tenant_id: {_eq: $tenant_id}},
+        {name: {_eq: $name}}
+      ]}},
+      {id: {_neq: $user_id}}
+    ]},
+    order_by: [{name: asc}]
+  ) {
+    id
+    name
+    roles (where: {tenant_id: {_eq: $tenant_id}}) {
+      name
+    }
+  }
+}

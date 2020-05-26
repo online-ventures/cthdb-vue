@@ -21,7 +21,7 @@ div
           a.navbar-link Account
           .navbar-dropdown.is-right
             .navbar-item {{ user.name }}
-            a.navbar-item(@click="routeByName('account')") My profile
+            a.navbar-item(@click="routeByName('account')") My Profile
             a.navbar-item(v-if="hasTheatre" @click="editMyTheatre") My Theatre
             a.navbar-item(@click="routeByName('theatres')") Switch Theatre
             a.navbar-item(@click="logout") Logout

@@ -1,2 +1,15 @@
+type Mutation {
+  add_editor (
+    email: String!
+    tenant_id: Int!
+  ): AddEditor
+}
 
+
+
+
+type AddEditor {
+  id : Int
+  name : String
+}
 

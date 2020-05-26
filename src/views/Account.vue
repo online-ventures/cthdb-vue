@@ -13,7 +13,8 @@ div
           :complete="onComplete"
           :record="record"
           :mutation="mutation"
-          :showSummaryError="true")
+          :showSummaryError="true"
+          :showSuccessMessage="true")
 
           h2.title.is-4 Basic Info
 

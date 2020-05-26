@@ -98,7 +98,7 @@ transition(name="long-fade")
           @closed="levelSuccessMessage = null")
 
         h2.title.is-4.has-help-icon
-          | Levels
+          | Awards
           |
           a.icon.is-small.has-text-link.is-size-6(:title="levelHelpText")
             font-awesome-icon(icon="question-circle")
@@ -106,10 +106,10 @@ transition(name="long-fade")
         .buttons
           button.button.is-primary(
             @click="addLevel"
-            :class="{ 'is-loading': false }")
+            :class="{ 'is-loading': updating }")
             span.icon.is-small
               font-awesome-icon(icon="plus" size="1x")
-            span Add level
+            span Add award
 
         transition(name="expand")
           p.has-text-centered.is-italic(v-if="newLevels.length === 0") No levels have been added yet.
@@ -209,15 +209,82 @@ transition(name="long-fade")
       title="Delete a level confirmation"
       :item="deletingLevel"
       :name="item => item.record.name")
+
+    section.section
+      .container
+
+        w-notification(
+          :message="editorNotification"
+          :type="editorNotificationType"
+          :lifetime="2"
+          @closed="editorNotification = null")
+
+        h2.title.is-4.has-help-icon
+          | Editors
+          |
+          a.icon.is-small.has-text-link.is-size-6(:title="editorHelpText")
+            font-awesome-icon(icon="question-circle")
+
+        .buttons
+          button.button.is-primary(@click="addNewEditor")
+            span.icon.is-small
+              font-awesome-icon(icon="plus" size="1x")
+            span Add editor
+
+        transition(name="expand")
+          p.has-text-centered.is-italic(v-if="newEditors.length === 0 && !addingEditor")
+            | No editors have been added yet.
+
+        transition-group(name="expand" tag="div")
+          .row(v-for="editor in newEditors" :key="editor.id")
+            .columns
+              .column
+                p.title.is-5 {{ editor.record.name }}
+              .column.is-2
+                button.button.is-danger.is-fullwidth(@click="deletingEditor = editor")
+                  span.icon.is-small
+                    font-awesome-icon(icon="trash")
+                  span Delete
+
+        transition(name="expand")
+          .row(v-if="addingEditor" ref="addNewEditor")
+            .columns
+              .column
+                .field
+                  .control.has-icons-left
+                    span.icon.is-small
+                      font-awesome-icon(icon="user")
+                    w-input(v-model="editorEmail"
+                      required
+                      type="email"
+                      minlength="2"
+                      maxlength="30"
+                      placeholder="Account email")
+              .column.is-2
+                button.button.is-primary.is-fullwidth(@click="addEditor")
+                  span.icon.is-small
+                    font-awesome-icon(icon="save")
+                  span Save
+
+    w-confirm(
+      :accepted="removeEditor"
+      :cancelled="cancelEditor"
+      title="Remove an editor confirmation"
+      :item="deletingEditor"
+      :name="item => item.record.name")
 </template>
 
 <script>
+import animateScrollTo from 'animated-scroll-to'
 import TENANT from '@/graphql/tenants/edit.gql'
 import UPDATE_TENANT from '@/graphql/tenants/update.gql'
 import LEVELS from '@/graphql/levels/list.gql'
 import INSERT_LEVEL from '@/graphql/levels/insert.gql'
 import UPDATE_LEVEL from '@/graphql/levels/update.gql'
 import DELETE_LEVEL from '@/graphql/levels/delete.gql'
+import EDITORS from '@/graphql/users/editors.gql'
+import INSERT_EDITOR from '@/graphql/roles/insert.gql'
+import DELETE_EDITOR from '@/graphql/roles/delete.gql'
 
 export default {
   mounted () {
@@ -226,9 +293,14 @@ export default {
 
   data () {
     return {
+      updating: false,
       tenant: null,
       levels: null,
       newLevels: [],
+      addingEditor: false,
+      editors: null,
+      newEditors: [],
+      editorEmail: '',
       nextId: 1,
       record: {
         name: '',
@@ -239,8 +311,11 @@ export default {
       },
       notificationMessage: null,
       levelSuccessMessage: null,
+      editorNotification: null,
+      editorNotificationType: null,
       maxPointHelpText: 'The maximum number of points a volunteer can earn per show',
-      levelHelpText: 'Levels are milestones volunteers reach after a given number of points has been reached',
+      levelHelpText: 'Awards are accomplishments volunteers reach after a given number of points has been reached',
+      editorHelpText: 'Editors are users that have the ability to make changes for this theatre',
       lightSilver: '#a7a9ae',
       silver: '#839696',
       darkSilver: '#71716f',
@@ -248,7 +323,8 @@ export default {
       bronze: '#a3350c',
       gold: '#e6bf33',
       platinum: '#514e9c',
-      deletingLevel: null
+      deletingLevel: null,
+      deletingEditor: null
     }
   },
 
@@ -299,10 +375,26 @@ export default {
       },
       update (data) {
         this.newLevels = []
-        data.levels.forEach(level => {
-          this.pushLevel(level)
-        })
+        data.levels.forEach(level => this.pushLevel(level))
         return data.levels
+      }
+    },
+    editors: {
+      query: EDITORS,
+      skip () {
+        return !this.tenantId || !this.$auth.userId
+      },
+      variables () {
+        return {
+          tenant_id: this.tenantId,
+          user_id: this.$auth.userId,
+          name: 'staff'
+        }
+      },
+      update (data) {
+        this.newEditors = []
+        data.users.forEach(user => this.pushEditor(user))
+        return data.users
       }
     }
   },
@@ -376,6 +468,7 @@ export default {
           variables: data.item
         })
         this.updating = false
+        this.levelSuccessMessage = 'Award updated successfully'
       } catch (error) {
         console.log('There was an error saving this record')
       }
@@ -418,6 +511,78 @@ export default {
         console.log('There was an error deleting this record')
         return false
       }
+    },
+    addNewEditor () {
+      this.addingEditor = true
+      setTimeout(() => animateScrollTo(document.body.scrollHeight), 500)
+    },
+    async addEditor () {
+      if (this.updating) return
+      this.updating = true
+      const user = await this.insertEditor()
+      if (user.id) {
+        this.editorNotify('success', user.name + ' successfully added')
+        this.pushEditor(user)
+        this.addingEditor = false
+      } else {
+        this.editorNotify('danger', 'User could not be found or could not be added')
+      }
+      this.updating = false
+    },
+    async insertEditor () {
+      try {
+        const result = await this.$apollo.mutate({
+          mutation: INSERT_EDITOR,
+          variables: {
+            tenant_id: this.tenantId,
+            email: this.editorEmail
+          }
+        })
+        return result.data.add_editor
+      } catch (error) {
+        this.editorNotify('warning', 'An error occurred, so sorry')
+        return {}
+      }
+    },
+    editorNotify (type, message) {
+      this.editorNotificationType = type
+      this.editorNotification = message
+    },
+    pushEditor (record) {
+      this.newEditors.push({
+        id: this.nextId,
+        record: {
+          id: record.id,
+          name: record.name
+        }
+      })
+      this.nextId += 1
+    },
+    cancelEditor () {
+      this.deletingEditor = null
+    },
+    async removeEditor () {
+      if (this.updating) return
+      this.updating = true
+      const editor = this.deletingEditor
+      const role = await this.deleteEditor(editor.record)
+      if (role) {
+        this.editorNotify('success', editor.record.name + ' successfully removed')
+        this.newEditors = this.newEditors.filter(existing => existing.id !== editor.id)
+      } else {
+        this.editorNotify('danger', 'There was an error removing this editor')
+      }
+      this.updating = false
+    },
+    deleteEditor (editor) {
+      return this.$apollo.mutate({
+        mutation: DELETE_EDITOR,
+        variables: {
+          user_id: editor.id,
+          name: 'staff',
+          tenant_id: this.tenantId
+        }
+      })
     }
   }
 }
@@ -432,6 +597,10 @@ export default {
 }
 .row {
   max-height: 5em;
+  .columns {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 .expand-enter-active,
 .expand-leave-active {
@@ -441,7 +610,7 @@ export default {
 .expand-leave-to {
   max-height: 0;
   opacity: 0;
-  margin: 0.5em 0;
+  overflow: hidden;
 }
 .badge-color {
   width: 14.5%;

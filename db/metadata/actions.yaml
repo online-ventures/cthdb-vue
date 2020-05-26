@@ -1,6 +1,13 @@
-actions: []
+actions:
+- name: add_editor
+  definition:
+    kind: synchronous
+    handler: http://{{ADD_EDITOR_URL}}:8080
+  permissions:
+  - role: staff
 custom_types:
   enums: []
   input_objects: []
-  objects: []
+  objects:
+  - name: AddEditor
   scalars: []

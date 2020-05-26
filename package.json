@@ -14,6 +14,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.7",
     "@sentry/browser": "5.15.2",
     "@sentry/integrations": "^5.15.4",
+    "animated-scroll-to": "^2.0.8",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
     "apollo-link-http": "^1.5.16",

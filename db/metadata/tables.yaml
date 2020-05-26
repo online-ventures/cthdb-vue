@@ -814,8 +814,14 @@
       - tenant_id
       - updated_at
       filter:
-        auth_id:
-          _eq: x-hasura-user-id
+        _or:
+        - auth_id:
+            _eq: x-hasura-user-id
+        - roles:
+            tenant:
+              owner:
+                auth_id:
+                  _eq: x-hasura-user-id
   - role: user
     permission:
       columns:
