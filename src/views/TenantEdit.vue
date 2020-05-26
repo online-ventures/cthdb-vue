@@ -226,7 +226,9 @@ transition(name="long-fade")
             font-awesome-icon(icon="question-circle")
 
         .buttons
-          button.button.is-primary(@click="addNewEditor")
+          button.button.is-primary(
+            @click="addNewEditor"
+            :class="{ 'is-loading': updating }")
             span.icon.is-small
               font-awesome-icon(icon="plus" size="1x")
             span Add editor
