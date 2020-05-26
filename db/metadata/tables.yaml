@@ -779,6 +779,20 @@
         id:
           _eq: x-hasura-user-id
   update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - first_name
+      - last_login
+      - last_name
+      - name
+      - nickname
+      - picture
+      - tenant_id
+      filter:
+        id:
+          _eq: x-hasura-user-id
+      check: null
   - role: user
     permission:
       columns:
