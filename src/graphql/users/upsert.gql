@@ -3,8 +3,7 @@ mutation userUpsert (
     $name: String!,
     $email: String!,
     $picture: String!,
-    $auth_id: String!,
-    $last_login: timestamptz!,
+    $auth_id: String!
   ) {
   insert_users(objects: {
     nickname: $nickname,
@@ -12,13 +11,12 @@ mutation userUpsert (
     email: $email,
     picture: $picture,
     auth_id: $auth_id,
-    last_login: $last_login,
+    last_login: "now()",
   },
   on_conflict: {
-    constraint: users_auth_id_key,
+    constraint: users_email_key,
     update_columns: [
       nickname,
-      name,
       picture,
       last_login
     ]

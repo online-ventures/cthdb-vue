@@ -59,7 +59,8 @@ export default {
       return 'AllStar'
     },
     hasTheatre () {
-      return this.$auth.user.tenants[0]
+      const tenant = this.$auth.user.tenants[0]
+      return tenant && this.$auth.tenantId === tenant.id
     }
   },
   methods: {

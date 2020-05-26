@@ -223,22 +223,8 @@
     permission:
       check:
         tenant:
-          owner:
-            auth_id:
-              _eq: x-hasura-user-id
-      columns:
-      - color
-      - name
-      - points
-      - tenant_id
-      backend_only: false
-  - role: user
-    permission:
-      check:
-        tenant:
-          owner:
-            auth_id:
-              _eq: x-hasura-user-id
+          owner_id:
+            _eq: x-hasura-user-id
       columns:
       - color
       - name
@@ -293,23 +279,8 @@
       - tenant_id
       filter:
         tenant:
-          owner:
-            auth_id:
-              _eq: x-hasura-user-id
-      check: null
-  - role: user
-    permission:
-      columns:
-      - color
-      - deleted_at
-      - name
-      - points
-      - tenant_id
-      filter:
-        tenant:
-          owner:
-            auth_id:
-              _eq: x-hasura-user-id
+          owner_id:
+            _eq: x-hasura-user-id
       check: null
 - table:
     schema: public
@@ -411,9 +382,8 @@
       check:
         _and:
         - tenant:
-            owner:
-              auth_id:
-                _eq: x-hasura-user-id
+            owner_id:
+              _eq: x-hasura-user-id
         - name:
             _in:
             - staff
@@ -431,13 +401,11 @@
       - name
       filter:
         _or:
-        - user:
-            auth_id:
-              _eq: x-hasura-user-id
+        - user_id:
+            _eq: x-hasura-user-id
         - tenant:
-            owner:
-              auth_id:
-                _eq: x-hasura-user-id
+            owner_id:
+              _eq: x-hasura-user-id
   - role: user
     permission:
       columns:
@@ -445,9 +413,8 @@
       - user_id
       - name
       filter:
-        user:
-          auth_id:
-            _eq: x-hasura-user-id
+        user_id:
+          _eq: x-hasura-user-id
   update_permissions:
   - role: staff
     permission:
@@ -456,9 +423,8 @@
       filter:
         _and:
         - tenant:
-            owner:
-              auth_id:
-                _eq: x-hasura-user-id
+            owner_id:
+              _eq: x-hasura-user-id
         - name:
             _in:
             - staff
@@ -468,9 +434,8 @@
     permission:
       filter:
         tenant:
-          owner:
-            auth_id:
-              _eq: x-hasura-user-id
+          owner_id:
+            _eq: x-hasura-user-id
 - table:
     schema: public
     name: shows
@@ -603,15 +568,13 @@
         - _not:
             _exists:
               _where:
-                owner:
-                  auth_id:
-                    _eq: x-hasura-user-id
+                owner_id:
+                  _eq: x-hasura-user-id
               _table:
                 schema: public
                 name: tenants
-        - owner:
-            auth_id:
-              _eq: x-hasura-user-id
+        - owner_id:
+            _eq: x-hasura-user-id
       columns:
       - city
       - name
@@ -626,15 +589,13 @@
         - _not:
             _exists:
               _where:
-                owner:
-                  auth_id:
-                    _eq: x-hasura-user-id
+                owner_id:
+                  _eq: x-hasura-user-id
               _table:
                 schema: public
                 name: tenants
-        - owner:
-            auth_id:
-              _eq: x-hasura-user-id
+        - owner_id:
+            _eq: x-hasura-user-id
       columns:
       - city
       - name
@@ -646,33 +607,31 @@
   - role: anonymous
     permission:
       columns:
-      - id
+      - city
       - created_at
-      - updated_at
+      - id
+      - max_points_per_show
       - name
       - owner_id
-      - status
-      - point_multiplier
-      - max_points_per_show
-      - city
-      - state
       - short_name
+      - state
+      - status
+      - updated_at
       filter:
         status:
           _eq: active
   - role: staff
     permission:
       columns:
+      - city
+      - created_at
       - id
       - max_points_per_show
-      - owner_id
-      - point_multiplier
-      - city
       - name
+      - owner_id
       - short_name
       - state
       - status
-      - created_at
       - updated_at
       filter:
         status:
@@ -680,16 +639,15 @@
   - role: user
     permission:
       columns:
+      - city
+      - created_at
       - id
       - max_points_per_show
-      - owner_id
-      - point_multiplier
-      - city
       - name
+      - owner_id
       - short_name
       - state
       - status
-      - created_at
       - updated_at
       filter:
         status:
@@ -701,13 +659,11 @@
       - city
       - max_points_per_show
       - name
-      - point_multiplier
       - short_name
       - state
       filter:
-        owner:
-          auth_id:
-            _eq: x-hasura-user-id
+        owner_id:
+          _eq: x-hasura-user-id
       check: null
   - role: user
     permission:
@@ -715,13 +671,11 @@
       - city
       - max_points_per_show
       - name
-      - point_multiplier
       - short_name
       - state
       filter:
-        owner:
-          auth_id:
-            _eq: x-hasura-user-id
+        owner_id:
+          _eq: x-hasura-user-id
       check: null
 - table:
     schema: public
@@ -767,25 +721,10 @@
           schema: public
           name: volunteers
   insert_permissions:
-  - role: staff
-    permission:
-      check:
-        auth_id:
-          _eq: x-hasura-user-id
-      columns:
-      - auth_id
-      - email
-      - first_name
-      - last_login
-      - last_name
-      - name
-      - nickname
-      - picture
-      - tenant_id
   - role: user
     permission:
       check:
-        auth_id:
+        id:
           _eq: x-hasura-user-id
       columns:
       - auth_id
@@ -815,13 +754,12 @@
       - updated_at
       filter:
         _or:
-        - auth_id:
+        - id:
             _eq: x-hasura-user-id
         - roles:
             tenant:
-              owner:
-                auth_id:
-                  _eq: x-hasura-user-id
+              owner_id:
+                _eq: x-hasura-user-id
   - role: user
     permission:
       columns:
@@ -838,23 +776,9 @@
       - tenant_id
       - updated_at
       filter:
-        auth_id:
+        id:
           _eq: x-hasura-user-id
   update_permissions:
-  - role: staff
-    permission:
-      columns:
-      - first_name
-      - last_login
-      - last_name
-      - name
-      - nickname
-      - picture
-      - tenant_id
-      filter:
-        auth_id:
-          _eq: x-hasura-user-id
-      check: null
   - role: user
     permission:
       columns:
@@ -866,7 +790,7 @@
       - picture
       - tenant_id
       filter:
-        auth_id:
+        id:
           _eq: x-hasura-user-id
       check: null
 - table:

@@ -1,5 +1,5 @@
-query userCurrent ($authId: String!) {
-  users(where: {auth_id: {_eq: $authId}}) {
+query userCurrent ($id: Int!) {
+  users_by_pk(id: $id) {
     id
     auth_id
     name

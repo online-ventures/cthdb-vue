@@ -514,6 +514,7 @@ export default {
     },
     addNewEditor () {
       this.addingEditor = true
+      this.editorEmail = ''
       setTimeout(() => animateScrollTo(document.body.scrollHeight), 500)
     },
     async addEditor () {

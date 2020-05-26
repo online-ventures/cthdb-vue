@@ -23,7 +23,8 @@ export const useAuth0 = options => {
       return {
         loading: true,
         accessToken: null,
-        authId: null,
+        tokenPayload: null,
+        userId: null,
         user: null,
         tenant: null,
         roles: [],
@@ -31,16 +32,13 @@ export const useAuth0 = options => {
         auth0Client: null,
         auth0User: null,
         error: null,
-        debug: true
+        debug: false
       }
     },
 
     computed: {
       completed () {
         return !this.loading && (!this.accessToken || this.user)
-      },
-      userId () {
-        return this.user && this.user.id
       },
       tenantId () {
         return this.tenant && this.tenant.id
@@ -51,33 +49,31 @@ export const useAuth0 = options => {
       user: {
         query: CURRENT_USER,
         skip () {
-          return this.authId === null
+          return this.userId === null
         },
         variables () {
-          return { authId: this.authId }
+          return { id: this.userId }
         },
-        update ({ users }) {
-          if (users) {
-            const user = users[0]
-            if (user) {
-              if (user.tenant) {
-                this.setTenant({
-                  id: user.tenant.id,
-                  short_name: user.tenant.short_name,
-                  name: user.tenant.name,
-                  max_points_per_show: user.tenant.max_points_per_show
-                })
-              }
-              if (this.$sentry) {
-                this.$sentry.setUser({
-                  id: user.id,
-                  username: user.name,
-                  email: user.email
-                })
-              }
+        update (data) {
+          const user = data.users_by_pk
+          if (user) {
+            if (user.tenant) {
+              this.setTenant({
+                id: user.tenant.id,
+                short_name: user.tenant.short_name,
+                name: user.tenant.name,
+                max_points_per_show: user.tenant.max_points_per_show
+              })
             }
-            return user
+            if (this.$sentry) {
+              this.$sentry.setUser({
+                id: user.id,
+                username: user.name,
+                email: user.email
+              })
+            }
           }
+          return user
         },
         error (error) {
           if (error.message.match('JWTIssuedAtFuture')) {
@@ -118,9 +114,14 @@ export const useAuth0 = options => {
           nickname: auth0User.nickname,
           name: auth0User.name,
           email: auth0User.email,
-          picture: auth0User.picture,
-          last_login: new Date().toISOString().slice(0, 19).replace('T', ' ')
+          picture: auth0User.picture
         }
+      },
+      async decodeJwt () {
+        const decoded = await jwtDecode(this.accessToken)
+        const claimsKey = 'https://hasura.io/jwt/claims'
+        if (!decoded || !decoded[claimsKey]) return []
+        this.tokenPayload = decoded[claimsKey]
       },
       async loadRoles () {
         const decoded = await jwtDecode(this.accessToken)
@@ -146,9 +147,15 @@ export const useAuth0 = options => {
           if (this.debug) console.log('Retreived access token')
           if (this.debug) console.log(this.accessToken)
 
+          if (this.debug) console.log('decode jwt')
+          await this.decodeJwt()
+          if (this.debug) console.log(this.tokenPayload)
+
           if (this.debug) console.log('loading roles')
-          this.roles = await this.loadRoles()
+          this.roles = this.tokenPayload['x-hasura-allowed-roles']
           if (this.debug) console.log('Roles: ', this.roles)
+
+          // Query fetch policy is role-based
           if (this.has('staff')) {
             if (this.debug) console.log('Disabling cache')
             this.$apollo.query.fetchPolicy = 'no-cache'
@@ -255,7 +262,7 @@ export const useAuth0 = options => {
           if (loginRedirect) await this.updateDb()
 
           // Load the user record
-          this.authId = this.auth0User.sub
+          this.userId = this.tokenPayload['x-hasura-user-id']
         }
 
         // If there is no tenant set we redirect to tenant selection
