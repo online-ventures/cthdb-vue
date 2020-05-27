@@ -39,6 +39,51 @@ export default {
       type: Object,
       required: false,
       default: null
+    },
+    valueMissing: {
+      type: String,
+      required: false,
+      default: 'This field is required'
+    },
+    patternMismatch: {
+      type: String,
+      required: false,
+      default: 'Please provide this in the correct format'
+    },
+    typeMismatch: {
+      type: String,
+      required: false,
+      default: 'This value is not the correct type'
+    },
+    tooShort: {
+      type: String,
+      required: false,
+      default: 'This needs to be longer'
+    },
+    tooLong: {
+      type: String,
+      required: false,
+      default: 'This needs to be shorter'
+    },
+    rangeUnderflow: {
+      type: String,
+      required: false,
+      default: 'This value is under the range required'
+    },
+    rangeOverflow: {
+      type: String,
+      required: false,
+      default: 'This value is over the range required'
+    },
+    badInput: {
+      type: String,
+      required: false,
+      default: 'This field has errors'
+    },
+    generalError: {
+      type: String,
+      required: false,
+      default: 'This field has errors'
     }
   },
 
@@ -94,23 +139,23 @@ export default {
     onInvalid (event) {
       const validity = this.$refs.input.validity
       if (validity.valueMissing) {
-        this.error = 'This field is required'
+        this.error = this.valueMissing
       } else if (validity.patternMismatch) {
-        this.error = 'Please provide this in the correct format'
+        this.error = this.patternMismatch
       } else if (validity.typeMismatch) {
-        this.error = 'This value is not the correct type'
+        this.error = this.typeMismatch
       } else if (validity.tooShort) {
-        this.error = 'This value is too small'
+        this.error = this.tooShort
       } else if (validity.tooLong) {
-        this.error = 'This value is too large'
+        this.error = this.tooLong
       } else if (validity.rangeUnderflow) {
-        this.error = 'This value is under the range required'
+        this.error = this.rangeUnderflow
       } else if (validity.rangeOverflow) {
-        this.error = 'This value is over the range required'
+        this.error = this.rangeOverflow
       } else if (validity.badInput) {
-        this.error = 'This value is too large'
+        this.error = this.badInput
       } else {
-        this.error = 'This field has errors'
+        this.error = this.generalError
       }
     },
     onBlur (event) {

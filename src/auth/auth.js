@@ -3,7 +3,6 @@ import router from '@/router'
 import createAuth0Client from '@auth0/auth0-spa-js'
 import jwtDecode from 'jwt-decode'
 import CURRENT_USER from '@/graphql/users/current.gql'
-import UPSERT_USER from '@/graphql/users/upsert.gql'
 import SET_TENANT from '@/graphql/users/updateTenant.gql'
 
 let instance
@@ -96,6 +95,10 @@ export const useAuth0 = options => {
         const options = { appState: { returnTo } }
         return this.auth0Client.loginWithRedirect(options)
       },
+      signup () {
+        const options = { screen_hint: 'signup' }
+        return this.auth0Client.loginWithRedirect(options)
+      },
       // Get access token; if invalid or missing, a new one is retrieved
       getTokenSilently (o) {
         return this.auth0Client.getTokenSilently(o)
@@ -108,15 +111,6 @@ export const useAuth0 = options => {
       has (role) {
         return this.roles.includes(role) || this.roles.includes('admin')
       },
-      userData (auth0User) {
-        return {
-          auth_id: auth0User.sub,
-          nickname: auth0User.nickname,
-          name: auth0User.name,
-          email: auth0User.email,
-          picture: auth0User.picture
-        }
-      },
       async decodeJwt () {
         const decoded = await jwtDecode(this.accessToken)
         const claimsKey = 'https://hasura.io/jwt/claims'
@@ -128,13 +122,6 @@ export const useAuth0 = options => {
         const claimsKey = 'https://hasura.io/jwt/claims'
         if (!decoded || !decoded[claimsKey]) return []
         return decoded[claimsKey]['x-hasura-allowed-roles']
-      },
-      updateDb () {
-        if (this.debug) console.log('updating db')
-        return this.$apollo.mutate({
-          mutation: UPSERT_USER,
-          variables: this.userData(this.auth0User)
-        })
       },
       onRedirectCallback (appState = {}) {
         const path = appState.returnTo || '/'
@@ -181,6 +168,7 @@ export const useAuth0 = options => {
         this.auth0Client = await this.createClient()
         await this.authenticate()
         this.loading = false
+        this.$apollo.queries.user.refetch()
         return this.accessToken
       },
       setTenant (tenant) {
@@ -231,14 +219,12 @@ export const useAuth0 = options => {
         // Logout url support
         this.logout()
       } else {
-        let loginRedirect = false
         try {
           // If the user is returning to the app after authentication
           if (
             window.location.search.includes('code=') &&
             window.location.search.includes('state=')
           ) {
-            loginRedirect = true
             // handle the redirect and retrieve tokens
             if (this.debug) console.log('handling redirect')
             const { appState } = await this.auth0Client.handleRedirectCallback()
@@ -256,12 +242,8 @@ export const useAuth0 = options => {
         this.loading = false
         if (this.debug) console.log('auth complete')
 
-        // If we successfully logged in do some database operations
+        // If we successfully logged in, load the user record
         if (this.auth0User) {
-          // Update the user record
-          if (loginRedirect) await this.updateDb()
-
-          // Load the user record
           this.userId = this.tokenPayload['x-hasura-user-id']
         }
 

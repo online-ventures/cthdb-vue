@@ -17,17 +17,24 @@ div
         router-link.navbar-item(:to="{ name: 'jobs' }") Jobs
         router-link.navbar-item(:to="{ name: 'volunteers' }") Volunteers
       .navbar-end
-        .navbar-item.has-dropdown.is-hoverable(v-if="user")
-          a.navbar-link Account
-          .navbar-dropdown.is-right
-            .navbar-item {{ user.name }}
-            a.navbar-item(@click="routeByName('account')") My Profile
-            a.navbar-item(v-if="hasTheatre" @click="editMyTheatre") My Theatre
-            a.navbar-item(@click="routeByName('theatres')") Switch Theatre
-            a.navbar-item(@click="logout") Logout
-        .navbar-item(v-if="!user")
-          a.button.is-small.is-secondary(:class="{'is-loading': authLoading}" @click="login")
-            strong Login
+        .navbar-item(v-if="authLoading")
+          button.button.is-small.is-secondary.is-loading(@click="login")
+            span Loading
+        template(v-if="!authLoading")
+          .navbar-item.has-dropdown.is-hoverable(v-if="user")
+            a.navbar-link Account
+            .navbar-dropdown.is-right
+              .navbar-item {{ user.name }}
+              a.navbar-item(@click="routeByName('account')") My Profile
+              a.navbar-item(v-if="hasTheatre" @click="editMyTheatre") My Theatre
+              a.navbar-item(@click="routeByName('theatres')") Switch Theatre
+              a.navbar-item(@click="logout") Logout
+          .navbar-item(v-if="!user")
+            a.button.is-small.is-secondary(@click="login")
+              strong Login
+          .navbar-item(v-if="!user")
+            a.button.is-small.is-primary(@click="signup")
+              strong Signup
 </template>
 
 <script>
@@ -66,6 +73,9 @@ export default {
   methods: {
     login () {
       this.$auth.login()
+    },
+    signup () {
+      this.$auth.signup()
     },
     logout () {
       this.$auth.logout()

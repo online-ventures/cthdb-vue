@@ -1,6 +1,6 @@
 <template lang="pug">
 transition(name="long-fade")
-  div(v-if="tenant")
+  div.page(v-if="tenant")
     section.hero.is-primary
       .hero-body
         .container
@@ -86,6 +86,8 @@ transition(name="long-fade")
                   type="number"
                   min="1"
                   max="100"
+                  rangeOverflow="The max points is 100 per show"
+                  rangeUnderflow="The min points is 1 per show"
                   :debounce="updateTenant")
 
     section.section
@@ -261,6 +263,8 @@ transition(name="long-fade")
                       type="email"
                       minlength="2"
                       maxlength="30"
+                      typeMismatch="Please enter a valid email address"
+                      autocomplete="off"
                       placeholder="Account email")
               .column.is-2
                 button.button.is-primary.is-fullwidth(@click="addEditor")
@@ -644,5 +648,8 @@ export default {
 }
 .selected a {
   color: black;
+}
+.page {
+  padding-bottom: 5em;
 }
 </style>

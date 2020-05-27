@@ -13,8 +13,7 @@ div
         :record="record"
         :mutation="mutation"
         :editorId="$auth.userId"
-        :tenantId="$auth.tenantId"
-        :beforeSave="beforeSave")
+        :tenantId="$auth.tenantId")
         .columns
           .column
             .field
@@ -22,7 +21,11 @@ div
               .control.has-icons-left
                 span.icon.is-small
                   font-awesome-icon(icon="hammer")
-                w-input(v-model="record.name" required maxlength="40")
+                w-input(
+                  v-model="record.name"
+                  placeholder="Name is required"
+                  required
+                  maxlength="40")
 
           .column
             .field
@@ -30,7 +33,13 @@ div
               .control.has-icons-left
                 span.icon.is-small
                   font-awesome-icon(icon="coins")
-                w-input(v-model="record.points" required type="number" min="0" max="100")
+                w-input(
+                  v-model="record.points"
+                  placeholder="A value between 0 and 100"
+                  required
+                  type="number"
+                  min="0"
+                  max="100")
 </template>
 
 <script>

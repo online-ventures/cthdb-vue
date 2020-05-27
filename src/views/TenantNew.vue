@@ -43,7 +43,7 @@ div
               .control.has-icons-left
                 span.icon.is-small
                   font-awesome-icon(icon="ticket-alt")
-                w-input(v-model="record.short_name" required maxlength="8")
+                w-input(v-model="record.short_name" required minlength="2" maxlength="8")
 
         .columns
           .column

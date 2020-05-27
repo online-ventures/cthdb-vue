@@ -26,12 +26,7 @@ transition(name="long-fade")
                 span.is-size-3 {{ totalPoints }}
 
         br
-
-        .buttons
-          button.button.is-secondary(@click="addNewPosition")
-            span.icon.is-small
-              font-awesome-icon(icon="plus")
-            span Add new job
+        br
 
         div(v-for="position in positions")
           .columns.has-background-light
@@ -66,12 +61,20 @@ transition(name="long-fade")
                   font-awesome-icon(icon="trash")
                 span Delete
 
-          br.is-hidden-tablet
-          br.is-hidden-tablet
+          br
 
-        .buttons.is-right
-          button.button.is-primary(@click="done")
-            span Done
+        .columns.is-mobile
+          .column
+            .buttons
+              button.button.is-secondary(@click="addNewPosition")
+                span.icon.is-small
+                  font-awesome-icon(icon="plus")
+                span Add new job
+
+          .column
+            .buttons.is-right
+              button.button.is-primary(@click="done")
+                span Done
 
 </template>
 
@@ -117,7 +120,7 @@ export default {
       const total = this.positions.reduce((sum, position) => {
         return sum + position.points
       }, 0)
-      return Math.min(total, 3)
+      return Math.min(total, this.$auth.tenant.max_points_per_show)
     }
   },
 

@@ -34,7 +34,7 @@ export default {
       required: true
     },
     editorId: {
-      type: Number,
+      type: [Number,String],
       required: false
     },
     tenantId: {

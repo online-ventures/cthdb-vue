@@ -50,9 +50,10 @@ div
                 span.icon.is-small
                   font-awesome-icon(icon="phone")
                 w-input(v-model="record.phone"
+                  maxlength="15"
                   pattern="[0-9]{3}-?[0-9]{3}-?[0-9]{4}"
-                  placeholder="XXX-XXX-XXXX"
-                  validation-message="Please provide this in the format XXX-XXX-XXXX")
+                  placeholder="123-456-7890"
+                  patternMismatch="Please provide this in the format 123-456-7890")
 
         .columns
           .column
@@ -196,7 +197,9 @@ export default {
       this.nextPage(params)
     },
     onComplete (data) {
-      this.nextPage({ id: data.id, status: 'success' })
+      this.nextPage(
+        this.volunteer ? { id: data.id, status: 'success' } : null
+      )
     },
     eligibleText (level) {
       return this.isEligible(level) ? 'Eligible' : 'Ineligible'
