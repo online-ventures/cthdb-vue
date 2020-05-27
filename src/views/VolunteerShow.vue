@@ -16,7 +16,7 @@ transition(name="long-fade")
             .column.has-text-centered
               p.is-size-4.is-marginless.has-text-black ALL STAR POINTS
               p.is-size-4.has-text-weight-medium.is-marginless
-                font-awesome-icon.has-text-warning.is-size-3(icon="star")
+                font-awesome-icon.has-text-warning.is-size-4(icon="coins")
                 span  {{ points }}
             .column.has-text-centered
               p.is-size-4.is-marginless.has-text-black AWARDS
