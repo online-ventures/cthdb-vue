@@ -1,0 +1,17 @@
+mutation membershipDelete (
+  $id: Int!
+) {
+  update_memberships (
+    where: {
+      id: {_eq: $id}
+    },
+    _set: {
+      deleted_at: "now()"
+    }
+  ) {
+    returning {
+      id
+      deleted_at
+    }
+  }
+}

@@ -1,0 +1,25 @@
+query volunteerSelect (
+  $tenant_id: Int!,
+  $first_name: String!,
+  $last_name: String!
+) {
+  volunteers (where: {
+    _and: [
+      {_or: [
+        {first_name: {_ilike: $first_name}},
+        {last_name: {_ilike: $first_name}}
+      ]},
+      {_or: [
+        {first_name: {_ilike: $last_name}},
+        {last_name: {_ilike: $last_name}}
+      ]},
+      {tenant_id: {_eq: $tenant_id}},
+    ]},
+    order_by: [{ last_name: asc }, { first_name: asc }],
+    limit: 15
+  ) {
+    id
+    first_name
+    last_name
+  }
+}

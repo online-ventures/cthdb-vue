@@ -23,8 +23,20 @@ query volunteerFind ($id: Int!) {
     awards {
       awarded_at
       level {
+        id
         name
         color
+      }
+    }
+    enrollees (where: {enrollment: {_and: [
+      {start_date: {_lte: "now"}},
+      {end_date: {_gte: "now"}},
+      {membership: {deleted_at: {_is_null: true}}}
+    ]}}) {
+      enrollment {
+        membership {
+          name
+        }
       }
     }
   }

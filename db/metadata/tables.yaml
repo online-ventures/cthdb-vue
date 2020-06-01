@@ -66,6 +66,117 @@
             _eq: x-hasura-tenant-id
 - table:
     schema: public
+    name: enrollees
+  object_relationships:
+  - name: enrollment
+    using:
+      foreign_key_constraint_on: enrollment_id
+  - name: volunteer
+    using:
+      foreign_key_constraint_on: volunteer_id
+  insert_permissions:
+  - role: staff
+    permission:
+      check:
+        volunteer:
+          tenant_id:
+            _eq: x-hasura-tenant-id
+      columns:
+      - enrollment_id
+      - volunteer_id
+      backend_only: false
+  select_permissions:
+  - role: staff
+    permission:
+      columns:
+      - volunteer_id
+      - enrollment_id
+      filter:
+        volunteer:
+          tenant_id:
+            _eq: x-hasura-tenant-id
+  delete_permissions:
+  - role: staff
+    permission:
+      filter:
+        volunteer:
+          tenant_id:
+            _eq: x-hasura-tenant-id
+- table:
+    schema: public
+    name: enrollments
+  object_relationships:
+  - name: membership
+    using:
+      foreign_key_constraint_on: membership_id
+  - name: purchaser
+    using:
+      foreign_key_constraint_on: volunteer_id
+  array_relationships:
+  - name: currently_active
+    using:
+      foreign_key_constraint_on:
+        column: enrollment_id
+        table:
+          schema: public
+          name: volunteers
+  - name: enrollees
+    using:
+      foreign_key_constraint_on:
+        column: enrollment_id
+        table:
+          schema: public
+          name: enrollees
+  insert_permissions:
+  - role: staff
+    permission:
+      check:
+        membership:
+          tenant_id:
+            _eq: x-hasura-tenant-id
+      columns:
+      - auto_renew
+      - end_date
+      - membership_id
+      - paid
+      - start_date
+      - volunteer_id
+      backend_only: false
+  select_permissions:
+  - role: staff
+    permission:
+      columns:
+      - id
+      - created_at
+      - updated_at
+      - volunteer_id
+      - membership_id
+      - start_date
+      - end_date
+      - paid
+      - auto_renew
+      filter:
+        membership:
+          tenant_id:
+            _eq: x-hasura-tenant-id
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - auto_renew
+      - deleted_at
+      - end_date
+      - membership_id
+      - paid
+      - start_date
+      - volunteer_id
+      filter:
+        membership:
+          tenant_id:
+            _eq: x-hasura-tenant-id
+      check: null
+- table:
+    schema: public
     name: job_volunteers
   object_relationships:
   - name: job
@@ -282,6 +393,85 @@
           owner_id:
             _eq: x-hasura-user-id
       check: null
+- table:
+    schema: public
+    name: memberships
+  object_relationships:
+  - name: tenant
+    using:
+      foreign_key_constraint_on: tenant_id
+  array_relationships:
+  - name: enrollments
+    using:
+      foreign_key_constraint_on:
+        column: membership_id
+        table:
+          schema: public
+          name: enrollments
+  insert_permissions:
+  - role: staff
+    permission:
+      check:
+        tenant:
+          owner_id:
+            _eq: x-hasura-user-id
+      columns:
+      - auto_renew
+      - max_participants
+      - name
+      - tenant_id
+      backend_only: false
+  select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - id
+      - created_at
+      - updated_at
+      - name
+      - max_participants
+      - tenant_id
+      - deleted_at
+      filter: {}
+  - role: staff
+    permission:
+      columns:
+      - auto_renew
+      - created_at
+      - deleted_at
+      - id
+      - max_participants
+      - name
+      - tenant_id
+      - updated_at
+      filter: {}
+  - role: user
+    permission:
+      columns:
+      - id
+      - created_at
+      - updated_at
+      - name
+      - max_participants
+      - tenant_id
+      - deleted_at
+      filter: {}
+  update_permissions:
+  - role: staff
+    permission:
+      columns:
+      - auto_renew
+      - deleted_at
+      - max_participants
+      - name
+      filter:
+        tenant:
+          owner_id:
+            _eq: x-hasura-user-id
+      check:
+        tenant:
+          owner_id:
+            _eq: x-hasura-user-id
 - table:
     schema: public
     name: positions
@@ -539,6 +729,13 @@
         table:
           schema: public
           name: levels
+  - name: memberships
+    using:
+      foreign_key_constraint_on:
+        column: tenant_id
+        table:
+          schema: public
+          name: memberships
   - name: roles
     using:
       foreign_key_constraint_on:
@@ -553,6 +750,13 @@
         table:
           schema: public
           name: shows
+  - name: users
+    using:
+      foreign_key_constraint_on:
+        column: tenant_id
+        table:
+          schema: public
+          name: users
   - name: volunteers
     using:
       foreign_key_constraint_on:
@@ -951,6 +1155,9 @@
   - name: editor
     using:
       foreign_key_constraint_on: editor_id
+  - name: enrollment
+    using:
+      foreign_key_constraint_on: enrollment_id
   - name: tenant
     using:
       foreign_key_constraint_on: tenant_id
@@ -962,6 +1169,13 @@
         table:
           schema: public
           name: awards
+  - name: enrollees
+    using:
+      foreign_key_constraint_on:
+        column: volunteer_id
+        table:
+          schema: public
+          name: enrollees
   - name: positions
     using:
       foreign_key_constraint_on:
@@ -969,6 +1183,13 @@
         table:
           schema: public
           name: positions
+  - name: purchases
+    using:
+      foreign_key_constraint_on:
+        column: volunteer_id
+        table:
+          schema: public
+          name: enrollments
   - name: volunteer_shows
     using:
       manual_configuration:

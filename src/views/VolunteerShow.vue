@@ -19,20 +19,36 @@ transition(name="long-fade")
                 font-awesome-icon.has-text-warning.is-size-4(icon="coins")
                 span  {{ points }}
             .column.has-text-centered
-              p.is-size-4.is-marginless.has-text-black AWARDS
+              p.is-size-4.is-marginless.has-text-black MEMBERSHIP
               p.is-size-4.has-text-weight-medium.is-marginless
-                span {{ awards }}
+                span {{ membership }}
 
-        br
+        template(v-if="volunteer.awards.length")
+          br
 
-        list-row(v-for="data in shows"
-          :key="data.show.id"
-          :title="data.show.name"
-          :subtitle="[prettyMonth(data.show.occurred_at), prettyJobs(data.show)]"
-          :icon="['calendar-week', 'hammer']"
-          :points="data.points"
-          :item="data.show"
-          v-on:action="editShow")
+          h2.title.is-4 Awards
+
+          list-row(v-for="award in volunteer.awards"
+            :bigIcon="{ icon: 'star', color: award.level.color }"
+            :key="award.level.id"
+            :title="award.level.name"
+            :subtitle="prettyMonth(award.awarded_at)"
+            icon="calendar-week"
+            :item="award")
+
+        template(v-if="shows.length")
+          br
+
+          h2.title.is-4 Shows
+
+          list-row(v-for="data in shows"
+            :key="data.show.id"
+            :title="data.show.name"
+            :subtitle="[prettyMonth(data.show.occurred_at), prettyJobs(data.show)]"
+            :icon="['calendar-week', 'hammer']"
+            :points="data.points"
+            :item="data.show"
+            v-on:action="editShow")
 </template>
 
 <script>
@@ -65,9 +81,9 @@ export default {
     canEdit () {
       return this.$auth.has('staff')
     },
-    awards () {
-      const awards = this.volunteer.awards.map(award => award.level.name)
-      return awards.length === 0 ? 'None' : awards.join(', ')
+    membership () {
+      const enrollees = this.volunteer.enrollees
+      return enrollees.length ? enrollees[0].enrollment.membership.name : 'None'
     }
   },
 

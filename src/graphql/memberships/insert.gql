@@ -1,0 +1,16 @@
+mutation membershipInsert (
+    $tenant_id: Int!,
+    $name: String!
+  ) {
+  insert_memberships (objects: {
+    tenant_id: $tenant_id,
+    name: $name
+  }) {
+    returning {
+      id
+      name
+      max_participants
+      auto_renew
+    }
+  }
+}

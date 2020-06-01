@@ -1,0 +1,20 @@
+query volunteerMemberships ($id: Int!) {
+  volunteers_by_pk(id: $id) {
+    id
+    first_name
+    last_name
+    enrollees (
+      where: {enrollment: {membership: {deleted_at: {_is_null: true}}}},
+      order_by: {enrollment: {start_date: desc}}
+    ) {
+      enrollment {
+        start_date
+        end_date
+        membership {
+          id
+          name
+        }
+      }
+    }
+  }
+}

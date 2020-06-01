@@ -1,4 +1,4 @@
-query volunteerEdit ($id: Int!) {
+query volunteerEdit ($id: Int!, $tenant_id: Int!) {
   volunteers_by_pk(id: $id) {
     id
     joined_at
@@ -9,6 +9,20 @@ query volunteerEdit ($id: Int!) {
     street
     city
     notes
+    enrollees (where: {enrollment: {_and: [
+      {start_date: {_lte: "now"}},
+      {end_date: {_gte: "now"}},
+      {membership: {deleted_at: {_is_null: true}}}
+    ]}}) {
+      enrollment {
+        start_date
+        end_date
+        membership {
+          id
+          name
+        }
+      }
+    }
   }
   awards (where: {volunteer_id: {_eq: $id}}) {
     awarded_at
@@ -18,7 +32,10 @@ query volunteerEdit ($id: Int!) {
     }
   }
   levels (
-    where: {deleted_at: {_is_null: true}},
+    where: {_and: [
+      {deleted_at: {_is_null: true}},
+      {tenant_id: {_eq: $tenant_id}}
+    ]},
     order_by: {points: asc}
   ) {
     id

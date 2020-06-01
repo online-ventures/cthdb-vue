@@ -1,5 +1,11 @@
 <template lang="pug">
 .columns.is-6.row.is-mobile.is-vcentered(:class="rowClasses" @click="performClick")
+  .column.is-1.has-text-centered(v-if="bigIcon")
+    span.icon.is-medium
+      font-awesome-icon(
+        :icon="bigIcon.icon"
+        size="2x"
+        :style="{ color: bigIcon.color || 'grey' }")
   .column
     p.title.is-4
       span {{ title }}
@@ -35,6 +41,10 @@ export default {
     },
     subtitle: {
       type: [String, Array],
+      required: false
+    },
+    bigIcon: {
+      type: Object,
       required: false
     },
     awards: {

@@ -5,7 +5,7 @@ transition(name="fade")
     .modal-card
       header.modal-card-head
         p.modal-card-title {{ title }}
-        button.delete(aria-label="close")
+        button.delete(aria-label="close" @click="rejected")
       section.modal-card-body
         p Are you sure you want to delete {{ name(item) }}?
       footer.modal-card-foot
@@ -65,6 +65,7 @@ export default {
       this.display = false
     },
     rejected () {
+      if (this.loading) return
       this.display = false
       if (this.cancelled) {
         this.cancelled()

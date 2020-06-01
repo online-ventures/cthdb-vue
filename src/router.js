@@ -5,6 +5,9 @@ import VolunteerList from '@/views/VolunteerList.vue'
 import VolunteerEdit from '@/views/VolunteerEdit.vue'
 import VolunteerShow from '@/views/VolunteerShow.vue'
 import VolunteerJobs from '@/views/VolunteerJobs.vue'
+import VolunteerMembership from '@/views/VolunteerMembership.vue'
+import EnrollmentNew from '@/views/EnrollmentNew.vue'
+import EnrollmentEdit from '@/views/EnrollmentEdit.vue'
 import TenantList from '@/views/TenantList.vue'
 import TenantNew from '@/views/TenantNew.vue'
 import TenantEdit from '@/views/TenantEdit.vue'
@@ -65,6 +68,24 @@ const router = new Router({
       path: '/volunteer/:id/edit',
       name: 'edit-volunteer',
       component: VolunteerEdit,
+      meta: { role: 'staff' }
+    },
+    {
+      path: '/volunteer/:id/memberships',
+      name: 'volunteer-membership',
+      component: VolunteerMembership,
+      meta: { role: 'staff' }
+    },
+    {
+      path: '/volunteer/:id/enrollment/new',
+      name: 'new-enrollment',
+      component: EnrollmentNew,
+      meta: { role: 'staff' }
+    },
+    {
+      path: '/enrollment/:id/edit',
+      name: 'edit-enrollment',
+      component: EnrollmentEdit,
       meta: { role: 'staff' }
     },
     {

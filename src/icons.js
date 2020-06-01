@@ -9,6 +9,7 @@ import {
   faExclamationCircle,
   faTicketAlt,
   faUser,
+  faUsers,
   faEnvelope,
   faPhone,
   faMapMarkerAlt,
@@ -22,7 +23,10 @@ import {
   faSort,
   faStar,
   faQuestionCircle,
-  faPalette
+  faPalette,
+  faMagic,
+  faMoneyBillWave,
+  faLink
 } from '@fortawesome/free-solid-svg-icons'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -36,6 +40,7 @@ library.add(
   faExclamationCircle,
   faTicketAlt,
   faUser,
+  faUsers,
   faEnvelope,
   faPhone,
   faMapMarkerAlt,
@@ -49,7 +54,10 @@ library.add(
   faSort,
   faStar,
   faQuestionCircle,
-  faPalette
+  faPalette,
+  faMagic,
+  faMoneyBillWave,
+  faLink
 )
 
 export default FontAwesomeIcon

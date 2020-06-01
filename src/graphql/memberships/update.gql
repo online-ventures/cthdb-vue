@@ -1,0 +1,22 @@
+mutation membershipUpdate (
+  $id: Int!,
+  $name: String!,
+  $max_participants: Int!,
+  $auto_renew: Boolean!
+) {
+  update_memberships (
+    where: {id: {_eq: $id}},
+    _set: {
+      name: $name,
+      max_participants: $max_participants,
+      auto_renew: $auto_renew
+    }
+  ) {
+    returning {
+      id
+      name
+      max_participants
+      auto_renew
+    }
+  }
+}

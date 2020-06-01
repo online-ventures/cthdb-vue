@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import VueHead from 'vue-head'
 import { Auth0Plugin } from '@/auth/auth'
 import apolloProvider from '@/apollo'
 import FontAwesomeIcon from '@/icons'
@@ -10,6 +11,13 @@ import camelCase from 'lodash/camelCase'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
 import VueCookies from 'vue-cookies'
+import DatePicker from 'bulma-calendar/src/js/datePicker/index.js'
+
+// Head
+Vue.use(VueHead)
+
+// Calendar picker
+Vue.component(DatePicker)
 
 // Sentry
 const sentryIntegration = new Integrations.Vue({

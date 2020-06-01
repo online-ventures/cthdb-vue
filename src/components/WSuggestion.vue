@@ -1,5 +1,5 @@
 <template lang="pug">
-div.vue-suggestion
+.suggestion
   input.input(
     v-model="searchText"
     type="search"
@@ -81,6 +81,13 @@ export default {
     }
   },
 
+  mounted () {
+    if (this.value) {
+      console.log(this.value)
+      this.searchText = this.setLabel(this.value)
+    }
+  },
+
   watch: {
     value: {
       handler (value) {
@@ -88,28 +95,21 @@ export default {
         this.searchText = this.setLabel(value)
       },
       deep: true
-    }
-  },
-  mounted () {
-    if (this.value) {
-      this.searchText = this.setLabel(this.value)
+    },
+    items: {
+      handler (value) {
+        this.showList = this.searchText.length >= this.minLen &&
+          value && value.length > 0
+      }
     }
   },
   methods: {
-    updateListVisibility () {
-      setTimeout(() => {
-        this.showList = this.searchText.length >= this.minLen &&
-        this.items && this.items.length > 0
-      }, 200)
-    },
-
     inputChange () {
       this.cursor = 0
       const length = this.searchText.length
       const valid = length >= this.minLen && length <= this.maxLen
       const text = valid ? this.searchText : ''
       this.$emit('changed', text)
-      this.updateListVisibility()
     },
 
     focus () {
@@ -119,20 +119,20 @@ export default {
     blur () {
       this.$emit('blur', this.searchText)
       // set timeout for the click event to work
-      setTimeout(() => {
+      this.$nextTick(() => {
         this.showList = false
         // Reset the label to reflect the state of the value
         this.searchText = this.setLabel(this.value)
-      }, 200)
+      })
     },
 
     selectItem (item) {
       if (item) {
         this.searchText = this.setLabel(item)
         // Send selected event after value has been changed
-        setTimeout(() => {
+        this.$nextTick(() => {
           this.$emit('selected', item)
-        }, 200)
+        })
       }
       this.$emit('input', item)
     },
@@ -163,7 +163,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.vue-suggestion {
+.suggestion {
   position: relative;
 
   .loading {

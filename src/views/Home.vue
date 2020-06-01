@@ -18,6 +18,14 @@ div
 import STATS from '@/graphql/stats/home.gql'
 
 export default {
+  head: {
+    title: {
+      inner () {
+        return this.$auth.tenant.short_name
+      },
+      compliment: 'welcome'
+    }
+  },
   data () {
     return {
       stats: null

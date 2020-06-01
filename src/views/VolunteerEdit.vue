@@ -49,7 +49,9 @@ div
               .control.has-icons-left
                 span.icon.is-small
                   font-awesome-icon(icon="phone")
-                w-input(v-model="record.phone"
+                w-input(
+                  v-model="record.phone"
+                  type="tel"
                   maxlength="15"
                   pattern="[0-9]{3}-?[0-9]{3}-?[0-9]{4}"
                   placeholder="123-456-7890"
@@ -80,33 +82,46 @@ div
                   font-awesome-icon(icon="sticky-note")
                 w-input(v-model="record.notes" maxlength="80")
 
-  section.section
+  section.section(v-if="volunteer")
     .container
-      template(v-if="eligibleLevels.length > 0")
-        h2.title.is-4 Awards
-        .columns.is-vcentered.is-centered(
-          v-for="(level, index) in eligibleLevels"
-          :class="{ 'has-background-white-ter': index % 2 === 0 }")
-          .column.is-3
-            p.title.is-5 {{ level.name }}
-          .column.is-3
-            p.subtitle.is-6 {{ points }} points / {{ level.points }} needed
-          .column.is-3
-            .buttons.has-addons
-              button.button(
-                @click="removeAward(level)"
-                :class="{ 'is-primary': !awarded(level), 'is-loading': awardSaving[level.id] }")
-                | Eligible
-              button.button(
-                @click="addAward(level)"
-                :class="{ 'is-primary': awarded(level) }")
-                | Awarded
-          .column.is-3
-            .field(v-if="awarded(level)")
-              .control.has-icons-left
-                span.icon.is-small
-                  font-awesome-icon(icon="calendar-week")
-                w-input(v-model="awardFor(level).awarded_at" type="date" required @blur="updateAward(level)")
+      h2.title.is-4 Membership
+      .columns
+        .column(v-if="!enrollment")
+          p.is-size-5 No current membership
+        template(v-if="enrollment")
+          .column
+            p.is-size-5 {{ enrollment.membership.name }}
+          .column
+            p.is-size-5 Expiring on {{ enrollment.end_date }}
+        .column.is-4.is-3-desktop
+          button.button.is-primary.is-fullwidth(@click="goToMembership") Manage Membership
+
+  section.section(v-if="eligibleLevels.length > 0")
+    .container
+      h2.title.is-4 Awards
+      .columns.is-vcentered.is-centered(
+        v-for="(level, index) in eligibleLevels"
+        :class="{ 'has-background-white-ter': index % 2 === 0 }")
+        .column.is-3
+          p.title.is-5 {{ level.name }}
+        .column.is-3
+          p.subtitle.is-6 {{ points }} points / {{ level.points }} needed
+        .column.is-3
+          .buttons.has-addons.award-buttons
+            button.button(
+              @click="removeAward(level)"
+              :class="{ 'is-primary': !awarded(level), 'is-loading': awardSaving[level.id] }")
+              | Eligible
+            button.button(
+              @click="addAward(level)"
+              :class="{ 'is-primary': awarded(level) }")
+              | Awarded
+        .column.is-3
+          .field(v-if="awarded(level)")
+            .control.has-icons-left
+              span.icon.is-small
+                font-awesome-icon(icon="calendar-week")
+              w-input(v-model="awardFor(level).awarded_at" type="date" required @blur="updateAward(level)")
 </template>
 
 <script>
@@ -129,6 +144,7 @@ export default {
       awards: [],
       awardSaving: {},
       points: 0,
+      enrollment: null,
       record: {
         first_name: '',
         last_name: '',
@@ -169,22 +185,32 @@ export default {
         return !this.volunteerId
       },
       variables () {
-        return { id: this.volunteerId }
+        return { id: this.volunteerId, tenant_id: this.$auth.tenantId }
       },
       update (data) {
         const volunteer = data.volunteers_by_pk
         this.record = { ...volunteer }
         delete this.record.__typename
         delete this.record.joined_at
+        delete this.record.enrollees
         this.awards = data.awards.map(award => Object.assign({}, award))
         this.levels = data.levels
         this.points = data.volunteer_shows_aggregate.aggregate.sum.points
+        if (volunteer.enrollees.length) {
+          this.enrollment = volunteer.enrollees[0].enrollment
+        }
         return volunteer
       }
     }
   },
 
   methods: {
+    goToMembership () {
+      this.$router.push({
+        name: 'volunteer-membership',
+        params: { id: this.volunteerId }
+      })
+    },
     nextPage (params) {
       if (params) {
         this.$router.push({ name: 'volunteer', params: params })
@@ -255,4 +281,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.award-buttons {
+  .button {
+    width: 50%;
+  }
+}
 </style>
