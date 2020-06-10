@@ -1,16 +1,17 @@
 <template lang="pug">
 transition(name="long-fade")
   div(v-if="volunteer")
-    section.hero.is-primary
-      .hero-body
-        .container
-          h1.title
-            | {{ volunteer | fullName }}
-            |
-            a.is-size-6(@click="editVolunteer" v-if="canEdit") edit
-          p.subtitle Joined {{ prettyMonth(volunteer.joined_at) }}
+    w-hero(:title="volunteer | fullName" :subtitle="subtitle")
+
     section.section
       .container
+
+        .buttons
+          w-button(icon="cog" @click="editVolunteer" v-if="canEdit")
+            span Edit Volunteer
+          w-button(icon="check-circle" @click="goToMembership")
+            span Membership Info
+
         .box
           .columns
             .column.has-text-centered
@@ -21,7 +22,11 @@ transition(name="long-fade")
             .column.has-text-centered
               p.is-size-4.is-marginless.has-text-black MEMBERSHIP
               p.is-size-4.has-text-weight-medium.is-marginless
-                span {{ membership }}
+                font-awesome-icon.is-size-4(
+                  :class="membershipIconColor"
+                  :icon="membershipIcon"
+                )
+                span  {{ membership }}
 
         template(v-if="volunteer.awards.length")
           br
@@ -67,6 +72,12 @@ export default {
   },
 
   computed: {
+    volunteerId () {
+      return parseInt(this.$route.params.id)
+    },
+    subtitle () {
+      return 'Joined ' + this.prettyMonth(this.volunteer.joined_at)
+    },
     shows () {
       if (!this.volunteer) return []
       return this.volunteer.volunteer_shows
@@ -83,7 +94,15 @@ export default {
     },
     membership () {
       const enrollees = this.volunteer.enrollees
-      return enrollees.length ? enrollees[0].enrollment.membership.name : 'None'
+      const enrollment = enrollees.length && enrollees[0].enrollment
+      const membership = enrollment && enrollment.membership.name + ' member'
+      return membership || 'None'
+    },
+    membershipIcon () {
+      return this.volunteer.enrollees.length ? 'check-circle' : 'ban'
+    },
+    membershipIconColor () {
+      return 'has-text-' + (this.volunteer.enrollees.length ? 'success' : 'warning')
     }
   },
 
@@ -129,7 +148,17 @@ export default {
     },
 
     editVolunteer () {
-      this.$router.push({ name: 'edit-volunteer', params: { id: this.$route.params.id } })
+      this.$router.push({
+        name: 'edit-volunteer',
+        params: { id: this.volunteerId }
+      })
+    },
+
+    goToMembership () {
+      this.$router.push({
+        name: 'volunteer-membership',
+        params: { id: this.volunteerId }
+      })
     },
 
     editShow (show) {
@@ -150,11 +179,4 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.title a {
-  color: white;
-  font-weight: normal;
-}
-.title a:hover {
-  text-decoration: underline;
-}
 </style>

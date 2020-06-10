@@ -3,7 +3,8 @@ form(ref="form" @submit.prevent="save")
   w-notification(
     :message="notificationMessage"
     :type="notificationType"
-    @closed="status = null")
+    @closed="status = null"
+  )
 
   fieldset(:disabled="formDisabled")
     slot
@@ -17,7 +18,7 @@ form(ref="form" @submit.prevent="save")
         button.button.is-primary(
           :disabled="formDisabled"
           @click.prevent="save"
-          :class="{ 'is-loading': saving }") Save
+          :class="{ 'is-loading': saving }") {{ saveText }}
 </template>
 
 <script>
@@ -34,7 +35,7 @@ export default {
       required: true
     },
     editorId: {
-      type: [Number,String],
+      type: [Number, String],
       required: false
     },
     tenantId: {
@@ -89,6 +90,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    saveText: {
+      type: String,
+      required: false,
+      default: 'Save'
     }
   },
 

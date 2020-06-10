@@ -1,8 +1,8 @@
 <template lang="pug">
-.outer
-  transition(name="expand")
-    div(:class="innerClass" v-if="display")
-      .notification(:class="notificationClass") {{ message }}
+transition(name="expand")
+  .outer(v-if="display")
+    div(:class="innerClass")
+      .notification(:class="notificationClass") {{ text }}
 </template>
 
 <script>
@@ -19,7 +19,7 @@ export default {
     lifetime: {
       type: Number,
       required: false,
-      default: 8
+      default: 3
     },
     full: {
       type: Boolean,
@@ -35,19 +35,18 @@ export default {
 
   data () {
     return {
+      text: null,
       display: false,
       callback: null
     }
   },
 
   watch: {
-    message: function (newMessage, oldMessage) {
-      clearTimeout(this.callback)
-      if (newMessage) {
+    message (value) {
+      if (value) {
+        this.text = value
         this.display = true
         this.fadeOutEventually()
-      } else {
-        this.fadeOutNow()
       }
     }
   },
@@ -67,6 +66,7 @@ export default {
       this.$emit('closed')
     },
     fadeOutEventually () {
+      clearTimeout(this.callback)
       this.callback = setTimeout(() => {
         this.fadeOutNow()
       }, this.lifetime * 1000)

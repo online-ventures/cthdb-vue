@@ -3,25 +3,18 @@ export default {
     // Always start at the top.  Starting at bottom breaks this component!
     window.scrollTo(0, 0)
     // Add scroll listener
-    window.onscroll = () => {
-      const position = Math.max(window.pageYOffset,
-        document.documentElement.scrollTop,
-        document.body.scrollTop)
-      const outerPosition = position + window.innerHeight
-      const height = document.documentElement.offsetHeight
-      const atBottom = outerPosition >= height - 1
-      if (this.infiniteDebug) console.log('Scroll position: ' + outerPosition + '/' + height)
-      if (atBottom) this.fetchMore()
-    }
+    window.onscroll = this.getScrollPosition
   },
 
   data () {
     return {
       infiniteDebug: false,
       page: 1,
-      rowsPerPage: 25,
+      leeway: 200,
+      rowsPerPage: 10,
       hasMore: false,
-      infiniteIdKey: 'id'
+      infiniteIdKey: 'id',
+      nearBottom: false
     }
   },
 
@@ -37,11 +30,33 @@ export default {
     }
   },
 
+  watch: {
+    nearBottom (value) {
+      if (value) {
+        this.fetchMore()
+      }
+    }
+  },
+
   methods: {
     fetchMore () {
-      if (!this.hasMore) return
-      this.hasMore = false
-      this.page += 1
+      this.$nextTick(() => {
+        this.getScrollPosition()
+        if (this.hasMore && this.nearBottom) {
+          this.hasMore = false
+          this.page += 1
+          if (this.infiniteDebug) console.log('Onto page: ' + this.page)
+        }
+      })
+    },
+    getScrollPosition () {
+      const position = Math.max(window.pageYOffset,
+        document.documentElement.scrollTop,
+        document.body.scrollTop)
+      const outerPosition = position + window.innerHeight
+      const height = document.documentElement.offsetHeight
+      this.nearBottom = outerPosition >= height - this.leeway
+      if (this.infiniteDebug) console.log('Scroll position: ' + outerPosition + '/' + height)
     },
     processFetchedData (newRecords, allRecords) {
       if (this.page === 1) {
@@ -58,6 +73,7 @@ export default {
         }
       })
       this.hasMore = newRecords.length === this.rowsPerPage
+      this.fetchMore()
       return newRecords
     }
   }

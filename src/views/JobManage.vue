@@ -25,15 +25,16 @@ transition(name="long-fade")
 
         br
 
-        list-row(v-for="data in allVolunteers"
-          :key="data.volunteer.id"
-          :title="data.volunteer | fullName"
-          :subtitle="[data.show.name, prettyMonth(data.show.occurred_at)]"
+        list-row(v-for="row in allVolunteers"
+          :key="row.volunteer.id"
+          :title="row.volunteer | fullName"
+          :subtitle="[row.show.name, prettyMonth(row.show.occurred_at)]"
+          :awards="row.volunteer.awards"
+          :enrollment="row.volunteer | enrollment"
           :icon="['ticket-alt', 'calendar-week']"
-          :awards="data.volunteer.awards"
-          :points="volunteerPoints(data.volunteer)"
-          :item="data"
-          v-on:action="viewVolunteer(data.volunteer)")
+          :points="volunteerPoints(row.volunteer)"
+          :item="row"
+          v-on:action="viewVolunteer(row.volunteer)")
 </template>
 
 <script>
@@ -75,6 +76,10 @@ export default {
   filters: {
     fullName (volunteer) {
       return volunteer.first_name + ' ' + volunteer.last_name
+    },
+    enrollment (volunteer) {
+      if (!volunteer.enrollees.length) return null
+      return volunteer.enrollees[0].enrollment
     }
   },
 

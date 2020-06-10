@@ -1,0 +1,19 @@
+mutation enrolleeInsert (
+  $volunteer_id: Int!,
+  $enrollment_id: Int!
+) {
+  insert_enrollees (
+    objects: {
+      volunteer_id: $volunteer_id,
+      enrollment_id: $enrollment_id
+    }
+  ) {
+    returning {
+      volunteer {
+        id
+        first_name
+        last_name
+      }
+    }
+  }
+}

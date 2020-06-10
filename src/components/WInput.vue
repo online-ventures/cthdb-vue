@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-
 export default {
   inheritAttrs: false,
 
@@ -133,7 +131,7 @@ export default {
             valid: that.isValid,
             item: that.debounceItem
           })
-        }, 1000)
+        }, 300)
       }
     },
     onInvalid (event) {

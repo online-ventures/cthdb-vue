@@ -20,50 +20,34 @@ transition(name="long-fade")
 
         .columns
           .column
-            .field
-              label.label Theatre Name
-              .control.has-icons-left
-                span.icon.is-small
-                  font-awesome-icon(icon="ticket-alt")
-                w-input(v-model="record.name"
-                  required
-                  maxlength="50"
-                  :debounce="updateTenant")
+            w-field(label="Theatre Name" icon="ticket-alt")
+              w-input(v-model="record.name"
+                required
+                maxlength="50"
+                :debounce="updateTenant")
 
           .column
-            .field
-              label.label Abbreviated Name
-              .control.has-icons-left
-                span.icon.is-small
-                  font-awesome-icon(icon="ticket-alt")
-                w-input(v-model="record.short_name"
-                  required
-                  maxlength="8"
-                  :debounce="updateTenant")
+            w-field(label="Abbreviated Name" icon="ticket-alt")
+              w-input(v-model="record.short_name"
+                required
+                maxlength="8"
+                :debounce="updateTenant")
 
         .columns
           .column
-            .field
-              label.label City
-              .control.has-icons-left
-                span.icon.is-small
-                  font-awesome-icon(icon="map-marker-alt")
-                w-input(v-model="record.city"
-                  required
-                  maxlength="40"
-                  :debounce="updateTenant")
+            w-field(label="City" icon="map-marker-alt")
+              w-input(v-model="record.city"
+                required
+                maxlength="40"
+                :debounce="updateTenant")
 
           .column
-            .field
-              label.label State
-              .control.has-icons-left
-                span.icon.is-small
-                  font-awesome-icon(icon="map-marker-alt")
-                w-input(v-model="record.state"
-                  required
-                  minlength="2"
-                  maxlength="2"
-                  :debounce="updateTenant")
+            w-field(label="State" icon="map-marker-alt")
+              w-input(v-model="record.state"
+                required
+                minlength="2"
+                maxlength="2"
+                :debounce="updateTenant")
 
     section.section
       .container
@@ -72,23 +56,15 @@ transition(name="long-fade")
 
         .columns
           .column(v-if="tenant")
-            .field
-              label.label.has-help-icon
-                | Max Points Per Show
-                |
-                a.icon.is-small.has-text-link(:title="maxPointHelpText")
-                  font-awesome-icon(icon="question-circle")
-              .control.has-icons-left
-                span.icon.is-small
-                  font-awesome-icon(icon="coins")
-                w-input(v-model="record.max_points_per_show"
-                  required
-                  type="number"
-                  min="1"
-                  max="100"
-                  rangeOverflow="The max points is 100 per show"
-                  rangeUnderflow="The min points is 1 per show"
-                  :debounce="updateTenant")
+            w-field(label="Max Points Per Show" icon="coins" :help="maxPointHelpText")
+              w-input(v-model="record.max_points_per_show"
+                required
+                type="number"
+                min="1"
+                max="100"
+                rangeOverflow="The max points is 100 per show"
+                rangeUnderflow="The min points is 1 per show"
+                :debounce="updateTenant")
 
     w-crud(
       title="Award"
@@ -310,29 +286,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.has-help-icon {
-  line-height: 1.2em;
-  .icon {
-    margin-left: 0.25em;
-  }
-}
-.row {
-  max-height: 5em;
-  .columns {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-}
-.expand-enter-active,
-.expand-leave-active {
-  transition: all 0.5s;
-}
-.expand-enter,
-.expand-leave-to {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
 .page {
   padding-bottom: 5em;
 }

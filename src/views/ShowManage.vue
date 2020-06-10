@@ -23,6 +23,7 @@ transition(name="long-fade")
           :title="row.volunteer | fullName"
           :subtitle="row.volunteer.positions | jobList"
           :awards="row.volunteer.awards"
+          :enrollment="row.volunteer | enrollment"
           icon="hammer"
           icon-type="is-grey-light"
           :item="row"
@@ -69,6 +70,10 @@ export default {
     },
     jobList (positions) {
       return positions.map(position => position.job.name).join(', ')
+    },
+    enrollment (volunteer) {
+      if (!volunteer.enrollees.length) return null
+      return volunteer.enrollees[0].enrollment
     }
   },
 

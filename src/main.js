@@ -11,13 +11,9 @@ import camelCase from 'lodash/camelCase'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
 import VueCookies from 'vue-cookies'
-import DatePicker from 'bulma-calendar/src/js/datePicker/index.js'
 
 // Head
 Vue.use(VueHead)
-
-// Calendar picker
-Vue.component(DatePicker)
 
 // Sentry
 const sentryIntegration = new Integrations.Vue({

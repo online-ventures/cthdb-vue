@@ -15,5 +15,19 @@ query volunteerEligible (
     last_name
     points
     shows
+    enrollment {
+      membership {
+        name
+      }
+    }
+    awards (
+      order_by: {level: {points: desc}},
+      limit: 1
+    ) {
+      level {
+        name
+        color
+      }
+    }
   }
 }

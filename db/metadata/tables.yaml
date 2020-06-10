@@ -86,6 +86,16 @@
       - volunteer_id
       backend_only: false
   select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+      - volunteer_id
+      - enrollment_id
+      filter:
+        volunteer:
+          tenant_id:
+            _eq: x-hasura-tenant-id
+      allow_aggregations: true
   - role: staff
     permission:
       columns:
@@ -95,6 +105,17 @@
         volunteer:
           tenant_id:
             _eq: x-hasura-tenant-id
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+      - volunteer_id
+      - enrollment_id
+      filter:
+        volunteer:
+          tenant_id:
+            _eq: x-hasura-tenant-id
+      allow_aggregations: true
   delete_permissions:
   - role: staff
     permission:
@@ -113,13 +134,6 @@
     using:
       foreign_key_constraint_on: volunteer_id
   array_relationships:
-  - name: currently_active
-    using:
-      foreign_key_constraint_on:
-        column: enrollment_id
-        table:
-          schema: public
-          name: volunteers
   - name: enrollees
     using:
       foreign_key_constraint_on:
@@ -127,6 +141,14 @@
         table:
           schema: public
           name: enrollees
+  computed_fields:
+  - name: active
+    definition:
+      function:
+        schema: public
+        name: enrollment_is_active
+      table_argument: null
+    comment: Determines if the enrollment is currently active
   insert_permissions:
   - role: staff
     permission:
@@ -143,22 +165,66 @@
       - volunteer_id
       backend_only: false
   select_permissions:
-  - role: staff
+  - role: anonymous
     permission:
       columns:
-      - id
+      - auto_renew
       - created_at
+      - deleted_at
+      - end_date
+      - id
+      - membership_id
+      - paid
+      - start_date
       - updated_at
       - volunteer_id
-      - membership_id
-      - start_date
-      - end_date
-      - paid
-      - auto_renew
+      computed_fields:
+      - active
       filter:
         membership:
           tenant_id:
             _eq: x-hasura-tenant-id
+      allow_aggregations: true
+  - role: staff
+    permission:
+      columns:
+      - auto_renew
+      - created_at
+      - deleted_at
+      - end_date
+      - id
+      - membership_id
+      - paid
+      - start_date
+      - updated_at
+      - volunteer_id
+      computed_fields:
+      - active
+      filter:
+        membership:
+          tenant_id:
+            _eq: x-hasura-tenant-id
+      allow_aggregations: true
+  - role: user
+    permission:
+      columns:
+      - auto_renew
+      - created_at
+      - deleted_at
+      - end_date
+      - id
+      - membership_id
+      - paid
+      - start_date
+      - updated_at
+      - volunteer_id
+      computed_fields:
+      - active
+      filter:
+        membership:
+          tenant_id:
+            _eq: x-hasura-tenant-id
+      allow_aggregations: true
   update_permissions:
   - role: staff
     permission:
@@ -1014,6 +1080,15 @@
 - table:
     schema: public
     name: volunteer_eligible
+  object_relationships:
+  - name: enrollment
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: enrollments
+        column_mapping:
+          enrollment_id: id
   array_relationships:
   - name: awards
     using:
@@ -1034,11 +1109,13 @@
       - points
       - tenant_id
       - recently_involved_at
+      - enrollment_id
       filter: {}
   - role: staff
     permission:
       columns:
       - recently_involved_at
+      - enrollment_id
       - id
       - tenant_id
       - shows
@@ -1050,6 +1127,7 @@
     permission:
       columns:
       - recently_involved_at
+      - enrollment_id
       - id
       - tenant_id
       - shows
@@ -1060,6 +1138,15 @@
 - table:
     schema: public
     name: volunteer_list
+  object_relationships:
+  - name: enrollment
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: enrollments
+        column_mapping:
+          enrollment_id: id
   array_relationships:
   - name: awards
     using:
@@ -1080,28 +1167,31 @@
       - points
       - tenant_id
       - recently_involved_at
+      - enrollment_id
       filter: {}
   - role: staff
     permission:
       columns:
-      - id
+      - enrollment_id
       - first_name
+      - id
       - last_name
-      - shows
       - points
-      - tenant_id
       - recently_involved_at
+      - shows
+      - tenant_id
       filter: {}
   - role: user
     permission:
       columns:
-      - id
+      - enrollment_id
       - first_name
+      - id
       - last_name
-      - shows
       - points
-      - tenant_id
       - recently_involved_at
+      - shows
+      - tenant_id
       filter: {}
 - table:
     schema: public
@@ -1155,9 +1245,6 @@
   - name: editor
     using:
       foreign_key_constraint_on: editor_id
-  - name: enrollment
-    using:
-      foreign_key_constraint_on: enrollment_id
   - name: tenant
     using:
       foreign_key_constraint_on: tenant_id
@@ -1198,6 +1285,14 @@
           name: volunteer_shows
         column_mapping:
           id: volunteer_id
+  computed_fields:
+  - name: enrollment_id
+    definition:
+      function:
+        schema: public
+        name: volunteer_active_enrollment
+      table_argument: null
+    comment: The volunteer's active membership, if any.
   insert_permissions:
   - role: staff
     permission:
@@ -1226,6 +1321,8 @@
       - last_name
       - tenant_id
       - updated_at
+      computed_fields:
+      - enrollment_id
       filter: {}
       allow_aggregations: true
   - role: staff
@@ -1244,6 +1341,8 @@
       - notes
       - editor_id
       - tenant_id
+      computed_fields:
+      - enrollment_id
       filter: {}
       allow_aggregations: true
   - role: user
@@ -1257,6 +1356,8 @@
       - last_name
       - tenant_id
       - updated_at
+      computed_fields:
+      - enrollment_id
       filter: {}
       allow_aggregations: true
   update_permissions:

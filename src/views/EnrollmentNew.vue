@@ -1,47 +1,42 @@
 <template lang="pug">
 transition(name="long-fade")
   div(v-if="volunteer && memberships")
-    section.hero.is-primary
-      .hero-body
-        .container
-          h1.title {{ title }}
-          p.subtitle Add New Membership
+    w-hero(:title="title" subtitle="Add new membership")
 
     section.section
       .container
-        label.label Choose type
-        w-select(v-model="record.membership_id" :options="membershipOptions")
+        template(v-if="noMemberships")
+          h2.is-size-4 No Memberships
+          p.is-size-6 There are no memberships currently listed for this theatre to join.  Discuss this with your theatre manager who oversees this theatre here to get memberships added.
 
-        .columns
-          .column
-            .field
-              label.label Starting
-              .control.has-icons-left
-                span.icon.is-small
-                  font-awesome-icon(icon="calendar-week")
-                w-input(v-model="record.start_date" required type="date")
+        template(v-if="!noMemberships")
+          w-form(
+            :cancel="onCancel"
+            :complete="onComplete"
+            :record="record"
+            :mutation="mutation"
+            saveText="Continue")
 
-          .column
-            .field
-              label.label Expires
-              .control.has-icons-left
-                span.icon.is-small
-                  font-awesome-icon(icon="calendar-week")
-                w-input(v-model="record.end_date" required type="date")
+            w-field(label="Choose type")
+              w-select(v-model="record.membership_id" :options="membershipOptions")
 
-        label.label Purchaser
-        .field
-          select-volunteer(v-model="record.volunteer_id")
+            .columns
+              .column
+                w-field(label="Starting" icon="calendar-week")
+                  w-date-input(v-model="record.start_date")
 
-        template(v-if="record.membership_id")
-          label.label {{ recipientTitle }}
-          .field
-            select-volunteer(v-model="record.volunteer_id")
+              .column
+                w-field(label="Expires" icon="calendar-week")
+                  w-date-input(v-model="record.end_date")
+
+            w-field(label="Purchaser")
+              select-volunteer(v-model="record.volunteer_id")
 </template>
 
 <script>
 import VOLUNTEER from '@/graphql/volunteers/name.gql'
 import MEMBERSHIPS from '@/graphql/memberships/list.gql'
+import INSERT_ENROLLMENT from '@/graphql/enrollments/insert.gql'
 import SelectVolunteer from '@/components/SelectVolunteer'
 
 export default {
@@ -57,18 +52,22 @@ export default {
     return {
       volunteer: null,
       memberships: null,
+      noMemberships: false,
       record: {
         membership_id: 0,
         start_date: null,
         end_date: null,
         volunteer_id: 0
-      }
+      },
+      mutation: INSERT_ENROLLMENT
     }
   },
 
   created () {
-    this.record.start_date = this.formatDate()
-    this.record.end_date = this.formatDate(this.nextYear)
+    const today = new Date()
+    this.record.start_date = today
+    this.record.end_date = new Date()
+    this.record.end_date.setDate(today.getDate() + 366)
     this.record.volunteer_id = this.volunteerId
   },
 
@@ -87,16 +86,6 @@ export default {
       return this.memberships.map(membership => {
         return { value: membership.id, text: membership.name }
       })
-    },
-    nextYear () {
-      const date = new Date()
-      date.setDate(date.getDate() + 366)
-      return date
-    },
-    recipientTitle () {
-      return this.memberships.find(membership => {
-        return membership.id === this.record.membership_id
-      }).max_participants === 1 ? 'Recipient' : 'Recipients'
     }
   },
 
@@ -121,27 +110,29 @@ export default {
       variables () {
         return { tenant_id: this.$auth.tenantId }
       },
-      update (data) {
-        return data.memberships
+      update ({ memberships }) {
+        if (!memberships.length) {
+          this.noMemberships = true
+        } else {
+          this.record.membership_id = memberships[0].id
+        }
+        return memberships
       }
     }
   },
 
   methods: {
-    formatDate (date = null) {
-      const d = date ? date : new Date()
-      let month = (d.getMonth() + 1).toString()
-      let day = d.getDate().toString()
-      const year = d.getFullYear()
-
-      if (month.length < 2) {
-        month = '0' + month
-      }
-      if (day.length < 2) {
-        day = '0' + day
-      }
-
-      return [year, month, day].join('-')
+    onCancel () {
+      this.$router.push({
+        name: 'volunteer-membership',
+        params: { id: this.volunteerId }
+      })
+    },
+    onComplete (enrollment) {
+      this.$router.push({
+        name: 'edit-enrollment',
+        params: { id: enrollment.id }
+      })
     }
   }
 }

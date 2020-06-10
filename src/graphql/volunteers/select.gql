@@ -1,7 +1,8 @@
 query volunteerSelect (
   $tenant_id: Int!,
   $first_name: String!,
-  $last_name: String!
+  $last_name: String!,
+  $ignore: [Int!]!
 ) {
   volunteers (where: {
     _and: [
@@ -14,6 +15,7 @@ query volunteerSelect (
         {last_name: {_ilike: $last_name}}
       ]},
       {tenant_id: {_eq: $tenant_id}},
+      {id: {_nin: $ignore}}
     ]},
     order_by: [{ last_name: asc }, { first_name: asc }],
     limit: 15

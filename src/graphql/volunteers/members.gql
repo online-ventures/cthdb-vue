@@ -1,12 +1,15 @@
-query volunteerList (
+query volunteerMemberList (
   $tenant_id: Int!,
   $offset: Int!,
   $limit: Int!,
   $sort: [volunteer_list_order_by!]
 ) {
   volunteer_list (
-    where: {tenant_id: {_eq: $tenant_id}},
-    order_by: $sort,
+    where: {_and: [
+      {tenant_id: {_eq: $tenant_id}},
+      {enrollment: {id: {_is_null: false}}}
+    ]},
+    order_by: {enrollment: {end_date: asc}},
     limit: $limit,
     offset: $offset
   ) {
@@ -16,6 +19,7 @@ query volunteerList (
     points
     shows
     enrollment {
+      end_date
       membership {
         name
       }

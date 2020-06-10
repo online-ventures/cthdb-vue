@@ -71,19 +71,19 @@ export default {
     return {
       searchText: '',
       showList: false,
-      cursor: 0
+      cursor: 0,
+      focused: false
     }
   },
 
   computed: {
     displayList () {
-      return !this.loading && this.showList
+      return !this.loading && this.showList && this.focused
     }
   },
 
   mounted () {
     if (this.value) {
-      console.log(this.value)
       this.searchText = this.setLabel(this.value)
     }
   },
@@ -113,16 +113,20 @@ export default {
     },
 
     focus () {
+      this.focused = true
       this.$emit('focus', this.searchText)
     },
 
     blur () {
+      this.focused = false
       this.$emit('blur', this.searchText)
       // set timeout for the click event to work
       this.$nextTick(() => {
         this.showList = false
         // Reset the label to reflect the state of the value
-        this.searchText = this.setLabel(this.value)
+        if (this.value) {
+          this.searchText = this.setLabel(this.value)
+        }
       })
     },
 

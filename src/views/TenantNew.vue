@@ -102,7 +102,4 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.help-link {
-  margin-left: 0.25em;
-}
 </style>

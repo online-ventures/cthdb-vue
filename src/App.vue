@@ -66,7 +66,6 @@ export default {
 <style lang="scss">
 @import "src/scss/_variables";
 @import "~bulma";
-@import "~bulma-calendar";
 
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all .3s;

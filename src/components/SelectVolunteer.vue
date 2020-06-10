@@ -21,6 +21,11 @@ export default {
     value: {
       type: Number,
       required: true
+    },
+    ignore: {
+      type: Array,
+      required: false,
+      default: () => [0]
     }
   },
 
@@ -74,7 +79,8 @@ export default {
         return {
           tenant_id: this.$auth.tenantId,
           first_name: this.firstName,
-          last_name: this.lastName
+          last_name: this.lastName,
+          ignore: this.ignore
         }
       },
       update (data) {
@@ -97,6 +103,7 @@ export default {
     onSelected (volunteer) {
       this.selected = volunteer
       this.$emit('input', volunteer.id)
+      this.$nextTick(() => this.$emit('changed', volunteer.id))
     }
   }
 }

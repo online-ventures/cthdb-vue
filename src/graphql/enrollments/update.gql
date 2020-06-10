@@ -1,0 +1,21 @@
+mutation enrollmentUpdate (
+  $id: Int!,
+  $volunteer_id: Int!,
+  $membership_id: Int!,
+  $start_date: date!,
+  $end_date: date!
+) {
+  update_enrollments (
+    where: {id: {_eq: $id}},
+    _set: {
+      volunteer_id: $volunteer_id,
+      membership_id: $membership_id,
+      start_date: $start_date,
+      end_date: $end_date
+    }
+  ) {
+    returning {
+      id
+    }
+  }
+}

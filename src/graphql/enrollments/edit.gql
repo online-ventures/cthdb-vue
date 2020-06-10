@@ -1,0 +1,9 @@
+query enrollmentEdit ($id: Int!) {
+  enrollments_by_pk(id: $id) {
+    id
+    membership_id
+    volunteer_id
+    start_date
+    end_date
+  }
+}

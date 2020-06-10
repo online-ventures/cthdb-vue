@@ -1,0 +1,14 @@
+query enrolleeVolunteers (
+  $enrollment_id: Int!
+) {
+  enrollees (
+    where: {enrollment_id: {_eq: $enrollment_id}},
+    order_by: [{volunteer: {last_name: asc}}, {volunteer: {first_name: asc}}]
+  ) {
+    volunteer {
+      id
+      first_name
+      last_name
+    }
+  }
+}

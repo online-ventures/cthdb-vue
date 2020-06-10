@@ -29,8 +29,8 @@ query volunteerFind ($id: Int!) {
       }
     }
     enrollees (where: {enrollment: {_and: [
-      {start_date: {_lte: "now"}},
-      {end_date: {_gte: "now"}},
+      {start_date: {_lt: "now"}},
+      {end_date: {_gt: "now"}},
       {membership: {deleted_at: {_is_null: true}}}
     ]}}) {
       enrollment {

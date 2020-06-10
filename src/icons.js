@@ -26,7 +26,12 @@ import {
   faPalette,
   faMagic,
   faMoneyBillWave,
-  faLink
+  faLink,
+  faCog,
+  faTimesCircle,
+  faBan,
+  faRibbon,
+  faFilter
 } from '@fortawesome/free-solid-svg-icons'
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -57,7 +62,12 @@ library.add(
   faPalette,
   faMagic,
   faMoneyBillWave,
-  faLink
+  faLink,
+  faCog,
+  faTimesCircle,
+  faBan,
+  faRibbon,
+  faFilter
 )
 
 export default FontAwesomeIcon

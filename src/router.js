@@ -73,8 +73,7 @@ const router = new Router({
     {
       path: '/volunteer/:id/memberships',
       name: 'volunteer-membership',
-      component: VolunteerMembership,
-      meta: { role: 'staff' }
+      component: VolunteerMembership
     },
     {
       path: '/volunteer/:id/enrollment/new',

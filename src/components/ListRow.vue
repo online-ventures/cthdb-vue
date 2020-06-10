@@ -7,13 +7,17 @@
         size="2x"
         :style="{ color: bigIcon.color || 'grey' }")
   .column
-    p.title.is-4
+    p.title.is-5
       span {{ title }}
-      span.icon.is-medium(v-if="badgeIcon")
-        font-awesome-icon.title-icon(
-          :icon="badgeIcon"
-          size="xs"
-          :style="{ color: badgeIconColor || 'grey' }")
+      span.icon.is-medium.badge-icon(v-if="badgeIcon")
+        a(:title="badgeText + ' award'")
+          font-awesome-icon(
+            :icon="badgeIcon"
+            size="xs"
+            :style="{ color: badgeIconColor || 'grey' }")
+      span.icon.is-medium.badge-icon(v-if="enrollment")
+        a(:title="enrollment.membership.name + ' member'")
+          font-awesome-icon.has-text-warning(icon="ribbon" size="xs")
     .columns
       .column.is-narrow.subtitle-column(v-for="subtitle in subtitleList")
         .subtitle.is-6.is-mobile
@@ -48,6 +52,12 @@ export default {
       required: false
     },
     awards: {
+      type: Array,
+      required: false
+    },
+    enrollment: {
+      type: Object,
+      required: false
     },
     icon: {
       type: [String, Array],
@@ -89,6 +99,9 @@ export default {
       return subtitles.map((subtitle, index) => {
         return { text: subtitle, icon: icons[index] }
       })
+    },
+    badgeText () {
+      return this.awards[0].level.name
     },
     badgeIcon () {
       if (!this.awards || !this.awards.length) return null
@@ -146,5 +159,9 @@ p.title {
 .subtitle-icon {
   width: 1.5em;
   float: left;
+}
+.badge-icon {
+  justify-content: flex-end;
+  width: 1.25em;
 }
 </style>

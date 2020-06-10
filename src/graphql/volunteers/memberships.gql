@@ -3,16 +3,57 @@ query volunteerMemberships ($id: Int!) {
     id
     first_name
     last_name
-    enrollees (
-      where: {enrollment: {membership: {deleted_at: {_is_null: true}}}},
-      order_by: {enrollment: {start_date: desc}}
+    current_enrollee: enrollees (
+      where: {enrollment: {_and: [
+        {start_date: {_lte: "now"}},
+        {end_date: {_gte: "now"}},
+        {membership: {deleted_at: {_is_null: true}}}
+      ]}},
+      limit: 1
     ) {
       enrollment {
+        id
         start_date
         end_date
         membership {
           id
           name
+        }
+      }
+    }
+    enrollees (
+      where: {enrollment: {membership: {deleted_at: {_is_null: true}}}},
+      order_by: {enrollment: {start_date: desc}}
+    ) {
+      enrollment {
+        id
+        start_date
+        end_date
+        membership {
+          id
+          name
+        }
+        enrollees_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }
+    }
+    purchases (
+      where: {membership: {deleted_at: {_is_null: true}}},
+      order_by: {start_date: desc}
+    ) {
+      id
+      start_date
+      end_date
+      membership {
+        id
+        name
+      }
+      enrollees_aggregate {
+        aggregate {
+          count
         }
       }
     }

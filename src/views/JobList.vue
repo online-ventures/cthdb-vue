@@ -1,25 +1,18 @@
 <template lang="pug">
 div
-  section.hero.is-primary
-    .hero-body
-      .container
-        h1.title Jobs
-        p.subtitle View and manage jobs
+  w-hero(title="Jobs" subtitle="View and manage jobs")
+
   transition(name="long-fade")
     section.section(v-if="jobs")
       .container
         .columns
+          .column(v-if="canEdit")
+            w-button.is-primary.is-fullwidth(@click="addJob" icon="plus")
+              span Add Job
           .column(:class="canEdit ? 'is-10' : 'is-12'")
             form.search-form(@submit.prevent)
-              .control.has-icons-left
-                input.input(placeholder="search" @input="searchInput")
-                span.icon.is-small.is-left
-                  font-awesome-icon(icon="search" size="1x")
-          .column.has-text-right-tablet(v-if="canEdit")
-            button.button.is-primary.is-fullwidth(@click="addJob")
-              span.icon.is-small
-                font-awesome-icon(icon="plus" size="1x")
-              span Add Job
+              w-field(icon="search")
+                w-input(placeholder="search" :debounce="searchInput")
 
         list-row(v-for="job in allJobs"
           :key="job.id"
@@ -34,7 +27,6 @@ div
 <script>
 import ListRow from '@/components/ListRow'
 import infiniteScrollingMixin from '@/mixins/infiniteScrollingMixin'
-import debounce from 'lodash/debounce'
 import JOB_LIST from '@/graphql/jobs/list.gql'
 import JOB_SEARCH from '@/graphql/jobs/search.gql'
 
@@ -104,11 +96,11 @@ export default {
       const text = count === 1 ? 'person' : 'people'
       return Intl.NumberFormat('en-US').format(count) + ' ' + text
     },
-    searchInput: debounce(function (event) {
+    searchInput (data) {
       this.allJobs = []
       this.page = 1
-      this.search = event.target.value
-    }, 300),
+      this.search = data.value
+    },
     addJob () {
       this.$router.push({ name: 'new-job' })
     },

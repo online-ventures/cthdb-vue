@@ -1,0 +1,19 @@
+mutation enrollmentInsert (
+  $volunteer_id: Int!,
+  $membership_id: Int!,
+  $start_date: date!,
+  $end_date: date!
+) {
+  insert_enrollments (
+    objects: {
+      volunteer_id: $volunteer_id,
+      membership_id: $membership_id,
+      start_date: $start_date,
+      end_date: $end_date
+    },
+  ) {
+    returning {
+      id
+    }
+  }
+}

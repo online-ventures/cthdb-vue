@@ -1,73 +1,51 @@
 <template lang="pug">
 div
-  section.hero.is-primary
-    .hero-body
-      .container
-        h1.title Volunteers
-        p.subtitle View and manage volunteers
+  w-hero(title="Volunteers" subtitle="View and manage volunteers")
+
   transition(name="long-fade")
     section.section(v-if="volunteers")
       .container
+
         .columns
+          .column(v-if="canEdit")
+            w-button.is-primary.is-fullwidth(@click="addVolunteer" icon="plus")
+              span Add Volunteer
           .column(:class="canEdit ? 'is-10' : 'is-12'")
             form.search-form(@submit.prevent)
-              .control.has-icons-left
-                input.input(placeholder="search" @input="searchInput")
-                span.icon.is-small.is-left
-                  font-awesome-icon(icon="search" size="1x")
-          .column.has-text-right-tablet(v-if="canEdit")
-            button.button.is-primary.is-fullwidth(@click="addVolunteer")
-              span.icon.is-small
-                font-awesome-icon(icon="plus" size="1x")
-              span Add Volunteer
+              w-field(icon="search")
+                w-input(
+                  placeholder="search"
+                  :debounce="searchInput"
+                  :disabled="filter !== 'all'"
+                )
+
         .columns
           .column
-            .field.has-addons
-              .control
-                button.button.is-small(
-                  :class="{ 'has-background-white-ter': filter === 'all' }"
-                  :disabled="searching"
-                  @click="filter = 'all'")
-                  span All
-              .control
-                button.button.is-small(
-                  :class="{ 'has-background-white-ter': filter === 'eligible' }"
-                  :disabled="searching"
-                  @click="filter = 'eligible'")
-                  span Eligible
+            w-select(
+              :options="filters"
+              v-model="filter"
+              :disabled="searching"
+              selectedClass="has-background-white-ter"
+              selectedIcon="filter"
+              buttonClass="is-small"
+            )
 
           .column
-            .field.has-addons.is-pulled-right
-              .control
-                button.button.is-small(
-                  :class="{ 'has-background-white-ter': sort === 'activity' }"
-                  :disabled="searching"
-                  @click="changeSort('activity')")
-                  span.icon.is-small(v-if="sort === 'activity'")
-                    font-awesome-icon(icon="sort" size="1x")
-                  span Activity
-              .control
-                button.button.is-small(
-                  :class="{ 'has-background-white-ter': sort === 'name' }"
-                  :disabled="searching"
-                  @click="changeSort('name')")
-                  span.icon.is-small(v-if="sort === 'name'")
-                    font-awesome-icon(icon="sort" size="1x")
-                  span Name
-              .control
-                button.button.is-small(
-                  :class="{ 'has-background-white-ter': sort === 'points' }"
-                  :disabled="searching"
-                  @click="changeSort('points')")
-                  span.icon.is-small(v-if="sort === 'points'")
-                    font-awesome-icon(icon="sort" size="1x")
-                  span Points
+            w-select.is-pulled-right(
+              :options="sorts"
+              v-model="sort"
+              :disabled="searching || filter === 'members'"
+              selectedClass="has-background-white-ter"
+              selectedIcon="sort"
+              buttonClass="is-small"
+            )
 
         list-row(v-for="volunteer in allVolunteers"
           :key="volunteer.id"
           :title="volunteer | name"
           :awards="volunteer.awards"
-          :subtitle="volunteer | showCount"
+          :enrollment="volunteer.enrollment"
+          :subtitle="subtitle(volunteer)"
           icon="ticket-alt"
           :item="volunteer"
           :points="volunteer | points"
@@ -77,12 +55,14 @@ div
 <script>
 import ListRow from '@/components/ListRow'
 import infiniteScrollingMixin from '@/mixins/infiniteScrollingMixin'
-import debounce from 'lodash/debounce'
 import VOLUNTEER_LIST from '@/graphql/volunteers/list.gql'
 import VOLUNTEER_ELIGIBLE from '@/graphql/volunteers/eligible.gql'
 import VOLUNTEER_SEARCH from '@/graphql/volunteers/search.gql'
+import VOLUNTEER_MEMBERS from '@/graphql/volunteers/members.gql'
 
 export default {
+  name: 'VolunteerList',
+
   components: {
     ListRow
   },
@@ -96,7 +76,17 @@ export default {
       volunteers: null,
       allVolunteers: [],
       search: '',
+      sorts: [
+        { value: 'activity', text: 'Activity' },
+        { value: 'name', text: 'Name' },
+        { value: 'points', text: 'Points' }
+      ],
       sort: 'activity',
+      filters: [
+        { value: 'all', text: 'All' },
+        { value: 'eligible', text: 'Eligible' },
+        { value: 'members', text: 'Members' }
+      ],
       filter: 'all'
     }
   },
@@ -122,6 +112,8 @@ export default {
         return VOLUNTEER_SEARCH
       } else if (this.filter === 'eligible') {
         return VOLUNTEER_ELIGIBLE
+      } else if (this.filter === 'members') {
+        return VOLUNTEER_MEMBERS
       } else {
         return VOLUNTEER_LIST
       }
@@ -186,6 +178,18 @@ export default {
   },
 
   methods: {
+    subtitle (volunteer) {
+      if (this.filter !== 'members' || !volunteer.enrollment) {
+        const count = volunteer.shows
+        return count + ' show' + (count === 1 ? '' : 's')
+      }
+      return 'Expires: ' + this.prettyDate(volunteer.enrollment.end_date)
+    },
+    prettyDate (value) {
+      const date = new Date(value + 'T12:00:00')
+      const options = { year: 'numeric', month: 'long', day: 'numeric' }
+      return date.toLocaleDateString('en-US', options)
+    },
     changeSort (sort) {
       if (this.sort === sort) return
       this.sort = sort
@@ -195,10 +199,10 @@ export default {
       this.allVolunteers = []
       this.page = 1
     },
-    searchInput: debounce(function (event) {
+    searchInput (data) {
       this.resetResults()
-      this.search = event.target.value
-    }, 300),
+      this.search = data.value
+    },
     addVolunteer () {
       this.$router.push({ name: 'new-volunteer' })
     },

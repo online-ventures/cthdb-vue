@@ -1,130 +1,214 @@
 <template lang="pug">
 transition(name="long-fade")
-  div(v-if="volunteer")
-    section.hero.is-primary
-      .hero-body
-        .container
-          h1.title {{ title }}
-          p.subtitle Manage membership
+  div(v-if="enrollment && memberships")
+    w-hero(title="Manage Membership")
 
     section.section
       .container
-        .box(v-if="enrollment")
-          .columns
-            .column
-              p.is-size-3.has-text-black
-                span Status:
-                |
-                font-awesome-icon.has-text-warning.is-size-4(icon="coins")
-                |
-                | {{ status }}
-              p.is-size-4.has-text-weight-medium
-                span {{ enrollment.membership.name }}
-            .column
-              p.is-size-4.has-text-black
-                span {{ startDate }}
-              p.is-size-4.has-text-weight-medium
-                span {{ endDate }}
 
-        .buttons
-          button.button.is-primary(@click="addNew")
-            span.icon.is-small
-              font-awesome-icon(icon="plus" size="1x")
-            span Add New
-          button.button.is-primary(@click="addExisting")
-            span.icon.is-small
-              font-awesome-icon(icon="link" size="1x")
-            span Join Existing
+        w-notification(
+          :message="notifyMessage"
+          :type="notifyType"
+          :lifetime="notifyLifetime"
+        )
 
-    section.section
-      .container
-        h2.title.is-4 Past Memberships
-        p.is-size-5(v-if="!volunteer.enrollees.length")
-          | None
-        .columns.is-vcentered.is-centered(
-          v-for="enrollee in volunteer.enrollees"
-          :class="{ 'has-background-white-ter': index % 2 === 0 }")
-          .column.is-3
-            p.title.is-5 {{ level.name }}
-          .column.is-3
-            p.subtitle.is-6 {{ points }} points / {{ level.points }} needed
-          .column.is-3
-            .buttons.has-addons.award-buttons
-              button.button(
-                @click="removeAward(level)"
-                :class="{ 'is-primary': !awarded(level), 'is-loading': awardSaving[level.id] }")
-                | Eligible
-              button.button(
-                @click="addAward(level)"
-                :class="{ 'is-primary': awarded(level) }")
-                | Awarded
-          .column.is-3
-            .field(v-if="awarded(level)")
-              .control.has-icons-left
-                span.icon.is-small
-                  font-awesome-icon(icon="calendar-week")
-                w-input(v-model="awardFor(level).awarded_at" type="date" required @blur="updateAward(level)")
+        w-title(title="Membership information")
+
+        w-field(label="Choose type")
+          w-select(
+            v-model="membership_id"
+            :options="membershipOptions"
+            @changed="changeMembership"
+          )
+
+        .columns
+          .column
+            w-field(label="Starting" icon="calendar-week")
+              w-date-input(v-model="record.start_date" @changed="updateRecord")
+
+          .column
+            w-field(label="Expires" icon="calendar-week")
+              w-date-input(v-model="record.end_date" @changed="updateRecord")
+
+        w-field(label="Purchaser" help="The individual who paid for the membership")
+          select-volunteer(v-model="record.volunteer_id" @changed="updateRecord")
+
+    w-list(
+      itemName="Recipient"
+      help="The actual member(s) who are receiving the membership"
+      rowIcon="user"
+      :query="enrolleesQuery"
+      :queryVariables="enrolleeVariables"
+      :processResults="processEnrollees"
+      :canAdd="canAddEnrollee"
+      :insertMutation="insertEnrollee"
+      :insertId="enrolleeId"
+      :mutationVariables="enrolleeMutationVariables"
+      :deleteMutation="deleteEnrollee"
+      @changed="enrolleesChanged"
+    )
+      select-volunteer(v-model="enrolleeId" :ignore="ignoreEnrollees")
 </template>
 
 <script>
-import VOLUNTEER from '@/graphql/volunteers/memberships.gql'
+import ENROLLMENT from '@/graphql/enrollments/edit.gql'
+import MEMBERSHIPS from '@/graphql/memberships/list.gql'
+import UPDATE_ENROLLMENT from '@/graphql/enrollments/update.gql'
+import ENROLLEES from '@/graphql/enrollees/volunteers.gql'
+import INSERT_ENROLLEE from '@/graphql/enrollees/insert.gql'
+import DELETE_ENROLLEE from '@/graphql/enrollees/delete.gql'
+import SelectVolunteer from '@/components/SelectVolunteer'
 
 export default {
+  components: {
+    SelectVolunteer
+  },
+
   mounted () {
     window.scrollTo(0, 0)
   },
 
   data () {
     return {
-      volunteer: null,
-      enrollment: null
+      enrollment: null,
+      memberships: null,
+      notifyMessage: null,
+      notifyType: 'success',
+      notifyLifetime: 3,
+      membership_id: 0,
+      record: {
+        membership_id: 0,
+        start_date: null,
+        end_date: null,
+        volunteer_id: 0
+      },
+      updating: false,
+      enrolleesQuery: ENROLLEES,
+      enrollees: [],
+      insertEnrollee: INSERT_ENROLLEE,
+      deleteEnrollee: DELETE_ENROLLEE,
+      enrolleeId: 0
     }
   },
 
   computed: {
-    volunteerId () {
+    enrollmentId () {
       return parseInt(this.$route.params.id)
     },
-    title () {
-      return this.fullName
+    membershipOptions () {
+      if (!this.memberships) return []
+      return this.memberships.map(membership => {
+        return { value: membership.id, text: membership.name }
+      })
     },
-    fullName () {
-      return this.volunteer.first_name + ' ' + this.volunteer.last_name
+    membership () {
+      return this.memberships.find(membership => {
+        return membership.id === this.membership_id
+      })
+    },
+    recipientTitle () {
+      return 'Recipient' + (this.membership.max_participants === 1 ? '' : 's')
+    },
+    canAddEnrollee () {
+      return this.enrollees.length < this.membership.max_participants
+    },
+    enrolleeVariables () {
+      return { enrollment_id: this.enrollmentId }
+    },
+    ignoreEnrollees () {
+      if (!this.enrollees.length) return [0]
+      return this.enrollees.map(enrollee => enrollee.id)
     }
   },
 
   apollo: {
-    volunteer: {
-      query: VOLUNTEER,
+    enrollment: {
+      query: ENROLLMENT,
       skip () {
-        return !this.volunteerId
+        return !this.enrollmentId
       },
       variables () {
-        return { id: this.volunteerId }
+        return { id: this.enrollmentId }
       },
       update (data) {
-        const volunteer = data.volunteers_by_pk
-        if (volunteer.enrollees.length) {
-          this.enrollment = volunteer.enrollees[0].enrollment
-        }
-        return volunteer
+        const enrollment = data.enrollments_by_pk
+        this.record = { ...enrollment }
+        this.membership_id = this.record.membership_id
+        delete this.record.__typename
+        return enrollment
+      }
+    },
+    memberships: {
+      query: MEMBERSHIPS,
+      skip () {
+        return !this.$auth.tenantId
+      },
+      variables () {
+        return { tenant_id: this.$auth.tenantId }
+      },
+      update (data) {
+        return data.memberships
       }
     }
   },
 
   methods: {
-    addNew () {
+    async updateRecord () {
+      if (this.updating) return
+      try {
+        this.updating = true
+        await this.$apollo.mutate({
+          mutation: UPDATE_ENROLLMENT,
+          variables: this.record
+        })
+        this.notify('Membership updated successfully')
+      } catch (error) {
+        this.notify('There was an error saving this record', 'danger')
+      } finally {
+        this.updating = false
+      }
     },
-    addExisting () {
+    changeMembership () {
+      if (this.enrollees.length <= this.membership.max_participants) {
+        this.record.membership_id = this.membership_id
+        this.updateRecord()
+      } else {
+        const max = this.membership.max_participants
+        const message = this.membership.name + ' can only support ' + max +
+          ' recipient' + (max === 1 ? '' : 's') + '.  Lower your recipients' +
+          ' to this amount first.'
+        this.notify(message, 'info', 8)
+        this.membership_id = this.record.membership_id
+      }
+    },
+    notify (message, type = 'success', lifetime = 3) {
+      this.notifyType = type
+      this.notifyLifetime = lifetime
+      this.notifyMessage = message
+      this.$nextTick(() => { this.notifyMessage = null })
+    },
+    enrolleeMutationVariables (volunteerId) {
+      return {
+        volunteer_id: volunteerId,
+        enrollment_id: this.enrollmentId
+      }
+    },
+    processEnrollees (enrollees) {
+      return enrollees.map(enrollee => {
+        const volunteer = enrollee.volunteer
+        return {
+          id: volunteer.id,
+          name: volunteer.first_name + ' ' + volunteer.last_name
+        }
+      })
+    },
+    enrolleesChanged (enrollees) {
+      this.enrollees = enrollees
+      this.enrolleeId = 0
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.award-buttons {
-  .button {
-    width: 50%;
-  }
-}
 </style>

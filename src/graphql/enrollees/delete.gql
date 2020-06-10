@@ -1,0 +1,19 @@
+mutation enrolleeDelete (
+  $volunteer_id: Int!,
+  $enrollment_id: Int!
+) {
+  delete_enrollees (
+    where: {_and: [
+      {volunteer_id: {_eq: $volunteer_id}},
+      {enrollment_id: {_eq: $enrollment_id}}
+    ]}
+  ) {
+    returning {
+      volunteer {
+        id
+        first_name
+        last_name
+      }
+    }
+  }
+}
