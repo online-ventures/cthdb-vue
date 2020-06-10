@@ -28,7 +28,7 @@ div
               selectedClass="has-background-white-ter"
               selectedIcon="filter"
               buttonClass="is-small"
-              @input="resetResults"
+              @change="resetResults"
             )
 
           .column
@@ -39,6 +39,7 @@ div
               selectedClass="has-background-white-ter"
               selectedIcon="sort"
               buttonClass="is-small"
+              @change="resetResults"
             )
 
         list-row(v-for="volunteer in allVolunteers"

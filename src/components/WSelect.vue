@@ -45,6 +45,7 @@ export default {
   methods: {
     selectOption (option) {
       this.$emit('input', option.value)
+      this.$emit('change', option.value)
       this.$nextTick(() => this.$emit('changed', option.value))
     },
     buttonClasses (option) {
