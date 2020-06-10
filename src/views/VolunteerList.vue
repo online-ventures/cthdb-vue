@@ -28,6 +28,7 @@ div
               selectedClass="has-background-white-ter"
               selectedIcon="filter"
               buttonClass="is-small"
+              @input="resetResults"
             )
 
           .column
