@@ -129,7 +129,11 @@ export const useAuth0 = options => {
       },
       async authenticate (options = {}) {
         if (this.debug) console.log('authenticating')
-        this.accessToken = await this.getTokenSilently()
+        try {
+          this.accessToken = await this.getTokenSilently()
+        } catch (e) {
+          console.log('Not logged in')
+        }
         if (this.accessToken) {
           if (this.debug) console.log('Retreived access token')
           if (this.debug) console.log(this.accessToken)
@@ -148,7 +152,7 @@ export const useAuth0 = options => {
             this.$apollo.query.fetchPolicy = 'no-cache'
           } else {
             if (this.debug) console.log('Enabling cache')
-            this.$apollo.query.fetchPolicy = 'cache-and-network'
+            this.$apollo.query.fetchPolicy = 'cache-first'
           }
 
           if (this.debug) console.log('getting auth0 user')
@@ -156,6 +160,9 @@ export const useAuth0 = options => {
 
           this.emailVerified = this.auth0User.email_verified
           if (this.debug) console.log(this.auth0User)
+        } else {
+          if (this.debug) console.log('Enabling cache')
+          this.$apollo.query.fetchPolicy = 'cache-first'
         }
       },
       async reAuthenticate () {

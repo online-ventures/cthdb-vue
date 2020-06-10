@@ -57,7 +57,7 @@ const provider = new VueApollo({
   defaultClient: client,
   defaultOptions: {
     $query: {
-      fetchPolicy: 'cache-and-network'
+      fetchPolicy: 'cache-first'
     }
   },
   errorHandler (error) {
