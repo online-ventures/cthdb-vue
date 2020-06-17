@@ -31,7 +31,7 @@ export const useAuth0 = options => {
         auth0Client: null,
         auth0User: null,
         error: null,
-        debug: false
+        debug: true
       }
     },
 
